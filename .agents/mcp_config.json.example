@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "StitchMCP": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://stitch.googleapis.com/mcp",
+        "--header",
+        "X-Goog-Api-Key: <YOUR_GOOGLE_API_KEY>"
+      ]
+    },
+    "github-mcp-server": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
+      }
+    },
+    "penpot": {
+      "url": "https://design.penpot.app/mcp/stream?userToken=<YOUR_PENPOT_USER_TOKEN>"
+    },
+    "vercel": {
+      "serverUrl": "https://mcp.vercel.com",
+      "headers": {
+        "Authorization": "Bearer <YOUR_VERCEL_TOKEN>"
+      }
+    }
+  }
+}
