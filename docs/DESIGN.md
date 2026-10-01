@@ -74,43 +74,42 @@ All three fonts are free, under the SIL Open Font License, and on Google Fonts. 
 
 ### Google Sans Flex: the architecture
 
-- Variable axes: weight, width, optical size, slant and rounded terminals. **Never use the rounded axis.** It pushes the site toward the chunky-70s look.
-- The width axis is available for display use on index pages and features (a condensed or extended sans headline). House pieces keep serif headlines.
+- Used at regular weight (400) everywhere, at its default width. **Never use the rounded axis.** It pushes the site toward the chunky-70s look.
 - Use `font-variant-numeric: tabular-nums` on any column of numbers.
 - It stands in for Google Sans, Segoe UI, Moderat, Ginto and Geist.
 
 ### JetBrains Mono: the details
 
-- Small (12–13px) and usually in `--ink-2`. It labels things; it never carries sentences.
+- Small (13px for `meta`, 14px for `code`) and usually in `--ink-2`. It labels things; it never carries sentences.
 - It replaces Hack.
 
 ### Type scale
 
+These are the `type.*` tokens in Penpot. Each style has one size; a feature may override the size of `feature-display` and `display-sans` for its own headline. Tracking is in px, calculated from the size (size × em), so change it when the size changes.
+
 | Token | Font | Size / line height | Weight | Tracking | Use |
 |---|---|---|---|---|---|
-| `feature-display` | Newsreader | 140–220 / 0.95 | 300–400 | -0.03em | Feature headlines only. May crop or break the grid. |
-| `display-sans` | Google Sans Flex | 96–180 / 0.95 | 500–600 | -0.03em | Section indexes and features only. Width axis allowed. |
-| `h1` | Newsreader | 88 / 1.02 | 400 | -0.025em | House titles for all page types |
-| `standfirst` | Newsreader italic | 23–26 / 1.45 | 400 | 0 | Dek under an h1 |
-| `quote` | Newsreader | 36 / 1.25 | 300 | -0.01em | Pull quotes, interludes in photo series |
+| `feature-display` | Newsreader | 180 / 0.95 | 300 | -5.4px | Feature headlines only. May crop or break the grid. |
+| `display-sans` | Google Sans Flex | 120 / 0.95 | 400 | -3.6px | Section indexes and features only. |
+| `h1` | Newsreader | 88 / 1.02 | 400 | -2.2px | House titles for all page types |
+| `standfirst` | Newsreader | 24 / 1.45 | 400 | 0 | Dek under an h1 |
+| `quote` | Newsreader | 36 / 1.25 | 300 | -0.36px | Pull quotes, interludes in photo series |
 | `h2` | Newsreader | 28 / 1.25 | 500 | 0 | Section heads within a piece |
-| `index-title` | Newsreader | 26–28 / 1.2 | 400 | 0 | Titles in index lists and "next" links |
-| `stat` | Newsreader | 56 / 1 | 400 | -0.01em | Big numbers on collection headers |
+| `index-title` | Newsreader | 28 / 1.2 | 400 | 0 | Titles in index lists and "next" links |
+| `stat` | Newsreader | 56 / 1 | 400 | -0.56px | Big numbers on collection headers |
 | `body` | Newsreader | 19 / 1.65 | 400 | 0 | Reading text |
-| `ui` | Google Sans Flex | 15 / 1.5 | 400–500 | 0 | Nav, captions, table cells, spec values |
+| `ui` | Google Sans Flex | 15 / 1.5 | 400 | 0 | Nav, captions, table cells, spec values |
 | `small` | Google Sans Flex | 14 / 1.6 | 400 | 0 | Footnotes, asides, captions |
-| `label` | Google Sans Flex | 12 | 600 | +0.12em, UPPERCASE | Eyebrows, spec keys, table headers, section labels |
-| `meta` | JetBrains Mono | 12–13 / 1.7 | 400 | 0 | Dates, indexes, EXIF, stacks |
-| `code` | JetBrains Mono | 14 / 1.7 | 400 | 0 | Code blocks (16px inline in body) |
-
-**Mobile:** `feature-display` and `display-sans` scale to 64–88px, `h1` to 44px, `quote` to 28px, `body` to 18px. Everything else stays.
+| `label` | Google Sans Flex | 12 / 1.5 | 400 | +1.44px, UPPERCASE | Eyebrows, spec keys, table headers, section labels |
+| `meta` | JetBrains Mono | 13 / 1.7 | 400 | 0 | Dates, indexes, EXIF, stacks |
+| `code` | JetBrains Mono | 14 / 1.7 | 400 | 0 | Code blocks and inline code |
 
 ### Rules
 
 - **Headlines are serif by default.** Sans display is reserved for section indexes and features, where it's a deliberate choice.
 - **Reading column is 680px max** (about 65 characters per line).
 - **Footnotes and asides go in the margin, in the sans,** at `small` size. They read as the site talking, not the author.
-- **Emphasis in body text is italic, never bold.** Newsreader 600 is rare; Sans 700 is almost never used.
+- **Emphasis in body text is italic, never bold.** Newsreader 600 is rare; the sans stays at regular weight.
 - **Scientific names** are Newsreader italic in `--ink-2`, set beside the common name.
 - **Casual pieces can lean lighter** (Newsreader 300); analytical pieces stay at regular. Same family, different temperature.
 
@@ -136,15 +135,31 @@ One cool-neutral family with a sage accent. **No pure black, no pure white.** Th
 
 ### Dark
 
-| Token | Hex |
-|---|---|
-| `--bg` | `#343A42` |
-| `--ink` | `#EDEEEB` |
-| `--ink-2` | `#A4ADA6` |
-| `--link` | `#D2DDE4` |
-| `--line` | `#485861` |
+| Token | Hex | Status |
+|---|---|---|
+| `--bg` | `#343A42` | Decided |
+| `--ink` | `#EDEEEB` | Decided |
+| `--ink-2` | `#A4ADA6` | Decided |
+| `--link` | `#D2DDE4` | Decided |
+| `--line` | `#485861` | Decided |
+| `--accent` | `#758072` | Provisional: same as light |
+| `--surface` | `#3D444C` | Provisional |
+| `--code-bg` | `#2A2F35` | Provisional: darker than `--bg` so code blocks stay distinct |
+| `--code-fg` | `#EDEEEB` | Provisional: same as light |
 
-Check the dark-mode accent and code colors for contrast once the pages exist.
+Provisional values exist so the dark set is complete in Penpot. Check them for contrast once the pages exist.
+
+### Palette primitives
+
+The Penpot `primitives` set holds the raw values the tokens above point to:
+
+| Ramp | Steps |
+|---|---|
+| `color.neutral` | 50 `#F1F1F1`, 100 `#EDEEEB`, 200 `#D5D7D2`, 400 `#A4ADA6`, 600 `#626964`, 800 `#3D444C`, 900 `#343A42`, 950 `#2A2F35` |
+| `color.slate` | 300 `#D2DDE4`, 600 `#485861` |
+| `color.sage` | 500 `#758072` |
+
+Neutral 800 and 950 exist only for the provisional dark values.
 
 ### Feature accents
 
@@ -168,7 +183,9 @@ A feature may override `--accent` with **one** color of its own, pulled from the
 
 ### Spacing
 
-An 8px base. Vertical rhythm uses these steps: 16, 24, 32, 48, 64, 80, 96, 128, 160, 200.
+An 8px base. Vertical rhythm uses these steps: 8, 16, 24, 32, 48, 64, 80, 96, 128, 160, 200.
+
+Four component values sit off the scale on purpose and are tokenized as written: 18 (table row padding), 22 (index row padding), 40 (nav item gap) and 120 (header top padding).
 
 - **Between major blocks** within a piece: 128px.
 - **Between images** in a photography series: 160–200px. Whitespace is part of the pacing.
@@ -187,16 +204,18 @@ An 8px base. Vertical rhythm uses these steps: 16, 24, 32, 48, 64, 80, 96, 128, 
 
 ### Nav
 
-Sans 15/500, items 40px apart, in `--ink-2`. The active item is `--ink` with a **2px accent underline** offset 6px. A 1px `--line` hairline sits under the nav bar.
+`ui` style, items 40px apart, in `--ink-2`. The active item is `--ink` with a **2px accent underline** offset 6px. A 1px `--line` hairline sits under the nav bar.
+
+Desktop bar (1440px): 96px gutter left and right, 32px above and below, the wordmark on the left and the five items right-aligned. Bar height is 104px including the hairline. The wordmark and the item labels share one vertical centre line. Item states: **Default** (`--ink-2`), **Hover** (`--ink`), **Active** (`--ink` plus the accent underline) and **Focus** (`--ink` with a 2px `--ink` ring, 4px radius, offset 8px horizontally and 4px vertically). The ring shows for keyboard focus only (`:focus-visible`), never on mouse clicks. Mobile is not designed yet.
 
 ### Eyebrow
 
 `label` style, `--ink-2`, above every h1: section, then an accent-colored `/`, then the sub-category.
-Examples: `ESSAY / BIRDING`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`.
+Examples: `ESSAY / BIRDING`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart.
 
 ### Meta row
 
-A 1px `--ink` rule, then mono `meta` items in a row, 32px apart: date, reading time, tags. It sits under the standfirst on essays.
+A 1px `--ink` rule, then mono `meta` items in a row, 32px apart: date, reading time, tags. It sits under the standfirst on essays. The rule spans the content width (1248px) and sits 16px above the items.
 
 ### Spec block (projects)
 
@@ -208,6 +227,8 @@ Standard keys: **Year**, **Role**, **Medium**, **Stack** (code) or **Materials**
 
 Under images: a mono index (`01`) in `--ink`, then the caption in sans `small`, `--ink-2`. On photography, the caption is mono EXIF, right-aligned opposite the index.
 
+The index sits in a fixed 48px column with the caption text beside it (600px wide), so wrapped lines hang under the text, not under the index. EXIF is `meta` in `--ink-2`, items 24px apart, and **flexible**: it shows only the fields a photograph has (for example lens, aperture, shutter, ISO), in a fixed order, so one photo can show four items and another two. Nothing is required and nothing is left as an empty slot.
+
 ### Index list
 
 Used for "More work", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids entirely.
@@ -218,15 +239,29 @@ Header row in `label` style over a 1px `--ink` rule. 18px row padding, hairlines
 
 ### Filter pills
 
-Sans 14/500, 44px tall, fully rounded. Inactive pills have a 1px `--line` border; the active pill is filled `--ink` with `--bg` text.
+`small` style, 44px tall, fully rounded, 24px padding left and right. Inactive pills have a 1px `--line` border; the active pill is filled `--ink` with `--bg` text. **Hover** darkens the border to `--ink-2`. **Focus** uses the same 2px `--ink` ring as the nav, 4px outside the pill, keyboard focus only.
 
 ### Next link (footer)
 
-At the bottom of every piece: a `label` ("Next essay", "Next series") over an `index-title` or larger serif title, linking to the next piece in the section.
+At the bottom of every piece: a `label` ("Next essay", "Next series") over an `index-title` or larger serif title, linking to the next piece in the section. A 1px `--ink` rule sits on top, 16px above the label. On hover the title changes to `--link`.
+
+### Footer
+
+Desktop (1440px): a 1px `--line` hairline on top, then one row with the `small` style in `--ink-2`, 48px above and below, 96px gutters. On the left, one line: "© 2026 Mal Nushi · Made with ♥ in Charlotte". The heart is the text glyph ♥ (U+2665) in `--ink-2`, not an emoji. The five section links are right-aligned, 24px apart. The next link sits above the footer on piece pages.
+
+### Section label
+
+A `label` in `--ink-2` over a 1px `--ink` rule, 16px apart. The label sits above the rule, so the rule separates the label from the list below it.
+
+### Links
+
+Inline links are `--link` with a 1px underline; on hover the text and underline turn `--ink`. Arrow links ("View source →") have no underline until hover. Keyboard focus shows the 2px `--ink` ring used by the nav, on `:focus-visible` only, so it never appears on mouse hover or click.
 
 ### Image placeholders
 
-While real images are missing, use `--line` fills with a mono label giving the purpose and dimensions (`HERO — 1248 × 640`).
+While real images are missing, use `--line` fills with a mono label giving the purpose and dimensions (`HERO — 1248 × 640`). The label is `meta` in `--ink-2`, centered, on a 4px-radius fill. Two sizes exist in Penpot: hero (1248 × 640) and column (680 × 453, 3:2, for images in the reading column). Add other sizes as pages need them.
+
+A **figure** is a placeholder (or image) with its caption 16px below, stretched to the same width: `Figure / Size=Hero` and `Figure / Size=Column`.
 
 ---
 
@@ -244,7 +279,7 @@ The homepage is an editorial front page, not a feed.
 
 Type leads.
 
-1. Eyebrow, `h1`, `standfirst`, meta row.
+1. Eyebrow, `h1`, `standfirst`, meta row (the `Essay Header` component). Title and standfirst span 7 columns (718px); 24px between eyebrow, title and standfirst; 48px from the standfirst to the meta row, which spans 1248px. The standfirst is `--ink-2`.
 2. A hero image (1248 wide) with a caption. Optional; an essay can go straight from the header to the text.
 3. The body: a 680px reading column offset two columns from the left, with asides and footnotes in a 294px margin column on the right.
 4. Pull quotes break the column rhythm, with a 2px accent rule on top.
@@ -365,42 +400,11 @@ status: "In progress"
 
 ### Fonts
 
-Load all three with `next/font`, which self-hosts and avoids layout shift.
-
-```ts
-// app/fonts.ts
-import { Newsreader, JetBrains_Mono } from "next/font/google";
-import localFont from "next/font/local";
-
-export const serif = Newsreader({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-export const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
-// If your Next.js version lists Google_Sans_Flex in next/font/google, use that instead.
-// Otherwise download the variable .woff2 from Google Fonts into app/fonts/.
-export const sans = localFont({
-  src: "./fonts/GoogleSansFlex-Variable.woff2",
-  variable: "--font-sans",
-  display: "swap",
-});
-```
-
-```tsx
-// app/layout.tsx
-<html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
-```
+Load all three with `next/font/google` (Next 16 lists `Google_Sans_Flex`), which self-hosts them. The code is in `src/app/fonts.ts` and `src/app/layout.tsx`. The CSS variables are `--font-newsreader`, `--font-google-sans-flex` and `--font-jetbrains-mono`; Tailwind maps them to `font-serif`, `font-sans` and `font-mono`. Next has no fallback metrics for Google Sans Flex, so its fallback isn't size-adjusted and sans text can shift slightly when the font loads.
 
 ### Tokens
+
+The tokens live in `src/app/globals.css`: color, spacing, size and radius as CSS variables (light, and dark under `prefers-color-scheme`), colors exposed to Tailwind (`text-ink`, `bg-line`, `border-accent`), and one `type-*` utility per typography token (`type-h1`, `type-meta`). Components use spacing variables directly, e.g. `gap-(--space-md)`. The block below is the short version.
 
 ```css
 :root {
@@ -415,6 +419,8 @@ export const sans = localFont({
   :root {
     --bg: #343A42; --ink: #EDEEEB; --ink-2: #A4ADA6;
     --link: #D2DDE4; --line: #485861;
+    /* provisional, pending contrast checks */
+    --surface: #3D444C; --code-bg: #2A2F35;
   }
 }
 @media (max-width: 720px) {
@@ -431,6 +437,31 @@ code, pre, .meta   { font-family: var(--font-mono), ui-monospace, monospace; }
 
 A feature sets its accent by overriding the token on its page wrapper: `<article style={{ "--accent": feature.accent }}>`.
 
+### Penpot tokens
+
+The design tokens live in the `malnushi` Penpot file in four sets: `primitives` (raw values), `semantic` (mode-invariant aliases and the `type.*` styles), and `modes/light` and `modes/dark` (the color tokens, same names in both). Shapes bind to semantic tokens, never primitives. Penpot names map to the CSS variables above:
+
+| Penpot | CSS |
+|---|---|
+| `color.bg` `surface` `ink` `ink-2` `link` `accent` `line` | `--bg` `--surface` `--ink` `--ink-2` `--link` `--accent` `--line` |
+| `color.code.bg` / `color.code.fg` | `--code-bg` / `--code-fg` |
+| `space.gutter.desktop` / `space.gutter.mobile` | `--gutter` (96px / 16px) |
+| `space.col-gap` | `--col-gap` |
+| `size.reading-measure` | `--measure` |
+| `radius.image` / `radius.code` / `radius.pill` | `--radius-img` / `--radius-code` / fully rounded |
+
+Other semantic tokens have no CSS variable yet:
+
+| Group | Tokens |
+|---|---|
+| Spacing | `space.block` (128), `space.image-gap.min` / `.max` (160 / 200), `space.header-top` (120), `space.nav-item` (40), `space.meta-item` (32), `space.row.index` (22), `space.row.table` (18), `space.stack.sm` `.md` `.lg` `.xl` `.2xl` (16 / 24 / 32 / 48 / 64) |
+| Sizing | `size.content-width` (1248), `size.touch-target` (44), `size.pill-height` (44) |
+| Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
+
+The sets are exported to W3C DTCG JSON in `tokens/` (`primitives.json`, `semantic.json`, `modes/light.json`, `modes/dark.json`). Penpot stays the source of truth; update the JSON when a token changes.
+
+Design decisions and the remaining differences between this file and Penpot are tracked in [design-log.md](design-log.md).
+
 ---
 
 ## Accessibility
@@ -446,7 +477,7 @@ A feature sets its accent by overriding the token on its page wrapper: `<article
 ## Open questions
 
 - Confirm the pairing reads well on real essays (test a full paragraph on the essay page at 100% zoom).
-- Decide the dark-mode accent and code colors after contrast checks.
+- Confirm the provisional dark-mode accent, surface and code colors after contrast checks.
 - Pick the first three to five pieces to promote to features at launch.
 - Design the homepage once the first features exist.
 - Specify the travels collection's map view, if it gets one.
