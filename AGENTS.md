@@ -7,3 +7,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Design
+
+- `docs/DESIGN.md` is the design specification for the site.
+- `docs/design-log.md` records design decisions and where the Penpot file (`malnushi`) departs from DESIGN.md, with the reasons. Read it before changing tokens or the Foundations page, and add a dated entry whenever you make or change a design decision.
+- Keep the "Penpot tokens" section of `docs/DESIGN.md` in sync when you add, rename or remove tokens.
+- Unresolved design questions go in the "Open questions" section of DESIGN.md, not in the log.
