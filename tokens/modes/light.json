@@ -1,0 +1,42 @@
+{
+  "color": {
+    "bg": {
+      "$type": "color",
+      "$value": "{color.neutral.50}"
+    },
+    "surface": {
+      "$type": "color",
+      "$value": "{color.neutral.100}"
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "{color.neutral.900}"
+    },
+    "ink-2": {
+      "$type": "color",
+      "$value": "{color.neutral.600}"
+    },
+    "link": {
+      "$type": "color",
+      "$value": "{color.slate.600}"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{color.sage.600}"
+    },
+    "line": {
+      "$type": "color",
+      "$value": "{color.neutral.200}"
+    },
+    "code": {
+      "bg": {
+        "$type": "color",
+        "$value": "{color.neutral.900}"
+      },
+      "fg": {
+        "$type": "color",
+        "$value": "{color.neutral.100}"
+      }
+    }
+  }
+}
