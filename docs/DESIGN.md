@@ -85,7 +85,7 @@ All three fonts are free, under the SIL Open Font License, and on Google Fonts. 
 
 ### Type scale
 
-These are the `type.*` tokens in Penpot. Each style has one size; a feature may override the size of `feature-display` and `display-sans` for its own headline. Tracking is in px, calculated from the size (size × em), so change it when the size changes.
+These are the `type.*` tokens. Each style has one size; a feature may override the size of `feature-display` and `display-sans` for its own headline. Tracking is in px, calculated from the size (size × em), so change it when the size changes.
 
 | Token | Font | Size / line height | Weight | Tracking | Use |
 |---|---|---|---|---|---|
@@ -123,21 +123,21 @@ One cool-neutral family with a sage accent. **No pure black, no pure white.** Th
 
 | Token | Hex | Use |
 |---|---|---|
-| `--bg` | `#F1F1F1` | Page |
+| `--bg` | `#FAFAFA` | Page |
 | `--surface` | `#EDEEEB` | Inline code, subtle fills |
-| `--ink` | `#343A42` | Primary text, strong rules |
-| `--ink-2` | `#626964` | Secondary text, meta, captions (≈5:1 on bg, passes AA) |
+| `--ink` | `#2E2E2E` | Primary text, strong rules |
+| `--ink-2` | `#626964` | Secondary text, meta, captions (≈5.4:1 on bg, passes AA) |
 | `--link` | `#485861` | Links |
-| `--accent` | `#758072` | Sage. Active nav underline, eyebrow separators, pull-quote rules, status dots, large decorative marks. **Not for body or small text** (≈3.7:1 on bg). |
+| `--accent` | `#626E5E` | Sage. Active nav underline, eyebrow separators, pull-quote rules, status dots, large decorative marks (5.14:1 on bg, 4.61:1 on surface). Still a mark color: set body and small text in `ink`, `ink-2` or `link`. |
 | `--line` | `#D5D7D2` | Hairline dividers, borders, image placeholders |
-| `--code-bg` | `#343A42` | Code block background |
+| `--code-bg` | `#2E2E2E` | Code block background |
 | `--code-fg` | `#EDEEEB` | Code block text |
 
 ### Dark
 
 | Token | Hex | Status |
 |---|---|---|
-| `--bg` | `#343A42` | Decided |
+| `--bg` | `#2E2E2E` | Decided |
 | `--ink` | `#EDEEEB` | Decided |
 | `--ink-2` | `#A4ADA6` | Decided |
 | `--link` | `#D2DDE4` | Decided |
@@ -147,17 +147,17 @@ One cool-neutral family with a sage accent. **No pure black, no pure white.** Th
 | `--code-bg` | `#2A2F35` | Provisional: darker than `--bg` so code blocks stay distinct |
 | `--code-fg` | `#EDEEEB` | Provisional: same as light |
 
-Provisional values exist so the dark set is complete in Penpot. Check them for contrast once the pages exist.
+Provisional values exist so the dark set is complete. Check them for contrast once the pages exist.
 
 ### Palette primitives
 
-The Penpot `primitives` set holds the raw values the tokens above point to:
+The `primitives` token set holds the raw values the tokens above point to:
 
 | Ramp | Steps |
 |---|---|
-| `color.neutral` | 50 `#F1F1F1`, 100 `#EDEEEB`, 200 `#D5D7D2`, 400 `#A4ADA6`, 600 `#626964`, 800 `#3D444C`, 900 `#343A42`, 950 `#2A2F35` |
+| `color.neutral` | 50 `#FAFAFA`, 100 `#EDEEEB`, 200 `#D5D7D2`, 400 `#A4ADA6`, 600 `#626964`, 800 `#3D444C`, 900 `#2E2E2E`, 950 `#2A2F35` |
 | `color.slate` | 300 `#D2DDE4`, 600 `#485861` |
-| `color.sage` | 500 `#758072` |
+| `color.sage` | 500 `#758072` (dark accent), 600 `#626E5E` (light accent) |
 
 Neutral 800 and 950 exist only for the provisional dark values.
 
@@ -259,7 +259,7 @@ Inline links are `--link` with a 1px underline; on hover the text and underline 
 
 ### Image placeholders
 
-While real images are missing, use `--line` fills with a mono label giving the purpose and dimensions (`HERO — 1248 × 640`). The label is `meta` in `--ink-2`, centered, on a 4px-radius fill. Two sizes exist in Penpot: hero (1248 × 640) and column (680 × 453, 3:2, for images in the reading column). Add other sizes as pages need them.
+While real images are missing, use `--line` fills with a mono label giving the purpose and dimensions (`HERO — 1248 × 640`). The label is `meta` in `--ink-2`, centered, on a 4px-radius fill. Two sizes exist: hero (1248 × 640) and column (680 × 453, 3:2, for images in the reading column). Add other sizes as pages need them.
 
 A **figure** is a placeholder (or image) with its caption 16px below, stretched to the same width: `Figure / Size=Hero` and `Figure / Size=Column`.
 
@@ -271,9 +271,9 @@ A **figure** is a placeholder (or image) with its caption 16px below, stretched 
 
 The homepage is an editorial front page, not a feed.
 
-- **Opening:** one feature leads, at full display scale with its own accent. It changes when a new feature is promoted.
+- **Opening:** a short introduction in the serif voice, an About link and a line-drawn self-portrait. No hero tagline about "building things."
+- **Lead feature:** one feature follows the introduction, at full display scale with its own accent. It changes when a new feature is promoted.
 - **Then:** the other features in a varied-size arrangement, followed by index lists of the latest essays and projects, and a strip showing recent collection activity (latest bird, latest rec).
-- A short introduction in the serif voice, and an About link. No hero tagline about "building things."
 
 ### Essay
 
@@ -408,16 +408,16 @@ The tokens live in `src/app/globals.css`: color, spacing, size and radius as CSS
 
 ```css
 :root {
-  --bg: #F1F1F1; --surface: #EDEEEB; --ink: #343A42; --ink-2: #626964;
-  --link: #485861; --accent: #758072; --line: #D5D7D2;
-  --code-bg: #343A42; --code-fg: #EDEEEB;
+  --bg: #FAFAFA; --surface: #EDEEEB; --ink: #2E2E2E; --ink-2: #626964;
+  --link: #485861; --accent: #626E5E; --line: #D5D7D2;
+  --code-bg: #2E2E2E; --code-fg: #EDEEEB;
 
   --gutter: 96px; --col-gap: 24px; --measure: 680px;
   --radius-img: 4px; --radius-code: 8px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #343A42; --ink: #EDEEEB; --ink-2: #A4ADA6;
+    --bg: #2E2E2E; --ink: #EDEEEB; --ink-2: #A4ADA6;
     --link: #D2DDE4; --line: #485861;
     /* provisional, pending contrast checks */
     --surface: #3D444C; --code-bg: #2A2F35;
@@ -437,11 +437,11 @@ code, pre, .meta   { font-family: var(--font-mono), ui-monospace, monospace; }
 
 A feature sets its accent by overriding the token on its page wrapper: `<article style={{ "--accent": feature.accent }}>`.
 
-### Penpot tokens
+### Design tokens
 
-The design tokens live in the `malnushi` Penpot file in four sets: `primitives` (raw values), `semantic` (mode-invariant aliases and the `type.*` styles), and `modes/light` and `modes/dark` (the color tokens, same names in both). Shapes bind to semantic tokens, never primitives. Penpot names map to the CSS variables above:
+The design tokens live in `tokens/` as W3C DTCG JSON in four sets: `primitives` (raw values), `semantic` (mode-invariant aliases and the `type.*` styles), and `modes/light` and `modes/dark` (the color tokens, same names in both). Components use semantic tokens, never primitives. Token names map to the CSS variables above:
 
-| Penpot | CSS |
+| Token | CSS |
 |---|---|
 | `color.bg` `surface` `ink` `ink-2` `link` `accent` `line` | `--bg` `--surface` `--ink` `--ink-2` `--link` `--accent` `--line` |
 | `color.code.bg` / `color.code.fg` | `--code-bg` / `--code-fg` |
@@ -458,9 +458,9 @@ Other semantic tokens have no CSS variable yet:
 | Sizing | `size.content-width` (1248), `size.touch-target` (44), `size.pill-height` (44) |
 | Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
 
-The sets are exported to W3C DTCG JSON in `tokens/` (`primitives.json`, `semantic.json`, `modes/light.json`, `modes/dark.json`). Penpot stays the source of truth; update the JSON when a token changes.
+The files are `tokens/primitives.json`, `tokens/semantic.json`, `tokens/modes/light.json` and `tokens/modes/dark.json`. `src/app/globals.css` mirrors them: change the JSON first, then the CSS.
 
-Design decisions and the remaining differences between this file and Penpot are tracked in [design-log.md](design-log.md).
+Design decisions are tracked in [design-log.md](design-log.md).
 
 ---
 
@@ -477,7 +477,19 @@ Design decisions and the remaining differences between this file and Penpot are 
 ## Open questions
 
 - Confirm the pairing reads well on real essays (test a full paragraph on the essay page at 100% zoom).
-- Confirm the provisional dark-mode accent, surface and code colors after contrast checks.
+- Confirm the provisional dark-mode accent, surface and code colors after contrast checks. Since `neutral.900` became `#2E2E2E`, the dark `code-bg` (`#2A2F35`) is 1.01:1 against the dark `bg`, so code blocks no longer stand out in dark mode.
+- Ink and ground are now neutral grays (`#2E2E2E`, `#FAFAFA`), while `surface`, `line`, `ink-2` and `link` are still the cool, slightly green family. Decide whether to make those neutral too.
 - Pick the first three to five pieces to promote to features at launch.
-- Design the homepage once the first features exist.
+- Replace the homepage placeholder content once the first features exist (frame built 2026-10-01). The lead headline uses `ink` until a feature has its own accent.
 - Specify the travels collection's map view, if it gets one.
+- Check the licence of the SVG Repo mustache used in `docs/portrait.svg` (credit it, or redraw the shape, before launch).
+- **Mobile (draft proposal, not decided).** Nothing below is spec until approved.
+  - One breakpoint: under 768px is mobile; 768px and up keeps the desktop layout (approved by Mal 2026-10-01: tablet uses the desktop layout for now).
+  - Foundations: gutter 16px; `space-block` 128 → 64, `space-header-top` 120 → 48, `space-xl` 48 → 32. Type sizes only: h1 88 → 44, feature-display 180 → 64, display-sans 120 → 48, standfirst 24 → 20, quote 36 → 26, stat 56 → 44, h2 and index-title 28 → 24, body 19 → 18; ui, small, label, meta and code unchanged. Recalculate tracking as size × em. Touch targets stay 44px.
+  - Nav (approved by Mal 2026-10-01): wordmark left and a text "Menu" button right (no icon); it opens the five sections as a full-width list under the bar, active item keeps the accent underline. Footer: copyright line, then the links wrapping.
+  - Eyebrow, SectionLabel, Caption, Figure, ImagePlaceholder: unchanged apart from full width inside the gutters; EXIF wraps under the index. MetaRow items wrap.
+  - EssayHeader, SpecBlock, Stats: full width, stacked (no columns 9–12). Aside sits inline under its paragraph instead of the margin.
+  - IndexList: index and title on one line, category and year on a second line.
+  - DataTable (approved by Mal 2026-10-01): stacked label/value rows, one block per row, hairline between rows. No horizontal scroll.
+  - Toolbar (approved by Mal 2026-10-01): pills scroll sideways inside the toolbar only (the one allowed horizontal scroll); sort label drops below. CollectionLink and OtherCollections stack.
+  - CodeBlock: scrolls inside the block, padding 32 → 16.

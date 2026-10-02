@@ -17,6 +17,41 @@ DESIGN.md now follows Penpot (see the 2026-09-29 entry). What remains are limits
 
 ---
 
+## 2026-10-01
+
+### Light accent darkened to `#626E5E`
+The design system's contrast check flagged light `accent` (`#758072`) at 3.96:1 on `bg`, under 4.5:1. Mal chose to re-tint it in the source, not just in the design system.
+- **New primitive `color.sage.600` `#626E5E`** (5.14:1 on `bg`, 4.61:1 on `surface`). First try was `#6A7667`, which reached 4.57:1 on `bg` but only 4.10:1 on `surface`, so it was darkened again. Light `accent` now aliases it. `color.sage.500` `#758072` stays and is still the dark `accent`, because a darker sage would read worse on the dark ground (provisional, unchecked).
+- **Changed in:** `tokens/primitives.json`, `tokens/modes/light.json`, `src/app/globals.css`, DESIGN.md. **Penpot not updated yet:** add `color.sage.600` and point `modes/light` `accent` at it.
+- Accent is still a mark color (nav underline, eyebrow slash, quote rule, status dot). It now passes 4.5:1 on both `bg` and `surface`, but at 5.14:1 it is close to `ink-2` (about 5.4:1), so it reads less distinct from secondary text.
+
+### New ground and ink: `#FAFAFA` and `#2E2E2E`
+Mal didn't like the lead headline's placeholder rust (`#B4532A`) and asked for `#FAFAFA` and `#2E2E2E`. They were applied as the house ground and ink, not just to the headline (Mal's choice):
+- **Primitives changed, not the semantic tokens:** `color.neutral.50` `#F1F1F1` → `#FAFAFA`, `color.neutral.900` `#343A42` → `#2E2E2E`. Light `bg`, light `ink`, light `code-bg` and dark `bg` all follow, because they alias these primitives.
+- **Lead headline** on Home is now bound to `color.ink`. It was the only hard-coded fill in the file, so nothing is hard-coded now.
+- **Contrast on the new light bg:** ink 13.0:1 (was 10.2), `ink-2` 5.4:1, `link` 7.1:1, `accent` 4.0:1. On the new dark bg: ink 11.7:1, `ink-2` 5.9:1, `accent` 3.3:1, which clears the 3:1 for marks it failed before.
+- **Side effects, not fixed:** the dark `code-bg` (`#2A2F35`) is now 1.01:1 against the dark `bg`. The new values are neutral grays, while the rest of the family is still cool. Both are in Open questions.
+- Penpot didn't refresh shapes already bound to the changed tokens, so the bindings were re-applied page by page. Afterwards all 475 bound fills and strokes match their tokens. Updated to match: the Foundations hex labels, `tokens/primitives.json`, `src/app/globals.css` and the `--bg` fallback in `docs/portrait.svg`.
+
+### Home frame (Penpot page `Home`, board `Home / Desktop`)
+Built from existing component instances on the 1440 desktop grid: Nav, Feature / Lead, Intro with portrait, Other Features, Latest writing, Latest work, Collections strip (latest bird and rec plus Other Collections Row), Footer. Bound to tokens except the lead headline colour. Decisions:
+- **Intro before feature** (changed the same day; first built feature-first). The intro and portrait open the page, right under the nav (120px top), and the lead feature follows 128px lower. Mal's call: it is a personal site, so a visitor should meet the person first. The 180px feature headline still gives the page its type-scale contrast; it just comes second. DESIGN.md Page types → Home is updated to match.
+- **Placeholder content.** Titles, dates, the bird and the rec are invented. The open question about picking real features stays open in DESIGN.md.
+- **Placeholder feature accent `#B4532A`** on the lead headline, the only hard-coded fill. Replace it with a colour pulled from the real feature. Contrast on `--bg` is not checked yet.
+- **Headline wraps** to two lines inside the 1248 content width instead of breaking the grid.
+- **Intro layout.** Text in columns 3-8 (612px, `standfirst` style, so under the 680 reading measure), portrait in columns 9-12 (400px). No "building things" tagline.
+- **Portrait** (fourth version). Source of truth is `docs/portrait.svg`, an inline-ready SVG; the Penpot `Portrait` board is a copy of it. Monoline 1.5px strokes with round caps and joins (brows 2px). Hair, bun, irises and mustache are solid `ink`; thin `bg` lines cut three hair strands, two bun wraps, the hair tie and a catchlight in each eye. The hair was filled because the outlined version read as a cap. A spiral on the bun was dropped because with the tie it looked like a face. The hairline recedes slightly at the temples. In dark mode the solid shapes invert to light, like every other line on the page; tokens can't keep the hair dark without a hard-coded colour. The mustache is Mal's pick (2026-10-01): the "Mustache" icon from SVG Repo, scaled non-uniformly (0.32 × 0.24) so it sits under the nose and lets the centre of the smile show, then rewritten as absolute coordinates. It replaced my hand-drawn curls, which read as thin and fussy. Smiling: warm eyes with lower lids and crow's feet, the centre of a smile below the mustache. Tried and dropped: smile creases (hidden by the mustache), cheek lines (read as tired). For the web it draws in `currentColor` and the mustache sits on a 6px `var(--bg)` knockout stroke, so the face lines it crosses stop cleanly at its edge, and it follows dark mode. The mustache is one self-contained `<g id="mustache">` with a transparent hit area and a CSS transform origin under the nose. The face and smile are drawn complete underneath it, so moving it never exposes a gap; checked by rotating it 10°. In Penpot the strokes and mustache fill are bound to `color.ink` and the knockout to `color.bg`. Penpot flattens nested SVG groups, so the board holds four named groups (Torso, Hair, Face, Mustache) instead of the finer groups in the source file. Licence of the SVG Repo icon not yet checked.
+- **Other Features.** A 7-column and a 4-column feature, the second 128px lower for asymmetry. Built as local boards (placeholder, eyebrow, `h2` title), not components.
+- **Focus rings** are hidden on every instance on the page; the main components show them as a state.
+
+Review: the Penpot PNG export times out intermittently. SVG export of a single shape works when PNG does not, and the board PNG did export after the reorder. Some text was rendering mirrored (flip flags on nested instances); fixed by toggling `flipX` on the affected nodes only, because the plugin's `flipX` setter toggles instead of setting.
+
+Known issue: the footer heart renders as a red emoji in Penpot, not the U+2665 text glyph in `--ink-2` that DESIGN.md asks for. It comes from the Footer component.
+
+Still to do: cursor exploration (Cursors specimen), mobile frame.
+
+---
+
 ## 2026-09-30
 
 ### Components in code
