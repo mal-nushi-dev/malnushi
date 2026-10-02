@@ -8,14 +8,14 @@
 
 :root {
   /* color.* (modes/light) */
-  --bg: #f1f1f1;
+  --bg: #fafafa;
   --surface: #edeeeb;
-  --ink: #343a42;
+  --ink: #2e2e2e;
   --ink-2: #626964;
   --link: #485861;
-  --accent: #758072;
+  --accent: #626e5e;
   --line: #d5d7d2;
-  --code-bg: #343a42;
+  --code-bg: #2e2e2e;
   --code-fg: #edeeeb;
 
   /* space.* */
@@ -47,7 +47,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* color.* (modes/dark). surface and code-bg are provisional. */
-    --bg: #343a42;
+    --bg: #2e2e2e;
     --surface: #3d444c;
     --ink: #edeeeb;
     --ink-2: #a4ada6;

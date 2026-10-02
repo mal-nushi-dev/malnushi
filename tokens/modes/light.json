@@ -22,7 +22,7 @@
     },
     "accent": {
       "$type": "color",
-      "$value": "{color.sage.500}"
+      "$value": "{color.sage.600}"
     },
     "line": {
       "$type": "color",
