@@ -200,7 +200,7 @@ export function Nav({ active }: { active?: Section }) {
           >
             <div
               className={cx(
-                "absolute top-[72px] left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-2 transition-[opacity,visibility] duration-[350ms] motion-reduce:transition-none",
+                "absolute top-18 left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-2 transition-[opacity,visibility] duration-350 motion-reduce:transition-none",
                 search ? "opacity-100 delay-150" : "invisible opacity-0",
               )}
             >
@@ -210,14 +210,14 @@ export function Nav({ active }: { active?: Section }) {
                 placeholder="Search the site"
                 aria-label="Search the site"
                 tabIndex={search ? 0 : -1}
-                className="type-index-title h-[72px] w-full min-w-0 bg-transparent px-(--space-lg) text-center text-[40px] leading-none text-ink outline-none placeholder:text-ink-2 [&::-webkit-search-cancel-button]:hidden"
+                className="type-index-title h-18 w-full min-w-0 bg-transparent px-(--space-lg) text-center text-[40px] leading-none text-ink outline-none placeholder:text-ink-2 [&::-webkit-search-cancel-button]:hidden"
               />
             </div>
             <nav
               id="site-menu"
               aria-label="Sections"
               className={cx(
-                "absolute top-[72px] left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-(--space-lg) pb-(--space-lg) pt-(--space-sm) transition-[opacity,visibility] duration-[350ms] motion-reduce:transition-none",
+                "absolute top-18 left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-(--space-lg) pb-(--space-lg) pt-(--space-sm) transition-[opacity,visibility] duration-350 motion-reduce:transition-none",
                 menu ? "opacity-100 delay-150" : "invisible opacity-0",
               )}
             >
@@ -248,7 +248,7 @@ export function Nav({ active }: { active?: Section }) {
               </ul>
             </nav>
           </div>
-          <div className="pointer-events-auto relative flex h-[72px] w-[min(600px,calc(100vw-32px))] items-center px-2">
+          <div className="pointer-events-auto relative flex h-18 w-[min(600px,calc(100vw-32px))] items-center px-2">
             <button
               type="button"
               className={button}
@@ -279,7 +279,7 @@ export function Nav({ active }: { active?: Section }) {
           </div>
         </div>
       </header>
-      <div aria-hidden className="h-[104px]" />
+      <div aria-hidden className="h-26" />
     </>
   );
 }

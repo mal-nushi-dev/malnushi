@@ -17,7 +17,7 @@ function Row({
 }) {
   return (
     <div className="flex gap-(--col-gap) border-b border-line py-(--space-sm) last:border-b-0">
-      <dt className="w-24 shrink-0 pt-[2px] type-label text-ink-2">{term}</dt>
+      <dt className="w-24 shrink-0 pt-0.5 type-label text-ink-2">{term}</dt>
       <dd className="text-ink">{children}</dd>
     </div>
   );
@@ -27,7 +27,7 @@ function Row({
 export function SpecBlock({ spec }: { spec: Spec }) {
   const list = spec.stack ?? spec.materials;
   return (
-    <dl className="max-w-[400px] border-t border-ink">
+    <dl className="max-w-100 border-t border-ink">
       <Row term="Year">
         <span className="type-meta">{spec.year}</span>
       </Row>

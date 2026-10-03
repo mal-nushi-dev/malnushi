@@ -24,7 +24,7 @@ export function EssayHeader({
 }) {
   return (
     <header className="flex flex-col gap-(--space-xl)">
-      <div className="flex max-w-[718px] flex-col gap-(--space-md)">
+      <div className="flex max-w-179.5 flex-col gap-(--space-md)">
         <Eyebrow section="Essay" category={category} />
         <h1 className="type-h1 text-ink">{title}</h1>
         <p className="type-standfirst text-ink-2">{standfirst}</p>

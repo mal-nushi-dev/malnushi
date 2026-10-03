@@ -7,7 +7,7 @@ export function Aside({
   children: React.ReactNode;
 }) {
   return (
-    <aside className="flex max-w-[294px] gap-(--space-sm)">
+    <aside className="flex max-w-73.5 gap-(--space-sm)">
       {marker && <span className="type-meta text-ink">{marker}</span>}
       <p className="type-small text-ink-2">{children}</p>
     </aside>

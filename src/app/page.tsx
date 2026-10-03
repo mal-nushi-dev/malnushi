@@ -47,7 +47,7 @@ export default function Home() {
               <h1 className="type-h1">
                 I’m Mal. I write, make things and look at birds.
               </h1>
-              <p className="type-standfirst max-w-[600px] text-ink-2">
+              <p className="type-standfirst max-w-150 text-ink-2">
                 This is where my essays, projects, photographs and lists live.
                 Some are finished; most are still being worked on.
               </p>
@@ -71,7 +71,7 @@ export default function Home() {
             className="flex flex-col gap-(--space-xl) border-t-2 border-accent pt-(--space-sm)"
           >
             <Eyebrow section="Writing" category="Birding" />
-            <h2 className="type-feature-display max-w-[1100px]">
+            <h2 className="type-feature-display max-w-275">
               The list that keeps me looking
             </h2>
             <div className={grid}>
@@ -86,7 +86,7 @@ export default function Home() {
             <div
               role="img"
               aria-label="Feature hero placeholder, 1248 by 480"
-              className="flex h-[480px] w-full items-center justify-center rounded-(--radius-img) bg-accent"
+              className="flex h-120 w-full items-center justify-center rounded-(--radius-img) bg-accent"
             >
               <span className="type-meta text-bg">FEATURE HERO — 1248 × 480</span>
             </div>
@@ -98,24 +98,24 @@ export default function Home() {
           <SectionLabel>Features</SectionLabel>
           <div className={`${grid} items-start gap-y-(--space-block) pt-(--space-2xl)`}>
             <Link href="/work/dns-filter" className="col-span-7 flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-[3/2]" />
+              <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-3/2" />
               <Eyebrow section="Work" category="Code" />
               <h3 className="type-quote">A DNS filter for the whole house</h3>
-              <p className="type-small max-w-[520px] text-ink-2">
+              <p className="type-small max-w-130 text-ink-2">
                 A small macOS app that keeps the router honest, and what I
                 learned from the dead ends.
               </p>
             </Link>
             <Link href="/photography/early-light-on-the-marsh" className="col-span-4 col-start-9 mt-(--space-block) flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 408 × 544" className="aspect-[3/4]" />
+              <FeatureImage label="FEATURE IMAGE — 408 × 544" className="aspect-3/4" />
               <Eyebrow section="Photography" category="Series 04" />
               <h3 className="type-index-title">Early light on the marsh</h3>
             </Link>
             <Link href="/work/skyline" className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-[2/1]" />
+              <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-2/1" />
               <Eyebrow section="Work" category="Lego" />
               <h3 className="type-quote">The 1,000-piece skyline</h3>
-              <p className="type-small max-w-[520px] text-ink-2">
+              <p className="type-small max-w-130 text-ink-2">
                 A build I designed, redesigned and finally finished.
               </p>
             </Link>

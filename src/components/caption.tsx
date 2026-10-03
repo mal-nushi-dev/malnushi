@@ -27,7 +27,7 @@ export function Caption({
   return (
     <figcaption className="flex items-start">
       <span className="w-12 shrink-0 type-meta text-ink">{index}</span>
-      <span className="max-w-[600px] type-small text-ink-2">{children}</span>
+      <span className="max-w-150 type-small text-ink-2">{children}</span>
     </figcaption>
   );
 }

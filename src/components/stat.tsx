@@ -11,6 +11,6 @@ export function Stat({ value, label }: { value: string | number; label: string }
 /** Two or three stats stacked in columns 9–12 of a collection page. */
 export function Stats({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex max-w-[400px] flex-col gap-(--space-lg)">{children}</div>
+    <div className="flex max-w-100 flex-col gap-(--space-lg)">{children}</div>
   );
 }
