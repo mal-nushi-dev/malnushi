@@ -43,7 +43,7 @@ const CloseIcon = () => (
 );
 
 const button =
-  "flex size-14 flex-none items-center justify-center rounded-(--radius-img) text-ink-2 transition-colors duration-[600ms] hover:text-ink motion-reduce:transition-none";
+  "flex size-14 flex-none cursor-pointer items-center justify-center rounded-(--radius-img) text-ink-2 transition-colors duration-[600ms] hover:text-ink motion-reduce:transition-none";
 
 /**
  * Floating toolbar. A sticky layer with no height of its own, a spacer that

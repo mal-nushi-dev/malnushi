@@ -17,6 +17,11 @@ DESIGN.md now follows Penpot (see the 2026-09-29 entry). What remains are limits
 
 ---
 
+## 2026-10-03
+
+### Nav buttons show a pointer cursor
+The search and menu buttons kept the default arrow on hover, because Tailwind's preflight resets `<button>` to `cursor: default`. Added `cursor-pointer` to the shared `button` class in `src/components/nav.tsx`, so both controls (and their close states) show the pointing hand. Links already did.
+
 ## 2026-10-02
 
 ### Expanded nav is sage
