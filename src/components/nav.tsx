@@ -104,7 +104,12 @@ export function Nav({ active }: { active?: Section }) {
 
   useEffect(() => {
     if (!search) return;
-    const t = setTimeout(() => input.current?.focus(), 120);
+    // preventScroll: focusing while the plate is still short would otherwise
+    // scroll its clipped overflow and leave the field stuck over the row.
+    const t = setTimeout(() => {
+      input.current?.focus({ preventScroll: true });
+      if (plate.current) plate.current.scrollTop = 0;
+    }, 120);
     return () => clearTimeout(t);
   }, [search]);
 
