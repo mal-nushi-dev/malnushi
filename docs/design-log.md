@@ -17,6 +17,37 @@ DESIGN.md now follows Penpot (see the 2026-09-29 entry). What remains are limits
 
 ---
 
+## 2026-10-02
+
+### Expanded nav is sage
+Mal asked to try other colors for the nav while expanded (resting nav unchanged). Four palette-only candidates were built and compared in the browser: `surface` (`#EDEEEB`), `ink` (inverted `#2E2E2E`), `slate` (`#485861`) and `sage` (`#626E5E`). All passed AA. Mal chose **sage**, for both the menu and search.
+- **Implementation:** `[data-nav-open]` on the nav wrapper re-points the color tokens in `src/app/globals.css`; the plate, row and contents follow, and the row text fades with the plate (600ms). The `?navtone=` experiment and the other three tones were removed.
+- **Contrast on sage:** ink `#FAFAFA` 5.1:1, ink-2 and link `#EDEEEB` 4.6:1. Hairlines are a `color-mix` of `#EDEEEB` into sage; the active underline is `#EDEEEB`, since the sage accent would vanish.
+- **Same in dark mode** (my call: sage is mid-tone, so it lifts off `#2E2E2E` and the light text still works; unchecked visually).
+- **Spec change:** a tinted surface is now allowed in this one place. Written into DESIGN.md (Nav).
+- **Not done:** the color mix is not a token in `tokens/` or Penpot; Penpot's nav is still the old one.
+
+### Nav controls pinned, panel grows outward, fill and shadow on scroll
+Mal found the nav hard to read once content scrolled behind it, and noticed the search and menu buttons shifting when the nav expanded.
+- **Why they moved:** one centred island both held the buttons and animated its width (600 → 840px), so the buttons at its edges slid outward, and search also re-laid out the wordmark.
+- **Decision:** split the surface from the controls. The row (search, wordmark, menu) is fixed at 600 × 72px and never resized. A plate behind it grows outward from the same origin, wider and downward, and the search field and menu list appear in that expansion below the row. Mal's words: expand "width wise and below", in place, and don't touch the three row elements. Only the icon swaps to close, in place (my choice, so the toggle state stays visible; say if the icons should never change).
+- **Fill on scroll:** clear at the top of the page, as before. After 8px of scroll the plate fades to a `--bg` fill with a very slight shadow. Search and menu also fill it, even at the top (my call; the menu was already filled, which settles the earlier unconfirmed note).
+- **First shadow in the system:** DESIGN.md said no shadows. Mal asked for one on the scrolled nav, so `shadow.nav` is the single exception, written into the rules. Light `0 1px 2px / 0.04, 0 4px 16px / 0.06`; dark values (higher alpha, shadows read weakly on `#2e2e2e`) are provisional and unchecked.
+- **Not done:** `--shadow-nav` lives in `src/app/globals.css` only; it is not in `tokens/` or Penpot. Penpot's nav is still the old one. Search panel height (144px) and the 8px threshold are my defaults.
+
+### Nav becomes a floating toolbar
+Mal wanted a simpler, more expansive nav that could grow into a hub, so the five-item bar was replaced by a toolbar (search, wordmark, menu). Decided in artifact comments on the home page canvas, then built in `src/components/nav.tsx`:
+- **Structure:** transparent sticky layer, a 104px spacer, and a fill-less island; width, height and flex-grow transitions on `cubic-bezier(0.16, 1, 0.3, 1)`. Details are in DESIGN.md (Nav).
+- **No outline, no pill, no fill:** Mal asked for a rectangular island (4px corners) with no stroke and no background. First tries had a `--bg` fill with a hairline, then a pill, then a `--surface` fill; all were removed on request. Size was raised about 25% (600 × 72px).
+- **Exception:** the open menu panel has a `--bg` fill, because transparent it was unreadable over the page text. Mal hasn't confirmed this; see Open questions.
+- **Departures from earlier rules:** this adds motion (the README said "no motion spec yet") and line icons (the system had none; they are inline SVG, 1.5px stroke). The "nothing else is rounded" rule still holds, since the 4px radius is the image radius.
+- **Changes the Penpot file:** not done. The `Nav / Desktop` and `Nav Item` components in Penpot, the design system's `Nav` and `docs/component-checklist.md` still show the old bar.
+
+### Home page built
+`src/app/page.tsx` follows DESIGN.md's Home: intro with the portrait (`src/components/portrait.tsx`, from `docs/portrait.svg`), lead feature with its own accent, three more features at different sizes, latest writing and work index lists, and a collections strip. All copy, titles and the accent are placeholders.
+
+---
+
 ## 2026-10-01
 
 ### Light accent darkened to `#626E5E`

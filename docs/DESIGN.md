@@ -14,11 +14,11 @@ Three things define the look:
 
 - **Scale contrast.** Very large serif headlines against small, precise sans labels and mono metadata. The gap between the biggest and smallest type on a page is the signature.
 - **Type as image.** Headlines, pull quotes and big numbers are compositional elements, not just labels for content.
-- **Restraint everywhere else.** A cool neutral ground, hairline rules, no shadows, no gradients, no ornament. Color is spent deliberately and rarely.
+- **Restraint everywhere else.** A cool neutral ground, hairline rules, no gradients, no ornament, and no shadows except the nav's once the page scrolls. Color is spent deliberately and rarely.
 
 References: Stripe Press (house system plus per-book identity, serif voice), WePresent and microsoft.design (per-story art direction), COLLINS (type at display scale, project indexes), The Paris Review (literary serif), Linear (precise sans UI), Kinfolk (whitespace).
 
-Avoid: 1970s chunky and rounded (Vacation.inc, Ghia), brutalism and neo-brutalism, dense engineering tables (McMaster-Carr), pure black on pure white, Pinterest-style card walls, gradient washes, drop shadows, emoji.
+Avoid: 1970s chunky and rounded (Vacation.inc, Ghia), brutalism and neo-brutalism, dense engineering tables (McMaster-Carr), pure black on pure white, Pinterest-style card walls, gradient washes, drop shadows (the scrolled nav is the one exception), emoji.
 
 ---
 
@@ -28,7 +28,7 @@ Avoid: 1970s chunky and rounded (Vacation.inc, Ghia), brutalism and neo-brutalis
 
 `Writing` · `Work` · `Photography` · `Collections` · `About`
 
-The wordmark ("Mal Nushi", Newsreader 24px) sits on the left and links home. Features have no nav item of their own. They surface on the homepage and at the top of their section index.
+The wordmark ("Mal Nushi") links home and sits in the centre of the toolbar. Features have no nav item of their own. They surface on the homepage and at the top of their section index.
 
 ### Page types
 
@@ -196,17 +196,32 @@ Four component values sit off the scale on purpose and are tokenized as written:
 
 - **Dividers are 1px hairlines** in `--line`. A 1px `--ink` rule marks the start of something: a table header, a spec block, a section label, the meta row under a standfirst.
 - **Corner radius** is 4px on images and 8px on code blocks. Filter pills are fully rounded. Nothing else is rounded.
-- **No gradients, drop shadows or emoji.**
+- **No gradients, drop shadows or emoji.** One exception, requested by Mal on 2026-10-02: the nav gets a very slight shadow (`shadow.nav`) once the page scrolls.
 
 ---
 
 ## Components
 
-### Nav
+### Nav (floating toolbar)
 
-`ui` style, items 40px apart, in `--ink-2`. The active item is `--ink` with a **2px accent underline** offset 6px. A 1px `--line` hairline sits under the nav bar.
+Decided with Mal 2026-10-02. The nav is a slim floating toolbar, not a bar with five items. It has three parts:
 
-Desktop bar (1440px): 96px gutter left and right, 32px above and below, the wordmark on the left and the five items right-aligned. Bar height is 104px including the hairline. The wordmark and the item labels share one vertical centre line. Item states: **Default** (`--ink-2`), **Hover** (`--ink`), **Active** (`--ink` plus the accent underline) and **Focus** (`--ink` with a 2px `--ink` ring, 4px radius, offset 8px horizontally and 4px vertically). The ring shows for keyboard focus only (`:focus-visible`), never on mouse clicks. Mobile is not designed yet.
+1. **Sticky layer.** `position: sticky; top: 0`, no height of its own and a fully transparent background, so only the toolbar content shows.
+2. **Spacer.** A 104px block in the page flow so content below doesn't jump.
+3. **Row and plate.** Two siblings inside the layer, centred:
+   - **Row:** 600 × 72px, never resized: a search button (left), the wordmark "Mal Nushi" in `index-title` (centre) and a menu button (right). Buttons are 56px with 26px line icons, `--ink-2`, `--ink` on hover. Nothing in the row moves or is laid out again in any state; only the button icon swaps to a close icon, in place.
+   - **Plate:** a 4px-cornered (`radius.image`) surface behind the row, 600 × 72px at rest. It carries the fill and shadow and grows outward from the row, wider and downward, to reveal the search field or the menu list.
+
+**Fill and shadow.** At the top of the page (scroll under 8px) the plate has no fill, outline or shadow, so the nav reads as part of the page. Once the page scrolls it fades to a `--bg` fill with `shadow.nav`, so it lifts off the content and stays legible. Search and menu also fill the plate, even at the top, and in those states the plate is **sage** (see below). `shadow.nav` is the only shadow in the system: light `0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06)`; dark (provisional, unchecked) `0 1px 2px rgb(0 0 0 / 0.25), 0 4px 16px rgb(0 0 0 / 0.3)`.
+
+**Expanded color (decided with Mal 2026-10-02).** While search or the menu is open, the plate is `color.sage.600` (`#626E5E`) in both light and dark mode, and everything on it (row, input, list) switches to light tokens: ink `#FAFAFA` (5.1:1), secondary text and links `#EDEEEB` (4.6:1), hairlines a 35% mix of `#EDEEEB` into sage, and the active underline `#EDEEEB` (sage on sage would vanish). Row text fades with the plate over 600ms. This is the one place a tinted surface is allowed; it is implemented as token overrides under `[data-nav-open]` in `globals.css`.
+
+The plate expands in place and floats over page content; it pushes nothing. Width and height transition over 600ms and the fill and shadow with them, all on `cubic-bezier(0.16, 1, 0.3, 1)` (snappy start, smooth end); the panel content fades alongside.
+- **Search:** the plate widens to 840px and grows to 144px tall. A search input appears in the expansion below the row, and takes focus. The search button becomes a close button.
+- **Menu:** the plate grows to 840 × 416px. The five sections appear below the row as an index list: mono `001`–`005` and `index-title` labels, hairlines between rows. The active section has a 2px accent underline. The menu button becomes a close button.
+- **Escape** or the close button returns to rest. `prefers-reduced-motion` turns the transitions off.
+
+The panel content has a fixed 840px width (narrower viewports clamp it to the viewport minus 32px), so it never reflows while the plate animates. The section list lives only in the menu, so it can grow into a hub. The search input is not wired to anything yet. Mobile is not designed yet.
 
 ### Eyebrow
 
@@ -356,7 +371,7 @@ What a feature **must keep**:
 - House ink, line and ground tokens.
 - Mono metadata and captions.
 - The 680px reading measure for any running text.
-- The rule of no gradients, shadows or emoji. Break it only if a specific feature truly earns it.
+- The rule of no gradients, shadows or emoji (the scrolled nav's shadow is the one exception). Break it only if a specific feature truly earns it.
 
 ---
 
@@ -457,6 +472,7 @@ Other semantic tokens have no CSS variable yet:
 | Spacing | `space.block` (128), `space.image-gap.min` / `.max` (160 / 200), `space.header-top` (120), `space.nav-item` (40), `space.meta-item` (32), `space.row.index` (22), `space.row.table` (18), `space.stack.sm` `.md` `.lg` `.xl` `.2xl` (16 / 24 / 32 / 48 / 64) |
 | Sizing | `size.content-width` (1248), `size.touch-target` (44), `size.pill-height` (44) |
 | Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
+| Shadow | `shadow.nav`, CSS `--shadow-nav` (values in Components → Nav). Code only: not in Penpot or `tokens/` yet. |
 
 The files are `tokens/primitives.json`, `tokens/semantic.json`, `tokens/modes/light.json` and `tokens/modes/dark.json`. `src/app/globals.css` mirrors them: change the JSON first, then the CSS.
 
@@ -480,7 +496,9 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Confirm the provisional dark-mode accent, surface and code colors after contrast checks. Since `neutral.900` became `#2E2E2E`, the dark `code-bg` (`#2A2F35`) is 1.01:1 against the dark `bg`, so code blocks no longer stand out in dark mode.
 - Ink and ground are now neutral grays (`#2E2E2E`, `#FAFAFA`), while `surface`, `line`, `ink-2` and `link` are still the cool, slightly green family. Decide whether to make those neutral too.
 - Pick the first three to five pieces to promote to features at launch.
-- Replace the homepage placeholder content once the first features exist (frame built 2026-10-01). The lead headline uses `ink` until a feature has its own accent.
+- Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
+- Wire up the toolbar search (no route or index yet).
+- The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.
 - Specify the travels collection's map view, if it gets one.
 - Check the licence of the SVG Repo mustache used in `docs/portrait.svg` (credit it, or redraw the shape, before launch).
 - **Mobile (draft proposal, not decided).** Nothing below is spec until approved.

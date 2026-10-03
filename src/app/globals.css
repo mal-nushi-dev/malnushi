@@ -42,6 +42,9 @@
   /* radius.* */
   --radius-img: 4px;
   --radius-code: 8px;
+
+  /* shadow.nav: the only shadow in the system (nav, once scrolled) */
+  --shadow-nav: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,7 +59,25 @@
     --line: #485861;
     --code-bg: #2a2f35;
     --code-fg: #edeeeb;
+
+    /* shadow.nav is provisional: stronger, since shadows are weak on #2e2e2e */
+    --shadow-nav: 0 1px 2px rgb(0 0 0 / 0.25), 0 4px 16px rgb(0 0 0 / 0.3);
   }
+}
+
+/*
+ * Expanded nav (search or menu): the plate turns sage. Re-points the color
+ * tokens under it so the plate, the row and the contents all follow.
+ * Hairlines and the active underline are light, since sage on sage is
+ * invisible. Same in light and dark mode.
+ */
+[data-nav-open] {
+  --bg: #626e5e;
+  --ink: #fafafa;
+  --ink-2: #edeeeb;
+  --link: #edeeeb;
+  --line: color-mix(in srgb, #edeeeb 35%, #626e5e);
+  --accent: #edeeeb;
 }
 
 @theme inline {
