@@ -16,9 +16,6 @@
         "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
       }
     },
-    "penpot": {
-      "url": "https://design.penpot.app/mcp/stream?userToken=<YOUR_PENPOT_USER_TOKEN>"
-    },
     "vercel": {
       "serverUrl": "https://mcp.vercel.com",
       "headers": {
