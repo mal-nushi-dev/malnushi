@@ -205,7 +205,7 @@ export function Nav({ active }: { active?: Section }) {
                 placeholder="Search the site"
                 aria-label="Search the site"
                 tabIndex={search ? 0 : -1}
-                className="type-body h-14 w-full min-w-0 bg-transparent px-(--space-sm) text-ink outline-offset-0 placeholder:text-ink-2"
+                className="type-index-title h-[72px] w-full min-w-0 bg-transparent px-(--space-lg) text-center text-[40px] leading-none text-ink outline-none placeholder:text-ink-2 [&::-webkit-search-cancel-button]:hidden"
               />
             </div>
             <nav

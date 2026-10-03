@@ -198,3 +198,8 @@ Colour tokens live in `modes/light` and `modes/dark` with identical names. Every
 
 ### Spelling
 Use "color" (US) in names and labels to match the tokens and DESIGN.md.
+
+### Search field centered and enlarged
+Applied on 2026-10-03:
+- The search input in the expanded nav is centered, 40px Newsreader, one line (72px tall) with `--space-lg` side padding. Long queries do not wrap; the text scrolls sideways inside the field and the caret stays in view, so nothing leaves the plate.
+- The browser's clear button is hidden so it cannot push the centered text off center.
