@@ -307,6 +307,20 @@
         "unit": "px"
       }
     },
+    "14": {
+      "$type": "dimension",
+      "$value": {
+        "value": 14,
+        "unit": "px"
+      }
+    },
+    "20": {
+      "$type": "dimension",
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
     "full": {
       "$type": "dimension",
       "$value": {

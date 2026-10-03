@@ -19,6 +19,20 @@ DESIGN.md now follows Penpot (see the 2026-09-29 entry). What remains are limits
 
 ## 2026-10-03
 
+### Nav opens in two phases, on springs
+Mal wanted the expansion to feel less generic than one uniform ease: choreographed phases, spring physics with a slight overshoot, and a softer shape.
+- **Phases:** the plate widens about its center, then drops open once the width has covered 80% of its travel. Closing runs in reverse.
+- **Feel:** each phase grows a little past its target and settles (width about 7%, height about 5%). "Wobble" here means the plate's own size settling; it never sways sideways and its top edge stays put. Closing is nearly critically damped, so the bar lands still.
+- **Springs** (stiffness, damping, mass): width `260, 21, 1`; height `220, 21, 1`; close `320, 34, 1`. Starting values, not yet tuned by eye with Mal.
+- **Shape:** resting plate radius goes from 4px to 14px (new `--radius-nav`), easing to 20px when open; the bar thins by up to 4px while widening. Mal chose 12–16px over a full pill or keeping 4px. This is a second exception to "nothing else is rounded".
+- **No goo filter.** Mal first proposed an SVG blur-and-threshold filter; we dropped it because on a single plate it only rounds corners, and it would blur the text and harden the shadow. Mal chose the spring-driven shape alone.
+- **Narrow viewports** skip the widen phase, since the plate is already full width (Mal confirmed this on a narrow screen).
+- **Reduced motion:** the plate jumps to size.
+- **Timing change:** the sage fade is 300ms, down from 600ms, to match the widen phase.
+- **Tokens:** `radius.nav` (14px) and `radius.nav-open` (20px) are in `tokens/` and `globals.css`.
+- **Close keeps its color (same day, after Mal's review):** the first build dropped the sage fill the moment close was clicked, so at the top of the page the plate faded away before it finished collapsing and the close read as a fade. The fill and shadow are now held until the height has collapsed and fade only as the width narrows, so the close is the open in reverse.
+- Engineering (library, why width and height are animated directly) is in `docs/adr/0001-spring-animation-with-motion.md`.
+
 ### Nav buttons show a pointer cursor
 The search and menu buttons kept the default arrow on hover, because Tailwind's preflight resets `<button>` to `cursor: default`. Added `cursor-pointer` to the shared `button` class in `src/components/nav.tsx`, so both controls (and their close states) show the pointing hand. Links already did.
 

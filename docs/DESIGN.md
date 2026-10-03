@@ -195,7 +195,7 @@ Four component values sit off the scale on purpose and are tokenized as written:
 ### Lines, corners, surfaces
 
 - **Dividers are 1px hairlines** in `--line`. A 1px `--ink` rule marks the start of something: a table header, a spec block, a section label, the meta row under a standfirst.
-- **Corner radius** is 4px on images and 8px on code blocks. Filter pills are fully rounded. Nothing else is rounded.
+- **Corner radius** is 4px on images and 8px on code blocks. Filter pills are fully rounded. The nav plate is 14px (`radius.nav`), easing to 20px (`radius.nav-open`) when expanded. Nothing else is rounded.
 - **No gradients, drop shadows or emoji.** One exception, requested by Mal on 2026-10-02: the nav gets a very slight shadow (`shadow.nav`) once the page scrolls.
 
 ---
@@ -210,16 +210,32 @@ Decided with Mal 2026-10-02. The nav is a slim floating toolbar, not a bar with 
 2. **Spacer.** A 104px block in the page flow so content below doesn't jump.
 3. **Row and plate.** Two siblings inside the layer, centred:
    - **Row:** 600 × 72px, never resized: a search button (left), the wordmark "Mal Nushi" in `index-title` (centre) and a menu button (right). Buttons are 56px with 26px line icons, `--ink-2`, `--ink` on hover. Nothing in the row moves or is laid out again in any state; only the button icon swaps to a close icon, in place.
-   - **Plate:** a 4px-cornered (`radius.image`) surface behind the row, 600 × 72px at rest. It carries the fill and shadow and grows outward from the row, wider and downward, to reveal the search field or the menu list.
+   - **Plate:** a 14px-cornered (`radius.nav`) surface behind the row, 600 × 72px at rest. It carries the fill and shadow and grows outward from the row, wider and downward, to reveal the search field or the menu list.
 
 **Fill and shadow.** At the top of the page (scroll under 8px) the plate has no fill, outline or shadow, so the nav reads as part of the page. Once the page scrolls it fades to a `--bg` fill with `shadow.nav`, so it lifts off the content and stays legible. Search and menu also fill the plate, even at the top, and in those states the plate is **sage** (see below). `shadow.nav` is the only shadow in the system: light `0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06)`; dark (provisional, unchecked) `0 1px 2px rgb(0 0 0 / 0.25), 0 4px 16px rgb(0 0 0 / 0.3)`.
 
-**Expanded color (decided with Mal 2026-10-02).** While search or the menu is open, the plate is `color.sage.600` (`#626E5E`) in both light and dark mode, and everything on it (row, input, list) switches to light tokens: ink `#FAFAFA` (5.1:1), secondary text and links `#EDEEEB` (4.6:1), hairlines a 35% mix of `#EDEEEB` into sage, and the active underline `#EDEEEB` (sage on sage would vanish). Row text fades with the plate over 600ms. This is the one place a tinted surface is allowed; it is implemented as token overrides under `[data-nav-open]` in `globals.css`.
+**Expanded color (decided with Mal 2026-10-02).** While search or the menu is open, the plate is `color.sage.600` (`#626E5E`) in both light and dark mode, and everything on it (row, input, list) switches to light tokens: ink `#FAFAFA` (5.1:1), secondary text and links `#EDEEEB` (4.6:1), hairlines a 35% mix of `#EDEEEB` into sage, and the active underline `#EDEEEB` (sage on sage would vanish). Row text fades with the plate over 300ms. This is the one place a tinted surface is allowed; it is implemented as token overrides under `[data-nav-open]` in `globals.css`.
 
-The plate expands in place and floats over page content; it pushes nothing. Width and height transition over 600ms and the fill and shadow with them, all on `cubic-bezier(0.16, 1, 0.3, 1)` (snappy start, smooth end); the panel content fades alongside.
+The plate expands in place and floats over page content; it pushes nothing.
+
+**Motion (decided with Mal 2026-10-03).** The plate opens in two phases, on springs, not easing curves:
+1. **Widen.** It grows from 600px to 840px about its center. Its corners ease from 14px to 20px, and the bar thins by up to 4px while the width is moving.
+2. **Drop.** Once the width has covered 80% of its travel, the plate grows downward to its open height. The top edge never moves.
+
+Each phase grows slightly past its target, pulls back and settles: about 7% on the width (roughly 8px a side) and 5% on the height. The plate never sways sideways; the only oscillation is in its own size. Springs: width `stiffness 260, damping 21, mass 1`; height `220, 21, 1`.
+
+- **Closing** runs in reverse (height first, then width at 80% of the height's travel) on a stiffer, nearly critically damped spring (`320, 34, 1`), so the bar lands without a wobble. The plate keeps its sage fill and shadow while the height collapses, and fades back only as the width narrows, mirroring the open.
+- **Search to menu** (and back) moves only the height.
+- **Interrupting** a transition retargets the running spring, which keeps its velocity.
+- **Narrow viewports** (632px and under), where the plate is already full width, skip the widen phase and the thinning, and drop open at once.
+- **Fill and shadow** fade over 300ms. Panel content fades in over 350ms after a 150ms delay, so it arrives with the drop and does not wobble.
+- **`prefers-reduced-motion`**: no springs and no fades; the plate jumps to its size.
+
+Engineering notes are in `docs/adr/0001-spring-animation-with-motion.md`.
+
 - **Search:** the plate widens to 840px and grows to 144px tall. A search input appears in the expansion below the row, and takes focus. The search button becomes a close button.
 - **Menu:** the plate grows to 840 × 416px. The five sections appear below the row as an index list: mono `001`–`005` and `index-title` labels, hairlines between rows. The active section has a 2px accent underline. The menu button becomes a close button.
-- **Escape** or the close button returns to rest. `prefers-reduced-motion` turns the transitions off.
+- **Escape** or the close button returns to rest.
 
 The panel content has a fixed 840px width (narrower viewports clamp it to the viewport minus 32px), so it never reflows while the plate animates. The section list lives only in the menu, so it can grow into a hub. The search input is not wired to anything yet. Mobile is not designed yet.
 
@@ -428,7 +444,7 @@ The tokens live in `src/app/globals.css`: color, spacing, size and radius as CSS
   --code-bg: #2E2E2E; --code-fg: #EDEEEB;
 
   --gutter: 96px; --col-gap: 24px; --measure: 680px;
-  --radius-img: 4px; --radius-code: 8px;
+  --radius-img: 4px; --radius-code: 8px; --radius-nav: 14px; --radius-nav-open: 20px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -464,6 +480,7 @@ The design tokens live in `tokens/` as W3C DTCG JSON in four sets: `primitives` 
 | `space.col-gap` | `--col-gap` |
 | `size.reading-measure` | `--measure` |
 | `radius.image` / `radius.code` / `radius.pill` | `--radius-img` / `--radius-code` / fully rounded |
+| `radius.nav` / `radius.nav-open` | `--radius-nav` / `--radius-nav-open` |
 
 Other semantic tokens have no CSS variable yet:
 

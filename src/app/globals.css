@@ -42,6 +42,8 @@
   /* radius.* */
   --radius-img: 4px;
   --radius-code: 8px;
+  --radius-nav: 14px;
+  --radius-nav-open: 20px;
 
   /* shadow.nav: the only shadow in the system (nav, once scrolled) */
   --shadow-nav: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06);

@@ -1,12 +1,34 @@
 "use client";
 
+import { animate, motionValue } from "motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { cx, sections, type Section } from "@/lib/site";
 
 type Mode = "idle" | "search" | "menu";
 
-const ease = "ease-[cubic-bezier(0.16,1,0.3,1)]";
+const REST = 72;
+const height: Record<Mode, number> = { idle: REST, search: 144, menu: 416 };
+
+/*
+ * Springs. Opening overshoots a little and settles (width about 7%, height
+ * about 5%); closing is close to critically damped so the bar lands still.
+ */
+const spring = {
+  width: { type: "spring", stiffness: 260, damping: 21, mass: 1 },
+  height: { type: "spring", stiffness: 220, damping: 21, mass: 1 },
+  close: { type: "spring", stiffness: 320, damping: 34, mass: 1 },
+} as const;
+
+/* The second phase starts once the first has covered this much of its travel. */
+const OVERLAP = 0.8;
+/* Most the bar thins while its width is moving, in px. */
+const SQUASH = 4;
+
+/* At or under this width the plate is already full width and cannot widen. */
+const reducedMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isNarrow = () => window.matchMedia("(max-width: 632px)").matches;
 
 function Icon({ children }: { children: React.ReactNode }) {
   return (
@@ -43,30 +65,104 @@ const CloseIcon = () => (
 );
 
 const button =
-  "flex size-14 flex-none cursor-pointer items-center justify-center rounded-(--radius-img) text-ink-2 transition-colors duration-[600ms] hover:text-ink motion-reduce:transition-none";
+  "flex size-14 flex-none cursor-pointer items-center justify-center rounded-(--radius-img) text-ink-2 transition-colors duration-300 hover:text-ink motion-reduce:transition-none";
 
 /**
  * Floating toolbar. A sticky layer with no height of its own, a spacer that
  * holds the toolbar's height in the page flow, and two siblings inside the
  * layer: the row (search, wordmark, menu), fixed at 600 × 72px and never
  * resized, and the plate behind it. The plate carries the fill and shadow and
- * grows outward from the row (wider and downward) to reveal the search field
- * or the menu list, so nothing in the row is ever laid out again. It is clear
- * at the top of the page and filled once scrolled, or while expanded.
+ * grows outward from the row to reveal the search field or the menu list, so
+ * nothing in the row is ever laid out again. It is clear at the top of the
+ * page and filled once scrolled, or while expanded.
+ *
+ * The plate opens in two phases on springs: it widens about its center, then
+ * drops open just before the width settles. Closing runs the other way, and
+ * the open color is held until the plate starts to narrow, as it arrived. Two
+ * motion values drive it, written to the plate as CSS variables (`--p`, width
+ * progress 0 to 1, and `--h`, height in px), so no frame re-renders React.
+ * See docs/adr/0001-spring-animation-with-motion.md.
  */
 export function Nav({ active }: { active?: Section }) {
   const [mode, setMode] = useState<Mode>("idle");
   const [scrolled, setScrolled] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const plate = useRef<HTMLDivElement>(null);
+  const [p] = useState(() => motionValue(0));
+  const [h] = useState(() => motionValue(REST));
   const search = mode === "search";
   const menu = mode === "menu";
-  const filled = scrolled || search || menu;
+  // Holds the open color through a close, until the plate starts to narrow.
+  const [held, setHeld] = useState(false);
+  const tinted = search || menu || held;
+  const filled = scrolled || tinted;
+
+  const go = (next: Mode) => {
+    setMode(next);
+    setHeld(next === "idle" && !reducedMotion() && h.get() > REST + 1);
+  };
 
   useEffect(() => {
     if (!search) return;
     const t = setTimeout(() => input.current?.focus(), 120);
     return () => clearTimeout(t);
   }, [search]);
+
+  useEffect(() => {
+    const el = plate.current;
+    if (!el) return;
+    const write = () => {
+      const squash = isNarrow()
+        ? 0
+        : Math.min(SQUASH, Math.abs(p.getVelocity()) * 0.5);
+      el.style.setProperty("--p", String(p.get()));
+      el.style.setProperty("--h", `${h.get()}px`);
+      el.style.setProperty("--s", `${squash}px`);
+    };
+    const offP = p.on("change", write);
+    const offH = h.on("change", write);
+    const offEnd = p.on("animationComplete", () =>
+      el.style.setProperty("--s", "0px"),
+    );
+    return () => {
+      offP();
+      offH();
+      offEnd();
+      p.stop();
+      h.stop();
+    };
+  }, [p, h]);
+
+  useEffect(() => {
+    const open = mode !== "idle";
+    if (reducedMotion()) {
+      p.jump(open ? 1 : 0);
+      h.jump(height[mode]);
+      return;
+    }
+    // A running spring is retargeted, not restarted, so it keeps its velocity.
+    const lead = open ? p : h;
+    const from = lead.get();
+    const to = open ? 1 : REST;
+    const second = () =>
+      open
+        ? animate(h, height[mode], spring.height)
+        : animate(p, 0, spring.close);
+    animate(lead, to, open ? spring.width : spring.close);
+    const done = (v: number) =>
+      Math.abs(v - from) >= Math.abs(to - from) * OVERLAP;
+    if ((open && isNarrow()) || done(from)) {
+      second();
+      return;
+    }
+    const off = lead.on("change", (v) => {
+      if (!done(v)) return;
+      off();
+      second();
+      setHeld(false);
+    });
+    return off;
+  }, [mode, p, h]);
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 8);
@@ -78,21 +174,20 @@ export function Nav({ active }: { active?: Section }) {
   return (
     <>
       <header
-        onKeyDown={(e) => e.key === "Escape" && setMode("idle")}
+        onKeyDown={(e) => e.key === "Escape" && go("idle")}
         className="pointer-events-none sticky top-0 z-50 h-0 bg-transparent"
       >
         <div
-          data-nav-open={search || menu ? "" : undefined}
+          data-nav-open={tinted ? "" : undefined}
           className="relative flex justify-center pt-(--space-md)"
         >
           <div
+            ref={plate}
             className={cx(
-              "absolute top-(--space-md) left-1/2 -translate-x-1/2 overflow-hidden rounded-(--radius-img) transition-[width,height,background-color,box-shadow] duration-[600ms] motion-reduce:transition-none",
-              ease,
-              search || menu
-                ? "pointer-events-auto w-[min(840px,calc(100vw-32px))]"
-                : "w-[min(600px,calc(100vw-32px))]",
-              menu ? "h-[416px]" : search ? "h-[144px]" : "h-[72px]",
+              "absolute top-(--space-md) left-1/2 -translate-x-1/2 overflow-hidden contain-layout contain-paint transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none",
+              "[--h:72px] [--p:0] [--s:0px] [--w0:min(600px,calc(100vw-32px))] [--w1:min(840px,calc(100vw-32px))]",
+              "mt-[calc(var(--s)/2)] h-[calc(var(--h)-var(--s))] w-[calc(var(--w0)+(var(--w1)-var(--w0))*var(--p))] rounded-[calc(var(--radius-nav)+(var(--radius-nav-open)-var(--radius-nav))*var(--p))]",
+              (search || menu) && "pointer-events-auto",
               filled
                 ? "bg-bg shadow-(--shadow-nav)"
                 : "bg-transparent shadow-none",
@@ -101,7 +196,7 @@ export function Nav({ active }: { active?: Section }) {
             <div
               className={cx(
                 "absolute top-[72px] left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-2 transition-[opacity,visibility] duration-[350ms] motion-reduce:transition-none",
-                search ? "opacity-100" : "invisible opacity-0",
+                search ? "opacity-100 delay-150" : "invisible opacity-0",
               )}
             >
               <input
@@ -118,7 +213,7 @@ export function Nav({ active }: { active?: Section }) {
               aria-label="Sections"
               className={cx(
                 "absolute top-[72px] left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-(--space-lg) pb-(--space-lg) pt-(--space-sm) transition-[opacity,visibility] duration-[350ms] motion-reduce:transition-none",
-                menu ? "opacity-100" : "invisible opacity-0",
+                menu ? "opacity-100 delay-150" : "invisible opacity-0",
               )}
             >
               <ul>
@@ -127,7 +222,7 @@ export function Nav({ active }: { active?: Section }) {
                     <Link
                       href={s.href}
                       aria-current={s.label === active ? "page" : undefined}
-                      onClick={() => setMode("idle")}
+                      onClick={() => go("idle")}
                       className="flex min-h-(--touch-target) items-center border-t border-line py-3 text-ink hover:text-link"
                     >
                       <span className="w-12 type-meta text-ink-2">
@@ -154,14 +249,14 @@ export function Nav({ active }: { active?: Section }) {
               className={button}
               aria-label={search ? "Close search" : "Search"}
               aria-expanded={search}
-              onClick={() => setMode(search ? "idle" : "search")}
+              onClick={() => go(search ? "idle" : "search")}
             >
               {search ? <CloseIcon /> : <SearchIcon />}
             </button>
             <div className="flex min-w-0 flex-1 justify-center">
               <Link
                 href="/"
-                className="type-index-title whitespace-nowrap text-ink transition-colors duration-[600ms] motion-reduce:transition-none"
+                className="type-index-title whitespace-nowrap text-ink transition-colors duration-300 motion-reduce:transition-none"
               >
                 Mal Nushi
               </Link>
@@ -172,7 +267,7 @@ export function Nav({ active }: { active?: Section }) {
               aria-label={menu ? "Close menu" : "Open menu"}
               aria-expanded={menu}
               aria-controls="site-menu"
-              onClick={() => setMode(menu ? "idle" : "menu")}
+              onClick={() => go(menu ? "idle" : "menu")}
             >
               {menu ? <CloseIcon /> : <MenuIcon />}
             </button>

@@ -103,6 +103,14 @@
     "pill": {
       "$type": "dimension",
       "$value": "{radius.full}"
+    },
+    "nav": {
+      "$type": "dimension",
+      "$value": "{radius.14}"
+    },
+    "nav-open": {
+      "$type": "dimension",
+      "$value": "{radius.20}"
     }
   },
   "border": {

@@ -14,3 +14,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - `docs/design-log.md` records design decisions, with the reasons. Read it before changing tokens, and add a dated entry whenever you make or change a design decision.
 - Keep the "Design tokens" section of `docs/DESIGN.md` in sync when you add, rename or remove tokens.
 - Unresolved design questions go in the "Open questions" section of DESIGN.md, not in the log.
+
+# Architecture
+
+- `docs/adr/` holds architecture decision records, numbered in order. Add one when an engineering decision adds a dependency or sets a pattern others should follow. Design decisions still go in `docs/design-log.md`.
