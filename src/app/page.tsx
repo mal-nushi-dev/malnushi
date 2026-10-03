@@ -1,69 +1,169 @@
-import Image from "next/image";
+import { Eyebrow } from "@/components/eyebrow";
+import { Footer } from "@/components/footer";
+import { IndexList, type IndexItem } from "@/components/index-list";
+import { ArrowLink } from "@/components/links";
+import { Nav } from "@/components/nav";
+import { Portrait } from "@/components/portrait";
+import { SectionLabel } from "@/components/section-label";
+import Link from "next/link";
+
+// Placeholder content until the first features and collections exist.
+// Links point at routes that are not built yet.
+const essays: IndexItem[] = [
+  { href: "/writing/the-list-that-keeps-me-looking", title: "The list that keeps me looking", category: "Birding", year: 2026 },
+  { href: "/writing/small-enough-to-finish", title: "On making a thing small enough to finish", category: "Process", year: 2026 },
+  { href: "/writing/reading-in-a-serif", title: "Notes on reading in a serif", category: "Typography", year: 2025 },
+];
+
+const projects: IndexItem[] = [
+  { href: "/work/dns-filter", title: "A DNS filter for the whole house", category: "Code", year: 2026 },
+  { href: "/work/salvaged-desk-lamp", title: "A desk lamp from salvaged parts", category: "Hardware", year: 2025 },
+  { href: "/work/skyline", title: "The 1,000-piece skyline", category: "Lego", year: 2025 },
+];
+
+const grid = "grid grid-cols-12 gap-x-(--col-gap)";
+
+function FeatureImage({ label, className }: { label: string; className: string }) {
+  return (
+    <div
+      role="img"
+      aria-label={`Image placeholder, ${label}`}
+      className={`flex w-full items-center justify-center rounded-(--radius-img) bg-line ${className}`}
+    >
+      <span className="type-meta text-ink-2">{label}</span>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <Nav />
+      <main>
+        {/* Opening */}
+        <section className="page pt-(--space-header-top)">
+          <div className={`${grid} items-end`}>
+            <div className="col-span-7 flex flex-col gap-(--space-xl)">
+              <h1 className="type-h1">
+                I’m Mal. I write, make things and look at birds.
+              </h1>
+              <p className="type-standfirst max-w-[600px] text-ink-2">
+                This is where my essays, projects, photographs and lists live.
+                Some are finished; most are still being worked on.
+              </p>
+              <div>
+                <ArrowLink href="/about">About me</ArrowLink>
+              </div>
+            </div>
+            <div className="col-span-4 col-start-9 text-ink">
+              <Portrait className="block h-auto w-full" />
+            </div>
+          </div>
+        </section>
+
+        {/* Lead feature: one accent, overriding the house token on this wrapper */}
+        <section
+          className="page pt-(--space-block)"
+          style={{ "--accent": "#8a5a3c" } as React.CSSProperties}
+        >
+          <Link
+            href="/writing/the-list-that-keeps-me-looking"
+            className="flex flex-col gap-(--space-xl) border-t-2 border-accent pt-(--space-sm)"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <Eyebrow section="Writing" category="Birding" />
+            <h2 className="type-feature-display max-w-[1100px]">
+              The list that keeps me looking
+            </h2>
+            <div className={grid}>
+              <p className="type-standfirst col-span-7 text-ink-2">
+                A life list is supposed to be about the birds. Mine turned out
+                to be about paying attention.
+              </p>
+              <span className="col-span-4 col-start-9 flex items-end type-ui text-link">
+                Read the essay <span aria-hidden>&nbsp;→</span>
+              </span>
+            </div>
+            <div
+              role="img"
+              aria-label="Feature hero placeholder, 1248 by 480"
+              className="flex h-[480px] w-full items-center justify-center rounded-(--radius-img) bg-accent"
+            >
+              <span className="type-meta text-bg">FEATURE HERO — 1248 × 480</span>
+            </div>
+          </Link>
+        </section>
+
+        {/* More features: deliberately unequal sizes */}
+        <section className="page pt-(--space-block)">
+          <SectionLabel>Features</SectionLabel>
+          <div className={`${grid} items-start gap-y-(--space-block) pt-(--space-2xl)`}>
+            <Link href="/work/dns-filter" className="col-span-7 flex flex-col gap-(--space-md)">
+              <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-[3/2]" />
+              <Eyebrow section="Work" category="Code" />
+              <h3 className="type-quote">A DNS filter for the whole house</h3>
+              <p className="type-small max-w-[520px] text-ink-2">
+                A small macOS app that keeps the router honest, and what I
+                learned from the dead ends.
+              </p>
+            </Link>
+            <Link href="/photography/early-light-on-the-marsh" className="col-span-4 col-start-9 mt-(--space-block) flex flex-col gap-(--space-md)">
+              <FeatureImage label="FEATURE IMAGE — 408 × 544" className="aspect-[3/4]" />
+              <Eyebrow section="Photography" category="Series 04" />
+              <h3 className="type-index-title">Early light on the marsh</h3>
+            </Link>
+            <Link href="/work/skyline" className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
+              <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-[2/1]" />
+              <Eyebrow section="Work" category="Lego" />
+              <h3 className="type-quote">The 1,000-piece skyline</h3>
+              <p className="type-small max-w-[520px] text-ink-2">
+                A build I designed, redesigned and finally finished.
+              </p>
+            </Link>
+          </div>
+        </section>
+
+        {/* Latest writing and work */}
+        <section className="page flex flex-col gap-(--space-block) pt-(--space-block)">
+          <div className="flex flex-col gap-(--space-lg)">
+            <IndexList label="Latest writing" items={essays} />
+            <div>
+              <ArrowLink href="/writing">All writing</ArrowLink>
+            </div>
+          </div>
+          <div className="flex flex-col gap-(--space-lg)">
+            <IndexList label="Latest work" items={projects} />
+            <div>
+              <ArrowLink href="/work">All work</ArrowLink>
+            </div>
+          </div>
+        </section>
+
+        {/* Recent collection activity */}
+        <section className="page py-(--space-block)">
+          <SectionLabel>Recent in collections</SectionLabel>
+          <div className={`${grid} pt-(--space-xl)`}>
+            <div className="col-span-5 flex flex-col gap-(--space-sm)">
+              <p className="type-label text-ink-2">Latest bird</p>
+              <p className="type-index-title text-ink">
+                Carolina Wren{" "}
+                <span className="type-body italic text-ink-2">
+                  Thryothorus ludovicianus
+                </span>
+              </p>
+              <p className="type-meta text-ink-2">2026-09-27 · Charlotte</p>
+            </div>
+            <div className="col-span-6 col-start-7 flex flex-col gap-(--space-sm)">
+              <p className="type-label text-ink-2">Latest recommendation</p>
+              <p className="type-index-title text-ink">Braiding Sweetgrass</p>
+              <p className="type-meta text-ink-2">Book · 2026-09-20</p>
+            </div>
+          </div>
+          <div className="pt-(--space-xl)">
+            <ArrowLink href="/collections">All collections</ArrowLink>
+          </div>
+        </section>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }
