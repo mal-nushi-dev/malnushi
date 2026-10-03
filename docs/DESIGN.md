@@ -489,7 +489,7 @@ Other semantic tokens have no CSS variable yet:
 | Spacing | `space.block` (128), `space.image-gap.min` / `.max` (160 / 200), `space.header-top` (120), `space.nav-item` (40), `space.meta-item` (32), `space.row.index` (22), `space.row.table` (18), `space.stack.sm` `.md` `.lg` `.xl` `.2xl` (16 / 24 / 32 / 48 / 64) |
 | Sizing | `size.content-width` (1248), `size.touch-target` (44), `size.pill-height` (44) |
 | Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
-| Shadow | `shadow.nav`, CSS `--shadow-nav` (values in Components → Nav). Code only: not in Penpot or `tokens/` yet. |
+| Shadow | `shadow.nav`, CSS `--shadow-nav` (values in Components → Nav). Code only: not in `tokens/` yet. |
 
 The files are `tokens/primitives.json`, `tokens/semantic.json`, `tokens/modes/light.json` and `tokens/modes/dark.json`. `src/app/globals.css` mirrors them: change the JSON first, then the CSS.
 

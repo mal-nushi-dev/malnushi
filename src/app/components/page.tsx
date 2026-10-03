@@ -27,7 +27,7 @@ import { SpecBlock } from "@/components/spec-block";
 import { Stat, Stats } from "@/components/stat";
 import { Toolbar } from "@/components/toolbar";
 
-// Component preview, mirroring the Components page in Penpot. Not linked from the site.
+// Component preview. Not linked from the site.
 export const metadata: Metadata = {
   title: "Components · Mal Nushi",
   robots: { index: false },
@@ -171,7 +171,7 @@ export default function ComponentsPage() {
           <Specimen name="Data Table: Life list">
             <DataTable caption="Life list" columns={lifeListColumns} rows={lifeList} />
           </Specimen>
-          <Specimen name="Data Table: Lego inventory (rows not designed in Penpot yet)">
+          <Specimen name="Data Table: Lego inventory (rows not designed yet)">
             <DataTable
               caption="Lego inventory"
               columns={legoColumns}

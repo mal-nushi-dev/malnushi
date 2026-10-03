@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Penpot (file `malnushi`) is the source of truth; these
- * mirror tokens/*.json. Names map as documented in docs/DESIGN.md
- * ("Penpot tokens"). Change a value in Penpot first, then here.
+ * Design tokens. tokens/*.json is the source of truth; these mirror it.
+ * Names map as documented in docs/DESIGN.md ("Design tokens"). Change a
+ * value in the JSON first, then here.
  */
 
 :root {
@@ -98,7 +98,7 @@
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
-/* type.* — one utility per Penpot typography token. */
+/* type.* — one utility per typography token. */
 
 @utility type-feature-display {
   font-family: var(--font-newsreader), Georgia, serif;
