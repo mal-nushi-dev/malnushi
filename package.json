@@ -13,7 +13,8 @@
     "check": "npm run lint && npm run typecheck && npm run test:run",
     "test:e2e": "playwright test",
     "test:visual": "VISUAL=1 playwright test",
-    "test:visual:update": "VISUAL=1 playwright test --update-snapshots"
+    "test:visual:update": "VISUAL=1 playwright test --update-snapshots",
+    "analyze": "next experimental-analyze"
   },
   "dependencies": {
     "motion": "^14.0.0",
