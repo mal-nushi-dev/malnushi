@@ -6,6 +6,9 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-03
 
+### Placeholder icons and share image
+`icon.tsx`, `apple-icon.tsx` and `opengraph-image.tsx` are generated: an "M" on `--ink`, and a light card with the site name and description under a sage rule. They are placeholders for a real mark and use the renderer's bundled sans, because it cannot load the `next/font` files. Replace them when the logo and share image are designed. The default Next favicon was removed.
+
 ### Pressing outside the nav closes it
 Mal wanted an expanded nav to close when the page is pressed anywhere outside the toolbar and plate. The search text is kept when it closes, by any route (outside press, Escape, the toggle); it is cleared only on refresh or when the page changes. Focus stays on whatever was pressed.
 

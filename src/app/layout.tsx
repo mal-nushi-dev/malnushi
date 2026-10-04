@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import { mono, sans, serif } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Mal Nushi",
-  description:
-    "Writing, projects, photography and living collections by Mal Nushi.",
+  metadataBase: new URL(siteUrl),
+  title: { default: siteName, template: `%s | ${siteName}` },
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
