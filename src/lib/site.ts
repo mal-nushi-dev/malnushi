@@ -12,9 +12,9 @@ export const siteUrl = (
 ).replace(/\/+$/, "");
 
 export const sections = [
+  { label: "Home", href: "/" },
   { label: "Writing", href: "/writing" },
-  { label: "Work", href: "/work" },
-  { label: "Photography", href: "/photography" },
+  { label: "Projects", href: "/projects" },
   { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
 ] as const;

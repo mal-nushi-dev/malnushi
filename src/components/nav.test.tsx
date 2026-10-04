@@ -167,9 +167,9 @@ describe("menu", () => {
     expect(
       links.map((a) => [a.textContent, a.getAttribute("href")]),
     ).toEqual([
-      ["001Writing", "/writing"],
-      ["002Work", "/work"],
-      ["003Photography", "/photography"],
+      ["001Home", "/"],
+      ["002Writing", "/writing"],
+      ["003Projects", "/projects"],
       ["004Collections", "/collections"],
       ["005About", "/about"],
     ]);
@@ -178,7 +178,7 @@ describe("menu", () => {
   it("collapses when a section link is chosen", async () => {
     const nav = renderNav();
     await nav.user.click(nav.menuToggle());
-    await nav.user.click(screen.getByRole("link", { name: /Work/ }));
+    await nav.user.click(screen.getByRole("link", { name: /Projects/ }));
     expect(nav.menuToggle()).toHaveAttribute("aria-expanded", "false");
   });
 
@@ -192,10 +192,10 @@ describe("menu", () => {
 
 describe("active section", () => {
   it("marks only the current section", () => {
-    const nav = renderNav({ active: "Work" });
+    const nav = renderNav({ active: "Projects" });
     const current = nav.menuLinks().filter((a) => a.ariaCurrent === "page");
     expect(current).toHaveLength(1);
-    expect(current[0]).toHaveAttribute("href", "/work");
+    expect(current[0]).toHaveAttribute("href", "/projects");
   });
 
   it("marks nothing without an active section", () => {
