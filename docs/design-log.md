@@ -252,3 +252,10 @@ Decided with Mal on 2026-10-03, from the three mockups.
 - **Layout A, the reading column.** It is the one Mal had in mind. The ledger and the by-day layouts were dropped and removed from the mockup page.
 - **Date line** reads `2026-10-03 · 2:12 PM EDT`: Mal asked for a 12-hour clock and a named time zone. The date stays in the ISO form used by the rest of the site's mono metadata.
 - **The zone is the author's, not the reader's** (my choice). It keeps the page static and the same for everyone. Notes store a UTC offset so this can change later without editing them.
+
+### Move Writing and Notes pages from /components to canonical app routes
+Decided with Mal on 2026-10-04.
+- **Canonical routing:** The Writing index is moved to `/writing` (`src/app/writing/page.tsx`) and the note stream to `/writing/notes` (`src/app/writing/notes/page.tsx`), moving them out of the `/components` folder where they were initially prototyped as mockups.
+- `/components` (`src/app/components/page.tsx`) remains the dedicated design system component preview gallery (`noindex`, unlinked).
+- **Sitemap:** Added `/writing` and `/writing/notes` to `src/app/sitemap.ts`.
+

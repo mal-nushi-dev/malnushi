@@ -7,11 +7,11 @@ import { Nav } from "@/components/nav";
 import { NoteList, type NoteItem } from "@/components/note";
 import { SectionLabel } from "@/components/section-label";
 
-// Mockup of the Writing index (/writing). Not linked from the site. Desktop
-// only; the copy is placeholder. Delete once the real page is built.
+// The Writing index (/writing): articles, newsletters, and recent notes.
 export const metadata: Metadata = {
-  title: "Writing index mockup",
-  robots: { index: false },
+  title: "Writing",
+  description:
+    "Articles and newsletters from my blog, Kodikion, and short notes in between.",
 };
 
 const articles: IndexItem[] = [
@@ -64,7 +64,7 @@ const notes: NoteItem[] = [
   },
 ];
 
-export default function WritingMockup() {
+export default function WritingPage() {
   return (
     <>
       <Nav active="Writing" />

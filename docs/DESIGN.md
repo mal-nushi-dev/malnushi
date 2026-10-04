@@ -591,7 +591,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
-- Writing: whether a note can carry an image or a link preview. The chosen stream layout is mocked up at `/components/notes` (`src/app/components/notes/page.tsx`); delete that page once the real stream is built.
+- Writing: whether a note can carry an image or a link preview. The chosen stream layout is built at `/writing/notes` (`src/app/writing/notes/page.tsx`).
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.
 - Specify the travels collection's map view, if it gets one.

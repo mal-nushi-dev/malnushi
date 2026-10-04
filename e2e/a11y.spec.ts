@@ -72,7 +72,13 @@ async function settled(page: Page, selector: string) {
     .toBe(true);
 }
 
-for (const path of ["/", "/components", "/no-such-page"]) {
+for (const path of [
+  "/",
+  "/writing",
+  "/writing/notes",
+  "/components",
+  "/no-such-page",
+]) {
   test(`${path} has no WCAG 2.2 AA violations`, async ({ page }) => {
     await page.goto(path);
     await scan(page);

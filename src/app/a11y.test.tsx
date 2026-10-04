@@ -9,6 +9,8 @@ import ComponentsPage from "./components/page";
 import ErrorPage from "./error";
 import Home from "./page";
 import NotFound from "./not-found";
+import NotesPage from "./writing/notes/page";
+import WritingPage from "./writing/page";
 
 /*
  * axe in jsdom checks structure: names, roles, aria use, landmarks, headings,
@@ -50,6 +52,16 @@ describe("pages", () => {
     const { container } = render(
       <ErrorPage error={new Error("boom")} retry={() => {}} />,
     );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("writing index has no violations", async () => {
+    const { container } = render(<WritingPage />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("notes stream has no violations", async () => {
+    const { container } = render(<NotesPage />);
     expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -5,12 +5,10 @@ import { InlineLink } from "@/components/links";
 import { Nav } from "@/components/nav";
 import { NoteList, type NoteItem } from "@/components/note";
 
-// Mockup of the note stream (the layout Mal chose, 2026-10-03). Not linked
-// from the site. Desktop only; the copy is placeholder. Delete once the real
-// stream at /writing/notes is built.
+// The note stream (/writing/notes): short posts in reading column, newest first.
 export const metadata: Metadata = {
-  title: "Note stream mockup",
-  robots: { index: false },
+  title: "Notes",
+  description: "Short posts, newest first.",
 };
 
 const notes: NoteItem[] = [
@@ -50,7 +48,7 @@ const notes: NoteItem[] = [
   },
 ];
 
-export default function NoteMockup() {
+export default function NotesPage() {
   return (
     <>
       <Nav active="Writing" />
