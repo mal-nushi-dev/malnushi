@@ -182,7 +182,13 @@ describe("menu", () => {
     expect(nav.menuToggle()).toHaveAttribute("aria-expanded", "false");
   });
 
+  it("collapses when the wordmark is chosen", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.menuToggle());
+    await nav.user.click(screen.getByRole("link", { name: "Mal Nushi" }));
+    expect(nav.menuToggle()).toHaveAttribute("aria-expanded", "false");
   });
+});
 
 describe("active section", () => {
   it("marks only the current section", () => {
@@ -272,7 +278,15 @@ describe("Escape", () => {
     expect(nav.menuToggle()).toHaveFocus();
   });
 
-    // Characterization: the handler is on the header, so Escape is ignored once
+  it("returns focus to the search button after Escape in the search field", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.searchToggle());
+    afterFocusDelay();
+    await nav.user.keyboard("{Escape}");
+    expect(nav.searchToggle()).toHaveFocus();
+  });
+
+  // Characterization: the handler is on the header, so Escape is ignored once
   // focus has left it. Revisit if the spec ("Escape returns to rest") is read
   // as global.
   it("is ignored while focus is outside the nav", async () => {

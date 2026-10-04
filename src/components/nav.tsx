@@ -88,6 +88,8 @@ export function Nav({ active }: { active?: Section }) {
   const [scrolled, setScrolled] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const plate = useRef<HTMLDivElement>(null);
+  const searchButton = useRef<HTMLButtonElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const [p] = useState(() => motionValue(0));
   const [h] = useState(() => motionValue(REST));
   const search = mode === "search";
@@ -98,6 +100,12 @@ export function Nav({ active }: { active?: Section }) {
   const filled = scrolled || tinted;
 
   const go = (next: Mode) => {
+    // Focus inside the plate is about to be hidden; hand it back to the toggle.
+    if (next === "idle" && plate.current?.contains(document.activeElement)) {
+      (search ? searchButton : menuButton).current?.focus({
+        preventScroll: true,
+      });
+    }
     setMode(next);
     setHeld(next === "idle" && !reducedMotion() && h.get() > REST + 1);
   };
@@ -250,6 +258,7 @@ export function Nav({ active }: { active?: Section }) {
           </div>
           <div className="pointer-events-auto relative flex h-18 w-[min(600px,calc(100vw-32px))] items-center px-2">
             <button
+              ref={searchButton}
               type="button"
               className={button}
               aria-label={search ? "Close search" : "Search"}
@@ -261,12 +270,14 @@ export function Nav({ active }: { active?: Section }) {
             <div className="flex min-w-0 flex-1 justify-center">
               <Link
                 href="/"
+                onClick={() => go("idle")}
                 className="type-index-title whitespace-nowrap text-ink transition-colors duration-300 motion-reduce:transition-none"
               >
                 Mal Nushi
               </Link>
             </div>
             <button
+              ref={menuButton}
               type="button"
               className={button}
               aria-label={menu ? "Close menu" : "Open menu"}
