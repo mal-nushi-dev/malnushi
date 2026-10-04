@@ -253,7 +253,7 @@ The panel content has a fixed 840px width (narrower viewports clamp it to the vi
 ### Eyebrow
 
 `label` style, `--ink-2`, above every h1 (except the Writing index, whose masthead is the name): section, then an accent-colored `/`, then the sub-category.
-Examples: `WRITING / TECHNOLOGY`, `WRITING / THE KERNEL`, `WRITING / DEV JOURNAL`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart. For writing, the sub-category is the article's category, or the newsletter's name on an issue.
+Examples: `WRITING / TECHNOLOGY`, `WRITING / THE KERNEL`, `WRITING / DEV JOURNAL`, `PROJECTS / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart. For writing, the sub-category is the article's category, or the newsletter's name on an issue.
 
 ### Meta row
 
@@ -273,7 +273,7 @@ The index sits in a fixed 48px column with the caption text beside it (600px wid
 
 ### Index list
 
-Used for "More work", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids, except on the Writing index, where the articles lead with images (see that section).
+Used for "More projects", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids, except on the Writing index, where the articles lead with images (see that section).
 
 ### Data table (collections)
 
@@ -380,12 +380,12 @@ Projects serves as your creative workshop, focusing strictly on things you have 
 
 Image leads. One template covers code, digital design, hardware and Lego; the spec block is what flexes.
 
-1. Eyebrow (`WORK / CODE`, `WORK / HARDWARE`), then the hero image directly under it, so label, image and title read as one unit.
+1. Eyebrow (`PROJECTS / CODE`, `PROJECTS / HARDWARE`), then the hero image directly under it, so label, image and title read as one unit.
 2. Title (`h1`) and standfirst across 7 columns, with links ("View source →", "Download →"). The spec block sits in columns 9–12.
 3. An image pair with captions.
 4. The write-up: an `h2` in columns 1–3, body text in columns 4–10. Repeat as needed.
 5. Detail images in a row of three.
-6. A "More work" index list and the footer.
+6. A "More projects" index list and the footer.
 
 Someone should understand a project from the hero, title and spec block alone, and read further only if interested.
 
@@ -463,7 +463,7 @@ Each piece is an MDX file with frontmatter. One route per section:
 - `/writing/[slug]` for Kodikion posts (articles and newsletter issues)
 - `/writing/the-kernel` and `/writing/dev-journal` for the two newsletters
 - `/writing/notes` for the note stream and `/writing/notes/[id]` for one note
-- `/work/[slug]` for projects
+- `/projects/[slug]` for projects
 - `/photography/[slug]` for series
 - `/collections/[slug]` for collections (backed by data files such as JSON, YAML or CSV, not MDX)
 

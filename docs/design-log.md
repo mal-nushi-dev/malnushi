@@ -332,3 +332,9 @@ Decided with Mal on 2026-10-04.
 - **Menu items** are now Home, Writing, Projects, Collections, About. Work and Photography are gone: photography lives under Projects, as the page descriptions in DESIGN.md already say.
 - **Home is in the menu** (as well as the wordmark), at the request of Mal's page list. Still five rows, so the 416px plate is unchanged.
 - **Order** is my choice, since Mal gave none: Home first, About last, as before.
+
+
+### Project route is /projects, not /work
+Decided with Mal on 2026-10-04.
+- **`/work/[slug]` becomes `/projects/[slug]`.** The section is called Projects in the nav and the page descriptions, so the URL, the eyebrow (`PROJECTS / CODE`) and the "More projects" list now use the same word. The home page links and the placeholder categories were updated to match.
+- **Photography routes are unchanged** (`/photography/[slug]`, eyebrow `PHOTOGRAPHY / SERIES 04`). Photography series are listed on the Projects index; whether their URLs should also move under `/projects/` is not decided.

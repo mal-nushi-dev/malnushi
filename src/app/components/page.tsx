@@ -169,9 +169,9 @@ export default function ComponentsPage() {
             label="Latest essays"
             items={[
               { href: "#1", title: "Notes on a year of birding by ear", category: "Essay / Birding", year: 2026 },
-              { href: "#2", title: "A field recorder built from a Pico", category: "Work / Hardware", year: 2026 },
+              { href: "#2", title: "A field recorder built from a Pico", category: "Projects / Hardware", year: 2026 },
               { href: "#3", title: "Why the index beats the grid", category: "Essay / Design", year: 2025 },
-              { href: "#4", title: "Forty-one sets, sorted by color", category: "Work / Lego", year: 2025 },
+              { href: "#4", title: "Forty-one sets, sorted by color", category: "Projects / Lego", year: 2025 },
             ]}
           />
           <Specimen name="Note">

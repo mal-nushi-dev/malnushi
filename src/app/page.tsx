@@ -16,9 +16,9 @@ const essays: IndexItem[] = [
 ];
 
 const projects: IndexItem[] = [
-  { href: "/work/dns-filter", title: "A DNS filter for the whole house", category: "Code", year: 2026 },
-  { href: "/work/salvaged-desk-lamp", title: "A desk lamp from salvaged parts", category: "Hardware", year: 2025 },
-  { href: "/work/skyline", title: "The 1,000-piece skyline", category: "Lego", year: 2025 },
+  { href: "/projects/dns-filter", title: "A DNS filter for the whole house", category: "Code", year: 2026 },
+  { href: "/projects/salvaged-desk-lamp", title: "A desk lamp from salvaged parts", category: "Hardware", year: 2025 },
+  { href: "/projects/skyline", title: "The 1,000-piece skyline", category: "Lego", year: 2025 },
 ];
 
 const grid = "grid grid-cols-12 gap-x-(--col-gap)";
@@ -97,9 +97,9 @@ export default function Home() {
         <section className="page pt-(--space-block)">
           <SectionLabel>Features</SectionLabel>
           <div className={`${grid} items-start gap-y-(--space-block) pt-(--space-2xl)`}>
-            <Link href="/work/dns-filter" className="col-span-7 flex flex-col gap-(--space-md)">
+            <Link href="/projects/dns-filter" className="col-span-7 flex flex-col gap-(--space-md)">
               <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-3/2" />
-              <Eyebrow section="Work" category="Code" />
+              <Eyebrow section="Projects" category="Code" />
               <h3 className="type-quote">A DNS filter for the whole house</h3>
               <p className="type-small max-w-130 text-ink-2">
                 A small macOS app that keeps the router honest, and what I
@@ -111,9 +111,9 @@ export default function Home() {
               <Eyebrow section="Photography" category="Series 04" />
               <h3 className="type-index-title">Early light on the marsh</h3>
             </Link>
-            <Link href="/work/skyline" className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
+            <Link href="/projects/skyline" className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
               <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-2/1" />
-              <Eyebrow section="Work" category="Lego" />
+              <Eyebrow section="Projects" category="Lego" />
               <h3 className="type-quote">The 1,000-piece skyline</h3>
               <p className="type-small max-w-130 text-ink-2">
                 A build I designed, redesigned and finally finished.
@@ -133,7 +133,7 @@ export default function Home() {
           <div className="flex flex-col gap-(--space-lg)">
             <IndexList label="Latest work" items={projects} />
             <div>
-              <ArrowLink href="/work">All work</ArrowLink>
+              <ArrowLink href="/projects">All projects</ArrowLink>
             </div>
           </div>
         </section>
