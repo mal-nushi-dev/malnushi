@@ -1,0 +1,20 @@
+title: Life list
+itemName: bird
+columns:
+  - { key: scientific, label: Species }
+  - { key: family, label: Family }
+  - { key: where, label: Where }
+  - { key: notes, label: Notes, optional: true }
+items:
+  - id: carolina-wren
+    title: Carolina Wren
+    scientific: Thryothorus ludovicianus
+    family: Troglodytidae
+    date: 2026-09-27
+    where: Charlotte
+  - id: great-blue-heron
+    title: Great Blue Heron
+    scientific: Ardea herodias
+    family: Ardeidae
+    date: 2026-09-21
+    where: Charlotte
