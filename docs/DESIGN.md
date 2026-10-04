@@ -24,9 +24,19 @@ Avoid: 1970s chunky and rounded (Vacation.inc, Ghia), brutalism and neo-brutalis
 
 ## Site structure
 
+### What the pages signify
+
+The site is organized around five distinct pillars, each with a clear editorial role and purpose:
+
+- **Home.** Acts as an active front porch rather than a static directory. It welcomes visitors with editorial curation: a personal introduction in the serif voice, a lead feature at display scale, varied-size secondary features, and live pulses from recent writing, projects, and collection activity.
+- **Writing.** Unifies your long-form blog and your short-form microblog under one roof, preventing your thoughts from feeling fragmented across the site. The cleanest layout here is a reverse-chronological feed with a subtle filter toggle at the top to isolate essays, quick notes, or all entries. Rendering microblog entries as brief, timestamped notes and longform articles with titles and reading times keeps your stream active without burying your in-depth pieces.
+- **Projects.** Serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. Structuring this hub as an image-forward card grid allows visitors to browse disparate disciplines side by side, with each card leading to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
+- **Collections.** Operates as your personal encyclopedia and ongoing data hub. This is where your bird life list, plant tracker, flight stats, city guides, item inventories, and media recommendations live. Unlike projects, these are not finished deliverables, but living reference tables and personal dashboards that evolve over decades. Presenting this hub with visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—makes browsing feel like walking through a private museum.
+- **About.** Grounds the entire site by providing personal context, philosophy, and connection points. Alongside your background and current technical focus, it works well to include a colophon detailing how the site is built and hosted, a "Now" module outlining what you are currently reading or tinkering with, and direct ways to get in touch.
+
 ### Navigation
 
-`Writing` · `Work` · `Photography` · `Collections` · `About`
+`Home` · `Writing` · `Projects` · `Collections` · `About`
 
 The wordmark ("Mal Nushi") links home and sits in the centre of the toolbar. Features have no nav item of their own. They surface on the homepage and at the top of their section index.
 
@@ -197,7 +207,7 @@ Four component values sit off the scale on purpose and are tokenized as written:
 
 - **Dividers are 1px hairlines** in `--line`. A 1px `--ink` rule marks the start of something: a table header, a spec block, a section label, the meta row under a standfirst.
 - **Corner radius** is 4px on images and 8px on code blocks. Filter pills are fully rounded. The nav plate is 14px (`radius.nav`), easing to 20px (`radius.nav-open`) when expanded. Nothing else is rounded.
-- **No gradients, drop shadows or emoji.** One exception, requested by Mal on 2026-10-02: the nav gets a very slight shadow (`shadow.nav`) once the page scrolls.
+- **No gradients, drop shadows or emoji.** Exceptions: the nav gets a very slight shadow (`shadow.nav`) once the page scrolls (requested by Mal 2026-10-02); and the Writing index masthead's terminal screen has gradients, a dark tinted surface and a bowed, rounded shape while the animation plays (requested by Mal 2026-10-04).
 
 ---
 
@@ -301,7 +311,7 @@ A **figure** is a placeholder (or image) with its caption 16px below, stretched 
 
 ### Home
 
-The homepage is an editorial front page, not a feed.
+The home page acts as an active front porch rather than a static directory—an editorial front page, not a passive feed.
 
 - **Opening:** a short introduction in the serif voice, an About link and a line-drawn self-portrait. No hero tagline about "building things."
 - **Lead feature:** one feature follows the introduction, at full display scale with its own accent. It changes when a new feature is promoted.
@@ -330,7 +340,9 @@ A post that is also on Substack links to that copy ("Also on Substack") after th
 
 ### Writing index
 
-`/writing`. The page calls itself **Kodikion.** (the nav item stays "Writing"). Decided with Mal 2026-10-04; see the design log. From the top:
+`/writing`. The writing page unifies your long-form blog and your short-form microblog under one roof, preventing your thoughts from feeling fragmented across the site. The cleanest layout here is a reverse-chronological feed with a subtle filter toggle at the top to isolate essays, quick notes, or all entries. Rendering microblog entries as brief, timestamped notes and longform articles with titles and reading times keeps your stream active without burying your in-depth pieces.
+
+The page calls itself **Kodikion.** (the nav item stays "Writing"). Decided with Mal 2026-10-04; see the design log. From the top:
 
 1. **Masthead** (the `Masthead` component): "Kodikion." centered across columns 3–10, drawn as outlines at about 200px, the full stop in `--accent`. It is typed in JetBrains Mono behind a block cursor, then each letter springs into Newsreader. It is the page's `h1` (real text for screen readers). Under it, centered, the `standfirst`: "A blog by Mal Nushi. Also on Substack." Then a 1px `--ink` rule across the content width. There is no eyebrow on this page: it would repeat the name above itself.
 2. **Articles, columns 1–8**, in this order, with 128px (`space-block`) between:
@@ -342,7 +354,11 @@ A post that is also on Substack links to that copy ("Also on Substack") after th
 
 Newsletter issues and notes never mix into the article list. Images are placeholders until the content repository supplies them (ADR 0006).
 
-**Masthead behaviour.** Plays on every page load, about 2.5s. Pressing it plays the morph again, serif to monospace (the full stop becoming the block cursor), a 0.3s hold, then back to serif; presses during a play are ignored. It is a button covering the masthead, named "Play the masthead animation again", so it works from the keyboard. With reduced motion, or no JavaScript, the finished serif is shown still and there is no button. The outlines come from `scripts/masthead-glyphs.mjs` (ADR 0007); the box never changes size, so nothing shifts. On a phone it is not designed yet (Open questions).
+**Masthead behaviour.** Plays on every page load, about 3.3s: a dark CRT screen warms up behind the name (0.3s), the name is typed in JetBrains Mono, in green phosphor, behind a block cursor (solid while typing), the cursor blinks twice (1s), then the letters spring into the serif, the screen fades out and the cursor becomes the sage full stop. Pressing it plays the morph again, serif to monospace (the full stop becoming the block cursor), two blinks, then back to serif; presses during a play are ignored. It is a button covering the masthead, named "Play the masthead animation again", so it works from the keyboard. With reduced motion, or no JavaScript, the finished serif is shown still and there is no button.
+
+**The terminal** (decided with Mal 2026-10-04). Mono mode is a VT100 / IBM 3270 screen: convex glass with bowed sides, rounded corners, a faint bezel, a vignette, scanlines and a soft glare, drawn in the masthead's own SVG, and the letters bulged to match (the bulge relaxes as they turn serif). Phosphor persistence: each letter has a faint halo, a letter just typed flares and settles over about 250ms, and a moving letter leaves two fading ghosts. The cursor blinks on at once and off with a quick decay, twice a second at most. These values belong to the masthead and are not site tokens: screen `#040604`–`#15211a`, bezel `#454a44`, phosphor `#7DFF9B`, struck `#E2FFE8`. The screen is dark in light and dark mode alike and is decorative (the SVG is hidden from screen readers; the `h1` is real text). It exists only while the animation runs; at rest the page is unchanged.
+
+The outlines come from `scripts/masthead-glyphs.mjs` (ADR 0007); the box never changes size and the screen overflows it without affecting layout, so nothing shifts. On a phone it is not designed yet (Open questions).
 
 ### Newsletter page
 
@@ -359,6 +375,8 @@ A note has no title, no standfirst and no feature tier.
 Notes are not part of Kodikion and are not sent to Substack.
 
 ### Project
+
+Projects serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. Structuring this hub as an image-forward card grid allows visitors to browse disparate disciplines side by side, with each card leading to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
 
 Image leads. One template covers code, digital design, hardware and Lego; the spec block is what flexes.
 
@@ -387,9 +405,9 @@ The photographs lead. Text is reduced to a minimum.
 
 ### Collections
 
-Collections are structured data pages, designed once and never art-directed per item.
+Collections operates as your personal encyclopedia and ongoing data hub. This is where your bird life list, plant tracker, flight stats, city guides, item inventories, and media recommendations live. Unlike projects, these are not finished deliverables, but living reference tables and personal dashboards that evolve over decades.
 
-- **Collections index** (`/collections`): an index list of every collection with a mono count (`[N] species`, `[N] sets`).
+- **Collections index** (`/collections`): visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—making browsing feel like walking through a private museum.
 - **A collection page:** eyebrow, `h1`, standfirst, then two or three `stat` numbers over 1px `--ink` rules in columns 9–12. Filter pills and a sort label, then the data table. At the bottom, an "Other collections" row linking to the rest.
 
 Each collection defines its own columns:
@@ -406,7 +424,12 @@ Adding to a collection means adding a row of data, never writing a page.
 
 ### About
 
-A house essay page in structure: the `h1`, a standfirst, a short reading column, then a mono-labeled list of links and contact.
+The About page grounds the entire site by providing personal context, philosophy, and connection points. Alongside your background and current technical focus, it works well to include:
+
+- A personal narrative and philosophy in a house essay reading column (`h1`, standfirst, body text).
+- A **"Now" module** outlining what you are currently reading, thinking about, or tinkering with.
+- A **colophon** detailing how the site is built and hosted.
+- Direct ways to get in touch (contact methods and links).
 
 ---
 

@@ -6,6 +6,14 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-04
 
+### Page significance and editorial roles defined
+Mal clarified what each of the five primary spaces in the site signifies, formalizing their information architecture and presentation models in [DESIGN.md](DESIGN.md):
+- **Home:** An active front porch rather than a static directory, pairing personal introduction with lead features and live pulses from recent writing, projects, and collection activity.
+- **Writing:** Unifies long-form blog articles and short-form microblog notes under one roof to prevent thought fragmentation; reverse-chronological stream with subtle filter toggles (essays, quick notes, all) and reading times.
+- **Projects:** The creative workshop for things made, engineered, or arranged (code repositories, original music compositions, Lego creations, and photography portfolios); structured as an image-forward card grid browsing disparate disciplines side by side, linking to dedicated case studies.
+- **Collections:** Personal encyclopedia and data hub (bird life list, plant tracker, flight stats, city guides, item inventories, media recommendations) of living tables and dashboards evolving over decades; visual index tiles with previews and running tallies.
+- **About:** Personal grounding and connection points; background, current technical focus, colophon detailing build and hosting, a "Now" module, and direct contact.
+
 ### Masthead: typography protection, CRT bezel refinement, and shared motion library
 Mal pointed out that the serifs still noticeably snapped into the real font shape at the end of the transition, and the CRT outer bezel had ripples and corner pinching.
 - **Why the serifs snapped:** In `masthead-glyphs.json`, the resampled 128-point polygon (`to.pts`) missed the sharp serif vertices of Newsreader display cuts by up to 27 units. Even with clamped morphing, `main` remained a polygon until `late2` settled ~750ms later, whereupon `main.setAttribute("d", gl.to.d)` abruptly swapped the path while stationary.
@@ -318,3 +326,9 @@ Decided with Mal on 2026-10-04.
 - `/components` (`src/app/components/page.tsx`) remains the dedicated design system component preview gallery (`noindex`, unlinked).
 - **Sitemap:** Added `/writing` and `/writing/notes` to `src/app/sitemap.ts`.
 
+
+### Navigation matches the five pages
+Decided with Mal on 2026-10-04.
+- **Menu items** are now Home, Writing, Projects, Collections, About. Work and Photography are gone: photography lives under Projects, as the page descriptions in DESIGN.md already say.
+- **Home is in the menu** (as well as the wordmark), at the request of Mal's page list. Still five rows, so the 416px plate is unchanged.
+- **Order** is my choice, since Mal gave none: Home first, About last, as before.
