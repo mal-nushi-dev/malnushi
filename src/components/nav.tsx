@@ -14,11 +14,8 @@ const height: Record<Mode, number> = { idle: REST, search: 144, menu: 416 };
  * Springs. Opening overshoots a little and settles (width about 7%, height
  * about 5%); closing is close to critically damped so the bar lands still.
  */
-export const spring = {
-  width: { type: "spring", stiffness: 260, damping: 21, mass: 1 },
-  height: { type: "spring", stiffness: 220, damping: 21, mass: 1 },
-  close: { type: "spring", stiffness: 320, damping: 34, mass: 1 },
-} as const;
+import { reducedMotion, spring } from "@/lib/motion";
+export { spring };
 
 /* The second phase starts once the first has covered this much of its travel. */
 const OVERLAP = 0.8;
@@ -26,8 +23,6 @@ const OVERLAP = 0.8;
 const SQUASH = 4;
 
 /* At or under this width the plate is already full width and cannot widen. */
-const reducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isNarrow = () => window.matchMedia("(max-width: 632px)").matches;
 
 function Icon({ children }: { children: React.ReactNode }) {

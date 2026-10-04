@@ -11,7 +11,7 @@ The Writing index masthead types "Kodikion." in JetBrains Mono and springs each 
 
 1. **Outlines are generated, not shipped as fonts.** `scripts/masthead-glyphs.mjs` reads the two woff2 files Next has already built (`.next/static/media`), takes the glyph outlines, merges Newsreader's overlapping pieces, scales both fonts to one cap height, and resamples every contour to 128 points. Its output, `src/components/masthead-glyphs.json`, is committed (about 44 kB, 17 kB gzipped).
 2. **The script is run by hand** when the word or the fonts change. Its tools (`fontkit`, `wawoff2`, `paper`) are not project dependencies: they are installed outside the repository and a copy of the script is run there, so the app and CI carry nothing extra.
-3. **The component animates without React.** `Masthead` uses motion's `animate()` to write path data straight to the DOM, as ADR 0001 sets out, with the nav's width spring. React renders once.
+3. **The component animates without React.** `Masthead` drives the nav's width spring with motion's `animate()` and writes path data straight to the DOM from one `requestAnimationFrame` loop, as ADR 0001 sets out: each frame it morphs every letter's point lists (plus two lagging copies and a halo for the terminal's phosphor persistence) and bulges the points for the convex screen. The loop stops when every letter is back at rest. React renders once.
 4. **Fallbacks are the finished state.** With reduced motion or no JavaScript the exact serif outlines are shown still; the `h1` is real text for assistive technology and the SVG is `aria-hidden`.
 5. **The settled letters are the exact outlines,** not the 128-point polygons, so the resting masthead is crisp at any size.
 
