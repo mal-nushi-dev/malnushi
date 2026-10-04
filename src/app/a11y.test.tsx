@@ -6,6 +6,9 @@ import { FilterPill } from "@/components/filter-pill";
 import { Toolbar } from "@/components/toolbar";
 import { axe } from "@/test/axe";
 import ComponentsPage from "./components/page";
+import WritingMockupA from "./components/writing/a/page";
+import WritingMockupB from "./components/writing/b/page";
+import WritingMockupC from "./components/writing/c/page";
 import ErrorPage from "./error";
 import Home from "./page";
 import NotFound from "./not-found";
@@ -62,6 +65,15 @@ describe("pages", () => {
 
   it("notes stream has no violations", async () => {
     const { container } = render(<NotesPage />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it.each([
+    ["A", WritingMockupA],
+    ["B", WritingMockupB],
+    ["C", WritingMockupC],
+  ])("writing index mockup %s has no violations", async (_, Mockup) => {
+    const { container } = render(<Mockup />);
     expect(await axe(container)).toHaveNoViolations();
   });
 });

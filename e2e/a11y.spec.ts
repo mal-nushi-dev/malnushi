@@ -77,6 +77,9 @@ for (const path of [
   "/writing",
   "/writing/notes",
   "/components",
+  "/components/writing/a",
+  "/components/writing/b",
+  "/components/writing/c",
   "/no-such-page",
 ]) {
   test(`${path} has no WCAG 2.2 AA violations`, async ({ page }) => {

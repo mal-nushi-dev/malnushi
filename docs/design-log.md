@@ -4,6 +4,34 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-04
+
+### Writing index: three mockups
+Mal finds `/writing` bland and linear: every section looks the same, nothing leads, it is one column from top to bottom, and there is little to look at but titles. The brief: a front page that mixes a lead article with the latest notes and newsletter issues; images and category filters are welcome; newspaper-like in structure, but "structured, but also fun", not a copy of the New York Times.
+- **Three directions** are built at `/components/writing` on the same sample content, as was done for the note stream. None is chosen yet (see Open questions in DESIGN.md).
+  - **A, Broadsheet** (`/a`): a centred nameplate between two `--ink` rules with a mono dateline, then three zones divided by vertical hairlines: the lead article with an image (columns 1–6), the latest issue of each newsletter (7–9) and the notes set small (10–12). The article index follows.
+  - **B, Running rail** (`/b`): articles in columns 1–8, led by images of unequal size; the notes sit in columns 10–12 and stay in view while the page scrolls. The page title is small (`quote`) so the lead headline can be `h1`.
+  - **C, Live index** (`/c`): the article list leads, in columns 1–7; one image beside it shows the article whose row is hovered or focused, and stays in view. Newsletters and notes share one row beneath.
+- **In all three:** filter pills filter the article list in place, and a newsletter's latest issue shows its number in `stat`, in `--accent` (a large decorative mark, which the accent allows).
+- **No new tokens or type sizes.** Display type and subtitles on every row were not asked for; only the lead carries its subtitle.
+- **My choices, for review:** A's zones are 6/3/3 columns, not 7/3/2, because notes were unreadable in two columns. C's image first sat beside the page title; it scrolled away before the rows could be pointed at, so it moved beside the list.
+- **Rules the chosen direction would loosen** (not changed yet): "index lists replace card grids entirely" (images on an index page), filter pills outside collections, vertical hairlines (A), and a sticky element other than the nav (B and C).
+- **B is the front-runner (same day).** Mal prefers B and is revising it; it is not final, so A and C stay. First revision, the masthead:
+  - The page calls itself **Kodikion.**, not "Writing"; the nav item is still "Writing". The full stop is part of the name and is set in `--accent` (Mal's choice over ink). At 88px it is a large mark: 5.14:1 in light, 3.28:1 in dark.
+  - The name is the `h1` at `h1` size, across the full content width with a 1px `--ink` rule under it, above both the articles and the notes rail. Under it, as the standfirst: "A blog by Mal Nushi. Also on Substack."
+  - The lead headline drops from `h1` to `quote`, and its subtitle from `standfirst` to `body`, so the masthead is the largest type and the lead leads by its image (my choice, to stop two 88px lines competing).
+  - **No eyebrow** on this page: `WRITING / KODIKION` would repeat the name above itself. The spec puts an eyebrow above every `h1`, so this is an exception if B is chosen.
+  - **Tension, not settled:** the spec says notes are not part of Kodikion, but the full-width masthead sits over the notes rail too. If that matters, end the masthead at column 8 and start the rail beside it.
+- **Masthead, second revision (same day): large, centered, typed then morphed.** Mal sees Kodikion as mostly a tech blog (The Verge) shaped by literary publications (The New Yorker, The New York Times), and wanted the nameplate to say so: built in the monospace, then morphed into the serif with the nav's springs.
+  - **Sequence:** the name is typed in JetBrains Mono behind a sage block cursor (70ms a character); after a 0.3s hold each letter springs into Newsreader, 40ms apart, and the cursor becomes the sage full stop. The spring is the nav's width spring (`260, 21, 1`, now exported from `nav.tsx`), so the letters overshoot and settle as the plate does. About 2.5s in all, once per page load.
+  - **Size and place:** centered in columns 3–10, which sets the serif at about 200px. It is drawn as outlines in an SVG that scales with the column, so it is not a type token. The subtitle is centered under it. The wider mono word overflows the SVG's box sideways while it plays but stays inside the content width.
+  - **How:** `scripts/masthead-glyphs.mjs` reads the two built font files, merges Newsreader's overlapping pieces into plain outlines, scales both to one cap height, and resamples every contour to 128 points so letters morph point to point. The output is `masthead-glyphs.json`; `masthead.tsx` writes path data from motion values, so React never re-renders (ADR 0001's pattern). The mono weight is 400 and the serif is 400 at optical size 72, with `h1` tracking.
+  - **Reduced motion and no JavaScript** show the finished serif, still. The `h1` is real text for screen readers; the SVG is hidden from them.
+  - **Measured (Chromium, 1440px):** 60fps throughout, also with the CPU throttled 4× and 6× (one or two long frames at page load in each run, none during the morph). The outlines add 17 kB gzipped of script to this page only. No font has to load for the masthead and its box never changes size, so it cannot shift the layout. Not measured: Safari and Firefox (their Playwright builds are out of date here), and a real phone.
+  - **My choices, for review:** the cursor-to-full-stop idea; 8 columns wide; cap heights matched, so the word narrows as it morphs; plays on every load, not once per visit.
+  - **Owed if B is chosen:** an ADR for generated outlines (the script's three tools are not project dependencies and it runs by hand), a smaller data format, and a mobile size.
+- **What would change it:** the pieces live in `src/app/components/writing/` only. When one is chosen it moves to `/writing`, its pieces move to `src/components/`, and the other two are deleted.
+
 ## 2026-10-03
 
 ### Contrast checked in the browser
