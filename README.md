@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# malnushi
 
-## Getting Started
+Mal Nushi's personal site: writing, projects, photography and living collections. Built with Next.js (App Router), React, Tailwind CSS v4 and Motion.
 
-First, run the development server:
+> This is a newer Next.js than most documentation covers. Before changing framework code, read the matching guide in `node_modules/next/dist/docs/`. See [AGENTS.md](AGENTS.md).
+
+## Requirements
+
+Node 22 or later (`.nvmrc` pins 22) and npm.
+
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. Fonts come from Google Fonts at build time, so the first build needs network access.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest in watch mode |
+| `npm run test:run` | Vitest once |
+| `npm run check` | Lint, typecheck and tests, the same as CI minus the build |
 
-## Learn More
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and a build on every pull request and push to `develop` and `main`.
 
-To learn more about Next.js, take a look at the following resources:
+## Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical origin (for example `https://example.com`). Used for Open Graph URLs, `sitemap.xml` and `robots.txt`. Defaults to `http://localhost:3000`. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Docs
 
-## Deploy on Vercel
+- [docs/DESIGN.md](docs/DESIGN.md): the design specification, including the design tokens.
+- [docs/design-log.md](docs/design-log.md): design decisions and the reasons for them.
+- [docs/component-checklist.md](docs/component-checklist.md): status of each component.
+- [docs/adr/](docs/adr/): architecture decision records.
+- `tokens/`: design tokens in W3C DTCG JSON, the source of truth. `src/app/globals.css` mirrors them by hand.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app/         routes, metadata files (icon, robots, sitemap, Open Graph image)
+src/components/  shared components, with tests beside them
+src/lib/         site constants and helpers
+tokens/          design tokens
+docs/            design spec, log, ADRs
+```
