@@ -213,6 +213,71 @@ describe("active section", () => {
   });
 });
 
+describe("pressing outside the nav", () => {
+  const outside = () => {
+    const el = document.createElement("main");
+    document.body.append(el);
+    return el;
+  };
+
+  it("closes the menu", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.menuToggle());
+    await nav.user.click(outside());
+    expect(nav.menuToggle()).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("closes the search", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.searchToggle());
+    await nav.user.click(outside());
+    expect(nav.searchToggle()).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("keeps the typed query after closing and reopening", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.searchToggle());
+    afterFocusDelay();
+    await nav.user.keyboard("ink & paper");
+    await nav.user.click(outside());
+    await nav.user.click(nav.searchToggle());
+    expect(nav.searchInput()).toHaveValue("ink & paper");
+  });
+
+  it("keeps the typed query after closing with the toggle", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.searchToggle());
+    afterFocusDelay();
+    await nav.user.keyboard("ink");
+    await nav.user.click(nav.searchToggle());
+    await nav.user.click(nav.searchToggle());
+    expect(nav.searchInput()).toHaveValue("ink");
+  });
+
+  it("does not close when pressing inside the search field", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.searchToggle());
+    await nav.user.click(nav.searchInput());
+    expect(nav.searchToggle()).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("does not take focus from what the user pressed", async () => {
+    const nav = renderNav();
+    await nav.user.click(nav.menuToggle());
+    const target = document.createElement("input");
+    document.body.append(target);
+    await nav.user.click(target);
+    expect(target).toHaveFocus();
+  });
+
+  it("does nothing at rest", async () => {
+    const nav = renderNav();
+    await nav.user.click(outside());
+    expect(nav.menuToggle()).toHaveAttribute("aria-expanded", "false");
+    expect(nav.searchToggle()).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
 describe("switching between search and menu", () => {
   it("moves from search to menu in one click", async () => {
     const nav = renderNav();

@@ -235,7 +235,7 @@ Engineering notes are in `docs/adr/0001-spring-animation-with-motion.md`.
 
 - **Search:** the plate widens to 840px and grows to 144px tall. A search input appears in the expansion below the row, and takes focus. The search button becomes a close button.
 - **Menu:** the plate grows to 840 × 416px. The five sections appear below the row as an index list: mono `001`–`005` and `index-title` labels, hairlines between rows. The active section has a 2px accent underline. The menu button becomes a close button.
-- **Escape** or the close button returns to rest.
+- **Escape**, the close button, or a press anywhere outside the nav returns to rest. The search text is kept when it closes, and cleared only by a refresh or a page change.
 
 The panel content has a fixed 840px width (narrower viewports clamp it to the viewport minus 32px), so it never reflows while the plate animates. The section list lives only in the menu, so it can grow into a hub. The search input is not wired to anything yet. Mobile is not designed yet.
 

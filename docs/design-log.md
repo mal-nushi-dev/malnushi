@@ -6,6 +6,9 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-03
 
+### Pressing outside the nav closes it
+Mal wanted an expanded nav to close when the page is pressed anywhere outside the toolbar and plate. The search text is kept when it closes, by any route (outside press, Escape, the toggle); it is cleared only on refresh or when the page changes. Focus stays on whatever was pressed.
+
 ### Nav opens in two phases, on springs
 Mal wanted the expansion to feel less generic than one uniform ease: choreographed phases, spring physics with a slight overshoot, and a softer shape.
 - **Phases:** the plate widens about its center, then drops open once the width has covered 80% of its travel. Closing runs in reverse.

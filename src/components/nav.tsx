@@ -2,7 +2,7 @@
 
 import { animate, motionValue } from "motion";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { cx, sections, type Section } from "@/lib/site";
 
 type Mode = "idle" | "search" | "menu";
@@ -88,6 +88,7 @@ export function Nav({ active }: { active?: Section }) {
   const [scrolled, setScrolled] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const plate = useRef<HTMLDivElement>(null);
+  const header = useRef<HTMLElement>(null);
   const searchButton = useRef<HTMLButtonElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const [p] = useState(() => motionValue(0));
@@ -109,6 +110,20 @@ export function Nav({ active }: { active?: Section }) {
     setMode(next);
     setHeld(next === "idle" && !reducedMotion() && h.get() > REST + 1);
   };
+
+  // A press anywhere outside the toolbar and its plate closes the plate. The
+  // search field is always mounted, so its text survives the close.
+  const closeOnOutsidePress = useEffectEvent((e: PointerEvent) => {
+    if (e.target instanceof Node && !header.current?.contains(e.target)) {
+      go("idle");
+    }
+  });
+  useEffect(() => {
+    if (mode === "idle") return;
+    document.addEventListener("pointerdown", closeOnOutsidePress);
+    return () =>
+      document.removeEventListener("pointerdown", closeOnOutsidePress);
+  }, [mode]);
 
   useEffect(() => {
     if (!search) return;
@@ -187,6 +202,7 @@ export function Nav({ active }: { active?: Section }) {
   return (
     <>
       <header
+        ref={header}
         onKeyDown={(e) => e.key === "Escape" && go("idle")}
         className="pointer-events-none sticky top-0 z-50 h-0 bg-transparent"
       >
