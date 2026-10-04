@@ -1,4 +1,4 @@
-# 0008. One content model: entries in files, a query layer, many views
+# 0008. The Atomic Content Model: entries in files, a query layer, many views
 
 - **Status:** accepted
 - **Date:** 2026-10-04
@@ -13,6 +13,8 @@ Mal wants the opposite: an entry is written once, in its own shape with all its 
 Mal also decided that content lives in this repository, which will be made private, instead of the separate private repository ADR 0006 set out.
 
 ## Decision
+
+Call it the **Atomic Content Model**. Content is broken into atoms (entries), each written once and complete in itself, which any page can show.
 
 Three layers. Each knows nothing about the one after it.
 

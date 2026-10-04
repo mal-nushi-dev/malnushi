@@ -7,6 +7,8 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 ## 2026-10-04
 
 ### One content model; a photo is its own kind
+Mal named it the **Atomic Content Model**.
+
 Mal wants content written once and shown anywhere: a photograph on its own page, in the archive, on the home page and inside an essay, and the same for notes, posts, projects and collection rows. The engineering is in `docs/adr/0008-atomic-content-model.md`. What it changes in the design:
 - **Photo is a sixth type** (Mal's choice): one photograph with its own URL, read in an archive, never art-directed, as a note is for text. A series becomes an ordered selection of photos.
 - **A collection row can be shown away from its table** (embedded in an essay, on the home page). It still has no page; it links to its list.

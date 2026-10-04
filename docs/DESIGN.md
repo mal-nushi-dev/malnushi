@@ -469,7 +469,7 @@ What a feature **must keep**:
 
 ### Content model
 
-Everything published is an **entry**: a file in `content/`, written once in its own shape, which any page can ask for and show. See `docs/adr/0008-atomic-content-model.md`.
+The **Atomic Content Model**: everything published is an **entry**: a file in `content/`, written once in its own shape, which any page can ask for and show. See `docs/adr/0008-atomic-content-model.md`.
 
 | Kind | File | Lives at |
 |---|---|---|
