@@ -22,6 +22,7 @@ Components are grouped in sections 01–06. States (hover, focus) are CSS; varia
 - [x] Image Placeholder (hero 1248 × 640, column 680 × 453)
 - [x] Figure (`size`: hero, column)
 - [x] Portrait
+- [x] Photo (`next/image` at the hero and column sizes; replaces ImagePlaceholder when real images exist)
 
 ## 03 Links and controls
 
