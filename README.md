@@ -28,9 +28,11 @@ Open http://localhost:3000. Fonts come from Google Fonts at build time, so the f
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest in watch mode |
 | `npm run test:run` | Vitest once |
+| `npm run test:e2e` | Playwright end-to-end and accessibility tests against a production build (first run: `npx playwright install chromium`) |
+| `npm run test:visual` | Visual regression screenshots (macOS baselines; `npm run test:visual:update` accepts a change) |
 | `npm run check` | Lint, typecheck and tests, the same as CI minus the build |
 
-CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and a build on every pull request and push to `develop` and `main`.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests and a build, and separately the Playwright suite, on every pull request and push to `develop` and `main`. Visual regression is local only for now (TODO: Linux baselines, see ADR 0004).
 
 ## Configuration
 
@@ -51,6 +53,7 @@ CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and a build on every
 ```
 src/app/         routes, metadata files (icon, robots, sitemap, Open Graph image)
 src/components/  shared components, with tests beside them
+e2e/             Playwright specs: smoke, nav, accessibility, visual
 src/lib/         site constants and helpers
 tokens/          design tokens
 docs/            design spec, log, ADRs
