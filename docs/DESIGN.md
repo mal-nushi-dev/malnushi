@@ -347,7 +347,8 @@ Newsletter issues and notes never mix into the article list.
 
 A note has no title, no standfirst and no feature tier.
 
-- **Stream** (`/writing/notes`): eyebrow, `h1`, then the notes, newest first, in the 680px reading column. Each is its text in `body` with a mono `meta` date that links to the note's own page. Hairlines between notes.
+- **Stream** (`/writing/notes`): eyebrow, `h1`, standfirst, then the notes, newest first, in the 680px reading column (offset two columns, as on an essay). Each note is its text in `body`, then 16px below it a mono `meta` line in `--ink-2` that links to the note's own page. Notes are separated by a hairline with 32px above and below.
+- **Date line:** the date, a middle dot, then the time on a 12-hour clock with the time zone: `2026-10-03 · 2:12 PM EDT`. The time and zone are those where the note was written (Eastern, so `EDT` or `EST` by date), not the reader's.
 - **Single note** (`/writing/notes/[id]`): the same note alone, with a link back to the stream.
 
 Notes are not part of Kodikion and are not sent to Substack.
@@ -486,7 +487,7 @@ Post frontmatter. These fields are what search, the index lists, link previews a
 
 The slug is the file name. Reading time and word count are worked out at build time, never written by hand.
 
-A note has a `date` (with a time) and its text. `keywords` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
+A note has a `date` with a time and a UTC offset (`2026-10-03T14:12-04:00`) and its text. `keywords` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
 
 **Canonical URLs.** Every post on the site is its own canonical URL, including posts that were first published on Substack. Substack cannot point its canonical URL elsewhere, so both copies are indexed.
 
@@ -590,7 +591,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
-- Writing: design the note stream (space between notes, whether a note can carry an image or a link preview) when it is built.
+- Writing: whether a note can carry an image or a link preview. The chosen stream layout is mocked up at `/components/notes` (`src/app/components/notes/page.tsx`); delete that page once the real stream is built.
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.
 - Specify the travels collection's map view, if it gets one.

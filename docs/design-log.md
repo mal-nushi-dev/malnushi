@@ -246,3 +246,9 @@ Decided with Mal on 2026-10-03.
 - **No Substack import tool.** Existing posts are brought over by hand.
 - **Only writing moves to the private repository.** Work, photography and collections content stays here.
 - **Note stream mockups** are at `/components/notes`: A, the reading column with the date under each note; B, a ledger with the mono date in the left columns; C, grouped by day with the note set in `quote`. All three use existing tokens and type styles. None is chosen yet.
+
+### Note stream: reading column, 12-hour time with zone
+Decided with Mal on 2026-10-03, from the three mockups.
+- **Layout A, the reading column.** It is the one Mal had in mind. The ledger and the by-day layouts were dropped and removed from the mockup page.
+- **Date line** reads `2026-10-03 · 2:12 PM EDT`: Mal asked for a 12-hour clock and a named time zone. The date stays in the ISO form used by the rest of the site's mono metadata.
+- **The zone is the author's, not the reader's** (my choice). It keeps the page static and the same for everyone. Notes store a UTC offset so this can change later without editing them.
