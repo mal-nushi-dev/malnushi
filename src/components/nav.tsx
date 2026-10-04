@@ -47,23 +47,120 @@ function Icon({ children }: { children: React.ReactNode }) {
   );
 }
 
-const SearchIcon = () => (
-  <Icon>
-    <circle cx="9" cy="9" r="5.5" />
-    <path d="M13.2 13.2 17 17" />
-  </Icon>
-);
-const MenuIcon = () => (
-  <Icon>
-    <path d="M3 6.5h14M3 13.5h14" />
-  </Icon>
-);
-const CloseIcon = () => (
-  <Icon>
-    <path d="M5 5l10 10M15 5L5 15" />
-  </Icon>
-);
+/*
+ * Search to close, drawn as two paths whose nodes match one for one, so the
+ * morph is a plain interpolation of coordinates. The lens is four cubic arcs
+ * that straighten and pull apart into the "/" stroke of the X; the handle is
+ * a line whose ends slide into the "\" stroke. Only `d` changes (no layout),
+ * the stroke, caps and color stay on the parent svg.
+ */
+const K = 0.5523;
+type Pt = [number, number];
+const lens = (() => {
+  const r = 5.5;
+  const ang = (i: number) => ((-45 - 90 * i) * Math.PI) / 180;
+  const at = (i: number): Pt => [9 + r * Math.cos(ang(i)), 9 + r * Math.sin(ang(i))];
+  const circle: Pt[] = [at(0)];
+  for (let i = 0; i < 4; i++) {
+    const a0 = ang(i);
+    const a1 = ang(i + 1);
+    const p0 = at(i);
+    const p1 = at(i + 1);
+    circle.push(
+      [p0[0] + K * r * Math.sin(a0), p0[1] - K * r * Math.cos(a0)],
+      [p1[0] - K * r * Math.sin(a1), p1[1] + K * r * Math.cos(a1)],
+      p1,
+    );
+  }
+  const from: Pt = [15, 5];
+  const to: Pt = [5, 15];
+  const line: Pt[] = [from];
+  for (let i = 0; i < 4; i++) {
+    const lerp = (u: number): Pt => [
+      from[0] + (to[0] - from[0]) * u,
+      from[1] + (to[1] - from[1]) * u,
+    ];
+    line.push(lerp((i + 1 / 3) / 4), lerp((i + 2 / 3) / 4), lerp((i + 1) / 4));
+  }
+  return { circle, line };
+})();
+const f = (n: number) => n.toFixed(3);
+const mix = (a: Pt[], b: Pt[], t: number) =>
+  a.map((p, i): Pt => [p[0] + (b[i][0] - p[0]) * t, p[1] + (b[i][1] - p[1]) * t]);
+const lensPath = (t: number) => {
+  const q = mix(lens.circle, lens.line, t);
+  let d = `M${f(q[0][0])} ${f(q[0][1])}`;
+  for (let i = 1; i < q.length; i += 3) {
+    d += `C${q.slice(i, i + 3).map((p) => `${f(p[0])} ${f(p[1])}`).join(" ")}`;
+  }
+  return d;
+};
+const handle = { from: [[13.2, 13.2], [17, 17]] as Pt[], to: [[15, 15], [5, 5]] as Pt[] };
+const handlePath = (t: number) => {
+  const [a, b] = mix(handle.from, handle.to, t);
+  return `M${f(a[0])} ${f(a[1])}L${f(b[0])} ${f(b[1])}`;
+};
 
+/* Drives a 0 to 1 morph value toward `open`, calling `write` on every change. */
+function useMorph(open: boolean, write: (t: number) => void) {
+  const [t] = useState(() => motionValue(open ? 1 : 0));
+  const onChange = useEffectEvent(write);
+  useEffect(() => {
+    onChange(t.get());
+    return t.on("change", onChange);
+  }, [t]);
+  useEffect(() => {
+    const to = open ? 1 : 0;
+    if (reducedMotion()) {
+      t.jump(to);
+      return;
+    }
+    // Retargets from the current value, so a mid-flight toggle reverses cleanly.
+    const a = animate(t, to, { duration: 0.25, ease: [0.4, 0, 0.2, 1] });
+    return () => a.stop();
+  }, [open, t]);
+}
+
+function SearchIcon({ open }: { open: boolean }) {
+  const lensEl = useRef<SVGPathElement>(null);
+  const handleEl = useRef<SVGPathElement>(null);
+  useMorph(open, (v) => {
+    lensEl.current?.setAttribute("d", lensPath(v));
+    handleEl.current?.setAttribute("d", handlePath(v));
+  });
+  return (
+    <Icon>
+      <path ref={lensEl} d={lensPath(open ? 1 : 0)} />
+      <path ref={handleEl} d={handlePath(open ? 1 : 0)} />
+    </Icon>
+  );
+}
+
+/* Hamburger to close: each bar's two ends travel to an end of a diagonal. */
+const bars: { from: Pt[]; to: Pt[] }[] = [
+  { from: [[3, 6.5], [17, 6.5]], to: [[5, 5], [15, 15]] },
+  { from: [[3, 13.5], [17, 13.5]], to: [[5, 15], [15, 5]] },
+];
+const barPath = (i: number, t: number) => {
+  const [a, b] = mix(bars[i].from, bars[i].to, t);
+  return `M${f(a[0])} ${f(a[1])}L${f(b[0])} ${f(b[1])}`;
+};
+
+function MenuIcon({ open }: { open: boolean }) {
+  const top = useRef<SVGPathElement>(null);
+  const bottom = useRef<SVGPathElement>(null);
+  useMorph(open, (v) => {
+    top.current?.setAttribute("d", barPath(0, v));
+    bottom.current?.setAttribute("d", barPath(1, v));
+  });
+  const t = open ? 1 : 0;
+  return (
+    <Icon>
+      <path ref={top} d={barPath(0, t)} />
+      <path ref={bottom} d={barPath(1, t)} />
+    </Icon>
+  );
+}
 const button =
   "flex size-14 flex-none cursor-pointer items-center justify-center rounded-(--radius-img) text-ink-2 transition-colors duration-300 hover:text-ink motion-reduce:transition-none";
 
@@ -283,7 +380,7 @@ export function Nav({ active }: { active?: Section }) {
               aria-expanded={search}
               onClick={() => go(search ? "idle" : "search")}
             >
-              {search ? <CloseIcon /> : <SearchIcon />}
+              <SearchIcon open={search} />
             </button>
             <div className="flex min-w-0 flex-1 justify-center">
               <Link
@@ -303,7 +400,7 @@ export function Nav({ active }: { active?: Section }) {
               aria-controls="site-menu"
               onClick={() => go(menu ? "idle" : "menu")}
             >
-              {menu ? <CloseIcon /> : <MenuIcon />}
+              <MenuIcon open={menu} />
             </button>
           </div>
         </div>

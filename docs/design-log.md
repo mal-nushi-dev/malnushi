@@ -218,3 +218,10 @@ Use "color" (US) in names and labels to match the tokens and DESIGN.md.
 Applied on 2026-10-03:
 - The search input in the expanded nav is centered, 40px Newsreader, one line (72px tall) with `--space-lg` side padding. Long queries do not wrap; the text scrolls sideways inside the field and the caret stays in view, so nothing leaves the plate.
 - The browser's clear button is hidden so it cannot push the centered text off center.
+
+### Search icon morphs into close
+Applied on 2026-10-03:
+- The search toggle's magnifier morphs into the X instead of swapping: the lens unrolls into one diagonal stroke and the handle slides across to form the other. Stroke width, round caps and color are unchanged throughout.
+- 250ms, `cubic-bezier(0.4, 0, 0.2, 1)`, reversible mid-flight. `prefers-reduced-motion` switches instantly. The menu toggle still swaps its icon.
+- Done as matching-node cubic paths with `d` written from a motion value, so no layout and no new dependency (ADR 0001 applies).
+- The menu toggle morphs the same way (2026-10-03): the two bars rotate and cross into the X over the same 250ms curve, sharing one driver with the search icon.
