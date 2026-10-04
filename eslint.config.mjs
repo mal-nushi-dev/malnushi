@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Example code shipped with agent skills; not part of the site.
+    ".agents/**",
   ]),
 ]);
 
