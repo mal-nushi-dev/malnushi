@@ -1,6 +1,6 @@
 # 0006. Writing content in a private repository, notes through Pages CMS
 
-- **Status:** accepted
+- **Status:** superseded in part by [0008](0008-atomic-content-model.md) (2026-10-04). Content now lives in this repository, which will be made private: decisions 1 to 5 (the separate repository, the fetch step, the deploy hook, sample content, the local clone) no longer apply. Decisions 6 to 8 stand, with Pages CMS pointed at this repository.
 - **Date:** 2026-10-03
 
 ## Context

@@ -42,7 +42,7 @@ The wordmark ("Mal Nushi") links home and sits in the centre of the toolbar. Fea
 
 ### Page types
 
-Every piece of content is one of five types. Each has its own house template.
+Every piece of content is one of six types. Each has its own house template.
 
 | Type | What it is | Leads with | Promotable to feature |
 |---|---|---|---|
@@ -50,9 +50,10 @@ Every piece of content is one of five types. Each has its own house template.
 | **Project** | Code, digital design, hardware, Lego builds | Image: hero, then title and spec block | Yes |
 | **Photography series** | A sequenced set of photographs | Image: sequencing and pacing do the work | Yes |
 | **Note** | A short, untitled post, the length of a social post | Text: the note itself, then a mono date | No |
+| **Photo** | One photograph, on its own | Image: the photograph, then its caption and EXIF | No |
 | **Collection** | A structured, growing list (life list, recs, music, travels, Lego inventory) | Data: header, stats, then rows | No (items are rows, not pages) |
 
-The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. **Collections** are different. A bird sighting, a recommendation or an album is a row in a list, never a page of its own. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list.
+The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. A **photo** is the same for images: it has its own URL and is read in the archive, never art-directed; photographs that belong together and need pacing are a series, which is an ordered selection of photos. **Collections** are different. A bird sighting, a recommendation or an album is a row in a list, never a page of its own. A row can still be named and shown elsewhere (in an essay, on the home page); it links back to its list. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list.
 
 ### Two tiers: house and feature
 
@@ -315,7 +316,7 @@ The home page acts as an active front porch rather than a static directory—an 
 
 - **Opening:** a short introduction in the serif voice, an About link and a line-drawn self-portrait. No hero tagline about "building things."
 - **Lead feature:** one feature follows the introduction, at full display scale with its own accent. It changes when a new feature is promoted.
-- **Then:** the other features in a varied-size arrangement, followed by index lists of the latest essays and projects, the latest newsletter issues and notes, and a strip showing recent collection activity (latest bird, latest rec).
+- **Then:** the other features in a varied-size arrangement, followed by index lists of the latest essays and projects, the latest newsletter issues and notes, and a strip showing recent collection activity (latest bird, latest rec, latest photograph).
 
 ### Essay
 
@@ -352,7 +353,7 @@ The page calls itself **Kodikion.** (the nav item stays "Writing"). Decided with
    - **All articles:** a section label, filter pills (one per category, plus All) and the index list, which the pills filter in place.
 3. **Notes rail, columns 10–12:** a section label, the latest notes set in `ui` with a `meta` date link, and an arrow link to the stream. It is sticky (`top: --space-lg`) and stays in view while the articles scroll. The rail is an `aside` landmark named "Notes".
 
-Newsletter issues and notes never mix into the article list. Images are placeholders until the content repository supplies them (ADR 0006).
+Newsletter issues and notes never mix into the article list. Images are placeholders until the posts have real ones.
 
 **Masthead behaviour.** Plays on every page load, about 3.3s: a dark CRT screen warms up behind the name (0.3s), the name is typed in JetBrains Mono, in green phosphor, behind a block cursor (solid while typing), the cursor blinks twice (1s), then the letters spring into the serif, the screen fades out and the cursor becomes the sage full stop. Pressing it plays the morph again, serif to monospace (the full stop becoming the block cursor), two blinks, then back to serif; presses during a play are ignored. It is a button covering the masthead, named "Play the masthead animation again", so it works from the keyboard. With reduced motion, or no JavaScript, the finished serif is shown still and there is no button.
 
@@ -390,6 +391,16 @@ Image leads. One template covers code, digital design, hardware and Lego; the sp
 Someone should understand a project from the hero, title and spec block alone, and read further only if interested.
 
 **As a feature:** a COLLINS-style case study. The process, dead ends and details become the story, with larger image sequences, process artifacts, and the project's own accent.
+
+### Photo
+
+One photograph. It has no feature tier.
+
+- **Archive** (`/photography`): eyebrow, `h1`, standfirst, then every photograph, newest first, one at a time, `space-block` apart: landscape at the content width, portrait at the column width, alternating left and right. Each has a mono index (numbered from the oldest, so a photograph keeps its number) and its EXIF, and links to its own page. Provisional; see Open questions.
+- **Single photo** (`/photography/[id]`): eyebrow (`PHOTOGRAPHY / 2026-10-02`), the photograph, its title as the `h1` if it has one, its caption in `standfirst`, then a meta row of date, place, camera, lens and exposure. Below: "Appears in", an index list of the entries that point at it, and the next link to the next photograph.
+- **Embedded** in an essay: a column figure with the day it was taken as its index and its EXIF, linking to its page.
+
+The archive is not in the nav. It is reached from Projects and from the home page.
 
 ### Photography series
 
@@ -458,18 +469,27 @@ What a feature **must keep**:
 
 ### Content model
 
-Each piece is an MDX file with frontmatter. One route per section:
+Everything published is an **entry**: a file in `content/`, written once in its own shape, which any page can ask for and show. See `docs/adr/0008-atomic-content-model.md`.
 
-- `/writing/[slug]` for Kodikion posts (articles and newsletter issues)
-- `/writing/the-kernel` and `/writing/dev-journal` for the two newsletters
-- `/writing/notes` for the note stream and `/writing/notes/[id]` for one note
-- `/projects/[slug]` for projects
-- `/photography/[slug]` for series
-- `/collections/[slug]` for collections (backed by data files such as JSON, YAML or CSV, not MDX)
+| Kind | File | Lives at |
+|---|---|---|
+| Post | `content/posts/<slug>.mdx` | `/writing/[slug]` |
+| Note | `content/notes/<id>.md` | `/writing/notes/[id]`, read at `/writing/notes` |
+| Photo | `content/photos/<id>.jpg`, with an optional `<id>.yml` | `/photography/[id]`, read at `/photography` |
+| Series | `content/series/<slug>.mdx` | `/projects/[slug]` |
+| Project | `content/projects/<slug>.mdx` | `/projects/[slug]` |
+| Collection | `content/collections/<slug>.yml` | `/collections/[slug]` |
+| Collection row | an item in its collection's file | no page: `/collections/[slug]#<id>` |
 
-`the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug.
+`/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A series and a project share `/projects/`, so they cannot share a slug.
 
-**Writing content is not in this repository.** Posts and notes, with their images, live in a separate private repository and are brought in when the site is built. Notes are posted there with Pages CMS. See `docs/adr/0006-writing-content-in-a-private-repo.md`. Work, photography and collections content stays in this repository.
+**Refs.** An entry is named `kind:id`, for example `photo:2026-10-02-wren-at-the-window` or `item:life-list/carolina-wren`. One entry points at another in its frontmatter (`cover`, `photos`, `related`) or in its body with `<Embed of="photo:…" />`, which draws the other entry in place: a photograph as a figure with its EXIF, a note as a note, a collection row as its summary. Each entry's page can list what points at it ("Appears in"). The build fails on a ref that names nothing.
+
+**Views.** The same entry is drawn differently by context: its own page, a row in an index list, an item in a stream, an embed. Pages get entries from `src/lib/content` and never hold content themselves.
+
+**Content is in this repository,** which will be made private. Until it is, only placeholder content is committed. Notes are still to be posted with Pages CMS.
+
+**Photo metadata.** A photograph's date, camera, lens and exposure are read from the image file. Its `.yml` can add `alt`, `caption`, `place` and `tags`, and can override anything the file says (for a film scan, it supplies everything). Alt text is required, from the `.yml` or from the image's own alt text field. Photographs are `.jpg`, exported with the long edge at 2400px or less.
 
 **RSS.** Two feeds: `/writing/feed.xml` for Kodikion posts and `/writing/notes/feed.xml` for notes. Both carry the full text.
 
@@ -509,6 +529,8 @@ Post frontmatter. These fields are what search, the index lists, link previews a
 | `series`, `part` | No | A series name and this post's part number |
 | `issue` | No | Newsletter issue number |
 | `image`, `imageAlt` | No | Hero and share image |
+| `cover` | No | A photo's ref, used as the hero |
+| `related` | No | Refs of entries this post is about |
 | `substack` | No | URL of the Substack copy |
 | `draft` | No | `true` keeps the post out of the build |
 | `feature` | No | The block above. Articles only. |
@@ -620,6 +642,10 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
 - Writing index: the masthead and its sticky notes rail are not checked in Safari, Firefox or on a phone and have no mobile layout (set aside by Mal 2026-10-04, not dropped). The full-stop spacing in the masthead is unreviewed.
+- Photo archive (`/photography`): the layout is a first pass built from existing components, not designed. Decide the layout, the page's copy, whether captions show in the archive, and where the archive is linked from.
+- Photography series now live at `/projects/[slug]`, so `/photography/[id]` is a single photo (my choice, 2026-10-04; not confirmed by Mal). The series template is not built.
+- Home: the "latest photograph" in the collections strip is text only. Decide whether it shows the image.
+- Essay page (`/writing/[slug]`): margin asides and the feature tier are not built; an aside renders inline.
 - Writing: whether a note can carry an image or a link preview. The chosen stream layout is built at `/writing/notes` (`src/app/writing/notes/page.tsx`).
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.

@@ -6,6 +6,20 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-04
 
+### One content model; a photo is its own kind
+Mal wants content written once and shown anywhere: a photograph on its own page, in the archive, on the home page and inside an essay, and the same for notes, posts, projects and collection rows. The engineering is in `docs/adr/0008-atomic-content-model.md`. What it changes in the design:
+- **Photo is a sixth type** (Mal's choice): one photograph with its own URL, read in an archive, never art-directed, as a note is for text. A series becomes an ordered selection of photos.
+- **A collection row can be shown away from its table** (embedded in an essay, on the home page). It still has no page; it links to its list.
+- **Content moves into this repository** (Mal's choice, reversing ADR 0006), which will be made private. Placeholder content only until then.
+- **Photo metadata:** read from the image, and anything in the photo's `.yml` wins (Mal's choice). Alt text is required, or the build fails (my choice, from the accessibility rule that every image has alt text).
+- **Series move to `/projects/[slug]`** so `/photography/[id]` can be the photo's permalink (my choice, for review). It follows the earlier entry that lists series on the Projects index. The home page's link to the marsh series changed with it.
+- **Photo archive and photo page** are built from existing tokens and components only: figures `space-block` apart, landscape at hero width and portrait at column width, alternating sides; the photo page reuses the meta row and index list. Not designed with Mal; in Open questions.
+- **Embeds** in an essay: a photograph is a column figure indexed by its date; a note and a collection row sit between two hairlines; anything else is a label over an `index-title` link.
+- **Home:** the collections strip is three equal cells (was 5 and 6 columns) and gains "Latest photograph", as text. "Latest writing" now lists the three newest articles from the same content the Writing page uses; before, the two pages had different placeholder lists. The feature essay is dated 2025-10-01 so the Writing page's lead stays as it was.
+- **Eyebrow fixed:** `EssayHeader` read `ESSAY / …`; it now reads `WRITING / …`, as decided on 2026-10-03.
+- **Essay page built** (`/writing/[slug]`) to the house template in DESIGN.md, without margin asides or the feature tier. The single note page (`/writing/notes/[id]`) is built as specified, with a hidden `h1` naming the note by its date.
+- **What would change it:** if photos outgrow one archive (hundreds), it needs paging or grouping by month or place; if series should stay under `/photography/`, photos need a different permalink.
+
 ### Page significance and editorial roles defined
 Mal clarified what each of the five primary spaces in the site signifies, formalizing their information architecture and presentation models in [DESIGN.md](DESIGN.md):
 - **Home:** An active front porch rather than a static directory, pairing personal introduction with lead features and live pulses from recent writing, projects, and collection activity.
