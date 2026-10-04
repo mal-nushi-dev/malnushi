@@ -132,15 +132,17 @@ test("keyboard: tab reaches search, wordmark, menu in order", async ({ page }) =
 });
 
 test("focus ring shows for keyboard focus only", async ({ page }) => {
+  // The menu toggle, not search: opening search moves focus to the field on
+  // a timer, which races every assertion made on the toggle.
   const outline = () =>
-    searchToggle(page).evaluate((el) => getComputedStyle(el).outlineStyle);
-  await searchToggle(page).hover();
+    menuToggle(page).evaluate((el) => getComputedStyle(el).outlineStyle);
+  await menuToggle(page).hover();
   await page.mouse.down();
   await page.mouse.up();
-  await expect(searchToggle(page)).toBeFocused();
+  await expect(menuToggle(page)).toBeFocused();
   expect(await outline()).toBe("none");
   await page.getByRole("link", { name: "Mal Nushi" }).focus();
-  await page.keyboard.press("Shift+Tab");
-  await expect(searchToggle(page)).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(menuToggle(page)).toBeFocused();
   expect(await outline()).toBe("solid");
 });
