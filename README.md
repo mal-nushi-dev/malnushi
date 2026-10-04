@@ -30,6 +30,7 @@ Open http://localhost:3000. Fonts come from Google Fonts at build time, so the f
 | `npm run test:run` | Vitest once |
 | `npm run test:e2e` | Playwright end-to-end and accessibility tests against a production build (first run: `npx playwright install chromium`) |
 | `npm run test:visual` | Visual regression screenshots (macOS baselines; `npm run test:visual:update` accepts a change) |
+| `npm run analyze` | Bundle analyzer (`next experimental-analyze`) |
 | `npm run check` | Lint, typecheck and tests, the same as CI minus the build |
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests and a build, and separately the Playwright suite, on every pull request and push to `develop` and `main`. Visual regression is local only for now (TODO: Linux baselines, see ADR 0004).
@@ -44,6 +45,7 @@ CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests and a build, an
 
 - [docs/DESIGN.md](docs/DESIGN.md): the design specification, including the design tokens.
 - [docs/design-log.md](docs/design-log.md): design decisions and the reasons for them.
+- [docs/performance.md](docs/performance.md): Lighthouse baseline, bundle and font findings, image pattern and budgets.
 - [docs/component-checklist.md](docs/component-checklist.md): status of each component.
 - [docs/adr/](docs/adr/): architecture decision records.
 - `tokens/`: design tokens in W3C DTCG JSON, the source of truth. `src/app/globals.css` mirrors them by hand.
