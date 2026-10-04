@@ -127,6 +127,8 @@ export function Nav({ active }: { active?: Section }) {
 
   useEffect(() => {
     if (!search) return;
+    // The field's opacity fade is delayed but its visibility is not, so it can
+    // take focus here; a hidden element silently refuses focus.
     // preventScroll: focusing while the plate is still short would otherwise
     // scroll its clipped overflow and leave the field stuck over the row.
     const t = setTimeout(() => {
@@ -225,7 +227,7 @@ export function Nav({ active }: { active?: Section }) {
             <div
               className={cx(
                 "absolute top-18 left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-2 transition-[opacity,visibility] duration-350 motion-reduce:transition-none",
-                search ? "opacity-100 delay-150" : "invisible opacity-0",
+                search ? "opacity-100 [transition-delay:150ms,0s]" : "invisible opacity-0",
               )}
             >
               <input
@@ -242,7 +244,7 @@ export function Nav({ active }: { active?: Section }) {
               aria-label="Sections"
               className={cx(
                 "absolute top-18 left-1/2 w-[min(840px,calc(100vw-32px))] -translate-x-1/2 px-(--space-lg) pb-(--space-lg) pt-(--space-sm) transition-[opacity,visibility] duration-350 motion-reduce:transition-none",
-                menu ? "opacity-100 delay-150" : "invisible opacity-0",
+                menu ? "opacity-100 [transition-delay:150ms,0s]" : "invisible opacity-0",
               )}
             >
               <ul>
