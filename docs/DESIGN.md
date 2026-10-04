@@ -32,16 +32,17 @@ The wordmark ("Mal Nushi") links home and sits in the centre of the toolbar. Fea
 
 ### Page types
 
-Every piece of content is one of four types. Each has its own house template.
+Every piece of content is one of five types. Each has its own house template.
 
 | Type | What it is | Leads with | Promotable to feature |
 |---|---|---|---|
-| **Essay** | Long-form writing | Type: headline, standfirst, then reading column | Yes |
+| **Essay** | A Kodikion post: an article, or an issue of The Kernel or Dev Journal | Type: headline, standfirst, then reading column | Articles yes; newsletter issues no |
 | **Project** | Code, digital design, hardware, Lego builds | Image: hero, then title and spec block | Yes |
 | **Photography series** | A sequenced set of photographs | Image: sequencing and pacing do the work | Yes |
+| **Note** | A short, untitled post, the length of a social post | Text: the note itself, then a mono date | No |
 | **Collection** | A structured, growing list (life list, recs, music, travels, Lego inventory) | Data: header, stats, then rows | No (items are rows, not pages) |
 
-The first three are **pieces**: each is a standalone page at its own URL. **Collections** are different. A bird sighting, a recommendation or an album is a row in a list, never a page of its own. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list.
+The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. **Collections** are different. A bird sighting, a recommendation or an album is a row in a list, never a page of its own. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list.
 
 ### Two tiers: house and feature
 
@@ -242,7 +243,7 @@ The panel content has a fixed 840px width (narrower viewports clamp it to the vi
 ### Eyebrow
 
 `label` style, `--ink-2`, above every h1: section, then an accent-colored `/`, then the sub-category.
-Examples: `ESSAY / BIRDING`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart.
+Examples: `WRITING / TECHNOLOGY`, `WRITING / THE KERNEL`, `WRITING / DEV JOURNAL`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart. For writing, the sub-category is the article's category, or the newsletter's name on an issue.
 
 ### Meta row
 
@@ -304,7 +305,7 @@ The homepage is an editorial front page, not a feed.
 
 - **Opening:** a short introduction in the serif voice, an About link and a line-drawn self-portrait. No hero tagline about "building things."
 - **Lead feature:** one feature follows the introduction, at full display scale with its own accent. It changes when a new feature is promoted.
-- **Then:** the other features in a varied-size arrangement, followed by index lists of the latest essays and projects, and a strip showing recent collection activity (latest bird, latest rec).
+- **Then:** the other features in a varied-size arrangement, followed by index lists of the latest essays and projects, the latest newsletter issues and notes, and a strip showing recent collection activity (latest bird, latest rec).
 
 ### Essay
 
@@ -317,6 +318,39 @@ Type leads.
 5. The next link in the footer.
 
 **As a feature:** a display-scale headline (`feature-display`) that may crop, a full-bleed hero or color field in the piece's accent, and inset images that break out of the column.
+
+Every Kodikion post uses this template. A post's `type` says what it is:
+
+- **Article** (the default). It has one topic category (Technology, Cars, Politics…) and can be promoted to a feature.
+- **The Kernel** or **Dev Journal**, a newsletter issue. It needs no category and is never promoted to a feature.
+
+A multi-part run (parts 1 to 3 on one subject) is a series name and a part number on any post, whatever its category. It adds "Part 2 of 3" to the meta row and links to the previous and next parts. A series has no page of its own.
+
+A post that is also on Substack links to that copy ("Also on Substack") after the body.
+
+### Writing index
+
+`/writing`. Kodikion is named here as the blog's name, with a link to subscribe on Substack. From the top:
+
+1. Eyebrow, `h1`, standfirst.
+2. **Articles:** an index list, newest first, with the category in the category column.
+3. **The Kernel**, then **Dev Journal:** each a section label, an index list of the latest few issues, and an arrow link to the newsletter's page.
+4. **Notes:** a section label, the latest few notes, and an arrow link to the stream.
+
+Newsletter issues and notes never mix into the article list.
+
+### Newsletter page
+
+`/writing/the-kernel` and `/writing/dev-journal`. Eyebrow, the newsletter's name as the `h1`, its description as the standfirst, then an index list of every issue, newest first.
+
+### Note
+
+A note has no title, no standfirst and no feature tier.
+
+- **Stream** (`/writing/notes`): eyebrow, `h1`, then the notes, newest first, in the 680px reading column. Each is its text in `body` with a mono `meta` date that links to the note's own page. Hairlines between notes.
+- **Single note** (`/writing/notes/[id]`): the same note alone, with a link back to the stream.
+
+Notes are not part of Kodikion and are not sent to Substack.
 
 ### Project
 
@@ -397,18 +431,27 @@ What a feature **must keep**:
 
 Each piece is an MDX file with frontmatter. One route per section:
 
-- `/writing/[slug]` for essays
+- `/writing/[slug]` for Kodikion posts (articles and newsletter issues)
+- `/writing/the-kernel` and `/writing/dev-journal` for the two newsletters
+- `/writing/notes` for the note stream and `/writing/notes/[id]` for one note
 - `/work/[slug]` for projects
 - `/photography/[slug]` for series
 - `/collections/[slug]` for collections (backed by data files such as JSON, YAML or CSV, not MDX)
+
+`the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug.
+
+**Writing content is not in this repository.** Posts and notes, with their images, live in a separate private repository and are brought in when the site is built. Notes are posted there with Pages CMS. See `docs/adr/0006-writing-content-in-a-private-repo.md`. Work, photography and collections content stays in this repository.
+
+**RSS.** Two feeds: `/writing/feed.xml` for Kodikion posts and `/writing/notes/feed.xml` for notes. Both carry the full text.
 
 A piece renders in its house template unless the frontmatter has a `feature` block:
 
 ```yaml
 ---
 title: "The list that keeps me looking"
-standfirst: "A life list is supposed to be about the birds…"
+subtitle: "A life list is supposed to be about the birds…"
 date: 2026-09-28
+type: article
 category: Birding
 feature:
   accent: "#8A5A3C"
@@ -418,6 +461,36 @@ feature:
 ```
 
 Promoting a piece means adding that block plus any bespoke MDX components. The URL and the words don't change.
+
+### Writing metadata
+
+Post frontmatter. These fields are what search, the index lists, link previews and structured data read, so every post fills them in the same way.
+
+| Field | Required | Notes |
+|---|---|---|
+| `title` | Yes | |
+| `subtitle` | Yes | The standfirst under the `h1` |
+| `description` | No | One or two sentences for search results, link previews and SEO. Falls back to `subtitle`. |
+| `date` | Yes | First published |
+| `updated` | No | Only for a real revision |
+| `author` | No | Defaults to Mal Nushi |
+| `type` | No | `article` (default), `the-kernel` or `dev-journal` |
+| `category` | Articles | One per post, from a short fixed list |
+| `keywords` | No | Three to eight specific terms a reader would type. For search only; not shown as tags. |
+| `series`, `part` | No | A series name and this post's part number |
+| `issue` | No | Newsletter issue number |
+| `image`, `imageAlt` | No | Hero and share image |
+| `substack` | No | URL of the Substack copy |
+| `draft` | No | `true` keeps the post out of the build |
+| `feature` | No | The block above. Articles only. |
+
+The slug is the file name. Reading time and word count are worked out at build time, never written by hand.
+
+A note has a `date` (with a time) and its text. `keywords` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
+
+**Canonical URLs.** Every post on the site is its own canonical URL, including posts that were first published on Substack. Substack cannot point its canonical URL elsewhere, so both copies are indexed.
+
+**Search** covers posts and notes. Matches are weighted: title first; then subtitle, keywords and category; then description; then body. Results can be filtered by kind (post or note), type, category and year.
 
 Projects add spec fields:
 
@@ -515,7 +588,10 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Ink and ground are now neutral grays (`#2E2E2E`, `#FAFAFA`), while `surface`, `line`, `ink-2` and `link` are still the cool, slightly green family. Decide whether to make those neutral too.
 - Pick the first three to five pieces to promote to features at launch.
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
-- Wire up the toolbar search (no route or index yet).
+- Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
+- Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
+- Writing: design the note stream (space between notes, whether a note can carry an image or a link preview) when it is built.
+- Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.
 - Specify the travels collection's map view, if it gets one.
 - Check the licence of the SVG Repo mustache used in `docs/portrait.svg` (credit it, or redraw the shape, before launch).

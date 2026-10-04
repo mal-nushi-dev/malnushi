@@ -225,3 +225,24 @@ Applied on 2026-10-03:
 - 250ms, `cubic-bezier(0.4, 0, 0.2, 1)`, reversible mid-flight. `prefers-reduced-motion` switches instantly. The menu toggle still swaps its icon.
 - Done as matching-node cubic paths with `d` written from a motion value, so no layout and no new dependency (ADR 0001 applies).
 - The menu toggle morphs the same way (2026-10-03): the two bars rotate and cross into the X over the same 250ms curve, sharing one driver with the search icon.
+
+### Writing: posts and notes
+Decided with Mal on 2026-10-03. Docs only; nothing is built yet.
+- **Two kinds of writing.** A post is a Kodikion post at `/writing/[slug]`; a note is a short untitled post at `/writing/notes/[id]`. Notes are not part of Kodikion. They sit inside Writing so the nav stays at five items.
+- **One kind of post.** Articles and newsletter issues share one template and one URL pattern. A `type` field (`article`, `the-kernel`, `dev-journal`) tells them apart. An earlier draft made "issue" its own kind and drew a hard line between series and category; Mal found that too complicated.
+- **Newsletters get their own sections.** On `/writing`, The Kernel and Dev Journal each have a section and a page (`/writing/the-kernel`, `/writing/dev-journal`). Issues stay out of the article list, need no category and are never promoted to a feature.
+- **Series is separate from category.** A multi-part run is a series name and part number on any post, so the parts of one series can sit in different categories. It has no page of its own.
+- **Eyebrows for writing** read `WRITING / <category or newsletter>`, which matches the `Eyebrow` already on the home page. The spec's old example was `ESSAY / BIRDING`.
+- **The frontmatter key is `subtitle`,** not `standfirst`. It is the word Mal uses, and Substack's. The type style is still called `standfirst`.
+- **No "subtype" field.** `type` and `category` cover it; a third level would mostly be empty. Add it if a real post needs it.
+- **The site is canonical** for every post, including the ones first published on Substack. Substack cannot defer, so the copies will compete in search. Mal chose the simple rule over pointing the old posts at Substack.
+- Where the content is stored and how notes are posted is engineering: see `docs/adr/0006-writing-content-in-a-private-repo.md`.
+- **What would change it:** a third newsletter is one more `type` value and page. If notes outgrow Writing, they become a sixth section and the menu plate grows by a row.
+
+### Writing: follow-up decisions
+Decided with Mal on 2026-10-03.
+- **Home shows notes and newsletter issues.** Mal wants both on the home page for now and does not mind how; the layout is left for a later pass, so the page is unchanged.
+- **RSS: yes.** Two feeds, one for posts and one for notes, both full text. The split is my choice: someone subscribing to essays should not get every short note. Merge them if that proves wrong.
+- **No Substack import tool.** Existing posts are brought over by hand.
+- **Only writing moves to the private repository.** Work, photography and collections content stays here.
+- **Note stream mockups** are at `/components/notes`: A, the reading column with the date under each note; B, a ledger with the mono date in the left columns; C, grouped by day with the note set in `quote`. All three use existing tokens and type styles. None is chosen yet.
