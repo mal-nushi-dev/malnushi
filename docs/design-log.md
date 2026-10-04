@@ -6,6 +6,11 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-03
 
+### 404 and error pages
+Added `not-found.tsx` and `error.tsx`, both built on a shared `StatusPage` (nav, a small label, an `h1`, a standfirst, then arrow links). They use existing tokens and type styles only, so nothing new is added to the spec.
+- **Copy** is plain and short: "That page isn’t here." and "Something went wrong." The 404 admits that most of the site is unwritten, since most links currently lead there. Mal hasn't reviewed the wording.
+- **Layout** follows the page header pattern: 120px top padding, one column, no image.
+
 ### Placeholder icons and share image
 `icon.tsx`, `apple-icon.tsx` and `opengraph-image.tsx` are generated: an "M" on `--ink`, and a light card with the site name and description under a sage rule. They are placeholders for a real mark and use the renderer's bundled sans, because it cannot load the `next/font` files. Replace them when the logo and share image are designed. The default Next favicon was removed.
 

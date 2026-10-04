@@ -11,6 +11,7 @@ Components are grouped in sections 01–06. States (hover, focus) are CSS; varia
 - [x] Nav (floating toolbar: search, wordmark, menu; expands on springs)
 - [x] Next Link
 - [x] Footer
+- [x] Status Page (404 and error pages; `src/components/status-page.tsx`)
 
 ## 02 Text and media
 
