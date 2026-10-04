@@ -511,6 +511,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 
 - Confirm the pairing reads well on real essays (test a full paragraph on the essay page at 100% zoom).
 - Confirm the provisional dark-mode accent, surface and code colors after contrast checks. Since `neutral.900` became `#2E2E2E`, the dark `code-bg` (`#2A2F35`) is 1.01:1 against the dark `bg`, so code blocks no longer stand out in dark mode.
+- **Contrast failures found by the browser checks (2026-10-03, `e2e/a11y.spec.ts`).** Image placeholder labels (`ink-2` on `line`) are 3.88:1 in light and 3.2:1 in dark, under the 4.5:1 AA minimum for small text; `ink` would pass. On the home page the lead feature's hero label (`bg` on the placeholder accent `#8a5a3c`) is 2.33:1 in dark mode. Placeholders are excluded from the scan until this is decided. The dark accent (`#758072`) is 3.28:1 on the dark `bg`, so it must not be used for text (it is not, apart from a preview-page heading that was moved to `ink-2`). Everything else the scan covers, including the sage plate in both modes, passes AA.
 - Ink and ground are now neutral grays (`#2E2E2E`, `#FAFAFA`), while `surface`, `line`, `ink-2` and `link` are still the cool, slightly green family. Decide whether to make those neutral too.
 - Pick the first three to five pieces to promote to features at launch.
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.

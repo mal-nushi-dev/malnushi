@@ -61,7 +61,7 @@ function Group({
 }) {
   return (
     <section className="page flex flex-col gap-(--space-xl) py-(--space-2xl)">
-      <h2 className="type-meta text-accent">
+      <h2 className="type-meta text-ink-2">
         {number}&nbsp;&nbsp;{title}
       </h2>
       {children}

@@ -6,6 +6,10 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-03
 
+### Contrast checked in the browser
+The new axe scan (`e2e/a11y.spec.ts`) checks WCAG 2.2 AA contrast on the pages and the nav's open states, in light and dark. The sage plate passes in both modes. Findings, all in DESIGN.md "Open questions": placeholder labels fail AA, and the dark accent is under 4.5:1 so it cannot carry text.
+- **Changed:** the section headings on the `/components` preview page were `--accent`, which the spec reserves for marks, not small text (3.28:1 in dark). They are now `--ink-2`.
+
 ### 404 and error pages
 Added `not-found.tsx` and `error.tsx`, both built on a shared `StatusPage` (nav, a small label, an `h1`, a standfirst, then arrow links). They use existing tokens and type styles only, so nothing new is added to the spec.
 - **Copy** is plain and short: "That page isn’t here." and "Something went wrong." The 404 admits that most of the site is unwritten, since most links currently lead there. Mal hasn't reviewed the wording.
