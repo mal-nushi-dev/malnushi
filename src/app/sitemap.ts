@@ -1,12 +1,21 @@
 import type { MetadataRoute } from "next";
+import { content, type Kind } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 
-// Only routes that exist. Add the sections here as they are built, so the
+// Only routes that exist. Add a kind here when its page is built, so the
 // sitemap never lists a page that returns 404.
-export default function sitemap(): MetadataRoute.Sitemap {
+const withPages: Kind[] = ["post", "note", "photo"];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const entries = (await content()).stream({ kinds: withPages });
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/writing`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/writing/notes`, changeFrequency: "daily", priority: 0.7 },
+    { url: `${siteUrl}/photography`, changeFrequency: "weekly", priority: 0.7 },
+    ...entries.map((entry) => ({
+      url: `${siteUrl}${entry.url}`,
+      lastModified: entry.date,
+    })),
   ];
 }

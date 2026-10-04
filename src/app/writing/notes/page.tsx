@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { toNoteItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
-import { InlineLink } from "@/components/links";
 import { Nav } from "@/components/nav";
-import { NoteList, type NoteItem } from "@/components/note";
+import { NoteList } from "@/components/note";
+import { content } from "@/lib/content";
 
 // The note stream (/writing/notes): short posts in reading column, newest first.
 export const metadata: Metadata = {
@@ -11,44 +12,9 @@ export const metadata: Metadata = {
   description: "Short posts, newest first.",
 };
 
-const notes: NoteItem[] = [
-  {
-    id: "2026-10-03-1412",
-    day: "2026-10-03",
-    time: "2:12 PM EDT",
-    body: "A Carolina wren has been shouting at the window since seven. Loudest bird per gram I know of.",
-  },
-  {
-    id: "2026-10-03-0931",
-    day: "2026-10-03",
-    time: "9:31 AM EDT",
-    body: (
-      <>
-        Spent the morning reading about tandem OLED. Two emissive layers,
-        roughly double the brightness for the same wear. I wrote about where
-        this was heading in{" "}
-        <InlineLink href="/writing/we-need-to-talk-about-displays">
-          the displays piece
-        </InlineLink>
-        ; it got here sooner than I guessed.
-      </>
-    ),
-  },
-  {
-    id: "2026-10-01-2204",
-    day: "2026-10-01",
-    time: "10:04 PM EDT",
-    body: "Every charger I own is now smaller than the cable that goes with it.",
-  },
-  {
-    id: "2026-09-29-1840",
-    day: "2026-09-29",
-    time: "6:40 PM EDT",
-    body: "Rebuilt the nav three times this week. The version I kept is the one with the fewest moving parts, which is how it usually goes. The spring took an afternoon; deciding that the top edge should never move took two days and made the bigger difference.",
-  },
-];
-
-export default function NotesPage() {
+export default async function NotesPage() {
+  const q = await content();
+  const notes = q.list("note").map(toNoteItem);
   return (
     <>
       <Nav active="Writing" />

@@ -24,14 +24,23 @@ export function Photo({
   size,
   alt,
   aboveTheFold = false,
+  aspect,
   ...props
 }: {
   size: ImageSize;
   /** Required. Use `""` only for a purely decorative image. */
   alt: string;
   aboveTheFold?: boolean;
+  /**
+   * The image's own proportions, for a photograph shown uncropped. The
+   * width still comes from the size; the height follows.
+   */
+  aspect?: { width: number; height: number };
 } & Omit<ImageProps, "alt" | "width" | "height" | "sizes" | "fill">) {
-  const { width, height, sizes: sizesAttr } = sizes[size];
+  const { width, sizes: sizesAttr } = sizes[size];
+  const height = aspect
+    ? Math.round((width * aspect.height) / aspect.width)
+    : sizes[size].height;
   return (
     <Image
       {...props}

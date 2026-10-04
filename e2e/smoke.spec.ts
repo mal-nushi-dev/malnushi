@@ -44,3 +44,27 @@ test("icons and share image are served as images", async ({ request }) => {
     expect(res.headers()["content-type"], path).toBe("image/png");
   }
 });
+
+test("one photograph shows on its page, in the archive and inside an essay", async ({ page }) => {
+  const photo = "/photography/2026-10-02-wren-at-the-window";
+  const alt = /Carolina wren on a window ledge/;
+
+  expect((await page.goto(photo))?.status()).toBe(200);
+  await expect(page.getByRole("img", { name: alt })).toBeVisible();
+  // The essay that embeds it is listed without the photo naming it.
+  await expect(
+    page.getByRole("link", { name: /The list that keeps me looking/ }),
+  ).toBeVisible();
+
+  await page.goto("/photography");
+  await expect(page.getByRole("img", { name: alt })).toBeVisible();
+
+  await page.goto("/writing/the-list-that-keeps-me-looking");
+  const embedded = page.getByRole("link", { name: alt });
+  await expect(embedded).toHaveAttribute("href", photo);
+});
+
+test("a note has its own page", async ({ page }) => {
+  expect((await page.goto("/writing/notes/2026-10-03-1412"))?.status()).toBe(200);
+  await expect(page.getByText("2026-10-03 · 2:12 PM EDT")).toBeVisible();
+});

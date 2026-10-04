@@ -24,6 +24,15 @@ describe("Photo", () => {
     expect(img).toHaveAttribute("height", "453");
   });
 
+  it("keeps a photograph's own proportions when given them", () => {
+    render(
+      <Photo size="column" src="/heron.jpg" alt="Heron" aspect={{ width: 1600, height: 2400 }} />,
+    );
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("width", "680");
+    expect(img).toHaveAttribute("height", "1020");
+  });
+
   it("tells the browser how wide it will be shown", () => {
     render(<Photo size="column" src="/wren.jpg" alt="Wren" />);
     expect(screen.getByRole("img")).toHaveAttribute(

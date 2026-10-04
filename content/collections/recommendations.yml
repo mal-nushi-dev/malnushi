@@ -1,0 +1,12 @@
+title: Recommendations
+description: Books, films, tools and places I would send a friend to.
+itemName: recommendation
+summary: [kind, date]
+columns:
+  - { key: kind, label: Kind }
+  - { key: why, label: Why, optional: true }
+items:
+  - id: braiding-sweetgrass
+    title: Braiding Sweetgrass
+    kind: Book
+    date: 2026-09-20

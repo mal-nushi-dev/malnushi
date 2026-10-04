@@ -1,24 +1,22 @@
+import { ItemSummary } from "@/components/entry/item-summary";
+import { categoryOf, titleOf, toIndexItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
-import { IndexList, type IndexItem } from "@/components/index-list";
+import { IndexList } from "@/components/index-list";
 import { ArrowLink } from "@/components/links";
 import { Nav } from "@/components/nav";
 import { Portrait } from "@/components/portrait";
 import { SectionLabel } from "@/components/section-label";
+import { content, dayOf, type Kind } from "@/lib/content";
 import Link from "next/link";
 
-// Placeholder content until the first features and collections exist.
-// Links point at routes that are not built yet.
-const essays: IndexItem[] = [
-  { href: "/writing/the-list-that-keeps-me-looking", title: "The list that keeps me looking", category: "Birding", year: 2026 },
-  { href: "/writing/small-enough-to-finish", title: "On making a thing small enough to finish", category: "Process", year: 2026 },
-  { href: "/writing/reading-in-a-serif", title: "Notes on reading in a serif", category: "Typography", year: 2025 },
-];
-
-const projects: IndexItem[] = [
-  { href: "/projects/dns-filter", title: "A DNS filter for the whole house", category: "Code", year: 2026 },
-  { href: "/projects/salvaged-desk-lamp", title: "A desk lamp from salvaged parts", category: "Hardware", year: 2025 },
-  { href: "/projects/skyline", title: "The 1,000-piece skyline", category: "Lego", year: 2025 },
+// The features are chosen by hand: the lead, then three more in this order.
+// Their images are placeholders until the pieces have real ones.
+const lead = { kind: "post", id: "the-list-that-keeps-me-looking" } as const;
+const features: { kind: Kind; id: string }[] = [
+  { kind: "project", id: "dns-filter" },
+  { kind: "series", id: "early-light-on-the-marsh" },
+  { kind: "project", id: "skyline" },
 ];
 
 const grid = "grid grid-cols-12 gap-x-(--col-gap)";
@@ -35,7 +33,17 @@ function FeatureImage({ label, className }: { label: string; className: string }
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const q = await content();
+  const feature = q.need(lead.kind, lead.id);
+  const [first, second, third] = features.map(({ kind, id }) => q.need(kind, id));
+  const essays = q.list("post", { where: (p) => p.data.type === "article", limit: 3 });
+  const projects = q.list("project", { limit: 3 });
+  const lifeList = q.need("collection", "life-list");
+  const recommendations = q.need("collection", "recommendations");
+  const [bird] = q.list("item", { where: (i) => i.data.collection === lifeList.id, limit: 1 });
+  const [rec] = q.list("item", { where: (i) => i.data.collection === recommendations.id, limit: 1 });
+  const [photo] = q.list("photo", { limit: 1 });
   return (
     <>
       <Nav />
@@ -64,20 +72,17 @@ export default function Home() {
         {/* Lead feature: one accent, overriding the house token on this wrapper */}
         <section
           className="page pt-(--space-block)"
-          style={{ "--accent": "#8a5a3c" } as React.CSSProperties}
+          style={{ "--accent": feature.data.feature?.accent } as React.CSSProperties}
         >
           <Link
-            href="/writing/the-list-that-keeps-me-looking"
+            href={feature.url}
             className="flex flex-col gap-(--space-xl) border-t-2 border-accent pt-(--space-sm)"
           >
-            <Eyebrow section="Writing" category="Birding" />
-            <h2 className="type-feature-display max-w-275">
-              The list that keeps me looking
-            </h2>
+            <Eyebrow section="Writing" category={categoryOf(feature)} />
+            <h2 className="type-feature-display max-w-275">{feature.data.title}</h2>
             <div className={grid}>
               <p className="type-standfirst col-span-7 text-ink-2">
-                A life list is supposed to be about the birds. Mine turned out
-                to be about paying attention.
+                {feature.data.subtitle}
               </p>
               <span className="col-span-4 col-start-9 flex items-end type-ui text-link">
                 Read the essay <span aria-hidden>&nbsp;→</span>
@@ -97,27 +102,29 @@ export default function Home() {
         <section className="page pt-(--space-block)">
           <SectionLabel>Features</SectionLabel>
           <div className={`${grid} items-start gap-y-(--space-block) pt-(--space-2xl)`}>
-            <Link href="/projects/dns-filter" className="col-span-7 flex flex-col gap-(--space-md)">
+            <Link href={first.url} className="col-span-7 flex flex-col gap-(--space-md)">
               <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-3/2" />
-              <Eyebrow section="Projects" category="Code" />
-              <h3 className="type-quote">A DNS filter for the whole house</h3>
-              <p className="type-small max-w-130 text-ink-2">
-                A small macOS app that keeps the router honest, and what I
-                learned from the dead ends.
-              </p>
+              <Eyebrow section="Projects" category={categoryOf(first)} />
+              <h3 className="type-quote">{titleOf(first)}</h3>
+              <p className="type-small max-w-130 text-ink-2">{first.summary}</p>
             </Link>
-            <Link href="/photography/early-light-on-the-marsh" className="col-span-4 col-start-9 mt-(--space-block) flex flex-col gap-(--space-md)">
+            <Link href={second.url} className="col-span-4 col-start-9 mt-(--space-block) flex flex-col gap-(--space-md)">
               <FeatureImage label="FEATURE IMAGE — 408 × 544" className="aspect-3/4" />
-              <Eyebrow section="Photography" category="Series 04" />
-              <h3 className="type-index-title">Early light on the marsh</h3>
+              <Eyebrow
+                section="Photography"
+                category={
+                  second.kind === "series" && second.data.number
+                    ? `Series ${String(second.data.number).padStart(2, "0")}`
+                    : categoryOf(second)
+                }
+              />
+              <h3 className="type-index-title">{titleOf(second)}</h3>
             </Link>
-            <Link href="/projects/skyline" className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
+            <Link href={third.url} className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
               <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-2/1" />
-              <Eyebrow section="Projects" category="Lego" />
-              <h3 className="type-quote">The 1,000-piece skyline</h3>
-              <p className="type-small max-w-130 text-ink-2">
-                A build I designed, redesigned and finally finished.
-              </p>
+              <Eyebrow section="Projects" category={categoryOf(third)} />
+              <h3 className="type-quote">{titleOf(third)}</h3>
+              <p className="type-small max-w-130 text-ink-2">{third.summary}</p>
             </Link>
           </div>
         </section>
@@ -125,13 +132,13 @@ export default function Home() {
         {/* Latest writing and work */}
         <section className="page flex flex-col gap-(--space-block) pt-(--space-block)">
           <div className="flex flex-col gap-(--space-lg)">
-            <IndexList label="Latest writing" items={essays} />
+            <IndexList label="Latest writing" items={essays.map(toIndexItem)} />
             <div>
               <ArrowLink href="/writing">All writing</ArrowLink>
             </div>
           </div>
           <div className="flex flex-col gap-(--space-lg)">
-            <IndexList label="Latest work" items={projects} />
+            <IndexList label="Latest work" items={projects.map(toIndexItem)} />
             <div>
               <ArrowLink href="/projects">All projects</ArrowLink>
             </div>
@@ -142,21 +149,25 @@ export default function Home() {
         <section className="page py-(--space-block)">
           <SectionLabel>Recent in collections</SectionLabel>
           <div className={`${grid} pt-(--space-xl)`}>
-            <div className="col-span-5 flex flex-col gap-(--space-sm)">
-              <p className="type-label text-ink-2">Latest bird</p>
-              <p className="type-index-title text-ink">
-                Carolina Wren{" "}
-                <span className="type-body italic text-ink-2">
-                  Thryothorus ludovicianus
-                </span>
+            <div className="col-span-4">
+              <ItemSummary item={bird} collection={lifeList} label="Latest bird" />
+            </div>
+            <div className="col-span-4">
+              <ItemSummary
+                item={rec}
+                collection={recommendations}
+                label="Latest recommendation"
+              />
+            </div>
+            <Link href={photo.url} className="group col-span-4 flex flex-col gap-(--space-sm)">
+              <p className="type-label text-ink-2">Latest photograph</p>
+              <p className="type-index-title text-ink group-hover:text-link">
+                {titleOf(photo)}
               </p>
-              <p className="type-meta text-ink-2">2026-09-27 · Charlotte</p>
-            </div>
-            <div className="col-span-6 col-start-7 flex flex-col gap-(--space-sm)">
-              <p className="type-label text-ink-2">Latest recommendation</p>
-              <p className="type-index-title text-ink">Braiding Sweetgrass</p>
-              <p className="type-meta text-ink-2">Book · 2026-09-20</p>
-            </div>
+              <p className="type-meta text-ink-2">
+                {[dayOf(photo.date), photo.data.place].filter(Boolean).join(" · ")}
+              </p>
+            </Link>
           </div>
           <div className="pt-(--space-xl)">
             <ArrowLink href="/collections">All collections</ArrowLink>
