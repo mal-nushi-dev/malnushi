@@ -242,7 +242,7 @@ The panel content has a fixed 840px width (narrower viewports clamp it to the vi
 
 ### Eyebrow
 
-`label` style, `--ink-2`, above every h1: section, then an accent-colored `/`, then the sub-category.
+`label` style, `--ink-2`, above every h1 (except the Writing index, whose masthead is the name): section, then an accent-colored `/`, then the sub-category.
 Examples: `WRITING / TECHNOLOGY`, `WRITING / THE KERNEL`, `WRITING / DEV JOURNAL`, `WORK / CODE`, `PHOTOGRAPHY / SERIES 04`, `COLLECTIONS / BIRDING`. The three parts sit in a row 8px apart. For writing, the sub-category is the article's category, or the newsletter's name on an issue.
 
 ### Meta row
@@ -263,7 +263,7 @@ The index sits in a fixed 48px column with the caption text beside it (600px wid
 
 ### Index list
 
-Used for "More work", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids entirely.
+Used for "More work", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids, except on the Writing index, where the articles lead with images (see that section).
 
 ### Data table (collections)
 
@@ -330,14 +330,19 @@ A post that is also on Substack links to that copy ("Also on Substack") after th
 
 ### Writing index
 
-`/writing`. Kodikion is named here as the blog's name, with a link to subscribe on Substack. From the top:
+`/writing`. The page calls itself **Kodikion.** (the nav item stays "Writing"). Decided with Mal 2026-10-04; see the design log. From the top:
 
-1. Eyebrow, `h1`, standfirst.
-2. **Articles:** an index list, newest first, with the category in the category column.
-3. **The Kernel**, then **Dev Journal:** each a section label, an index list of the latest few issues, and an arrow link to the newsletter's page.
-4. **Notes:** a section label, the latest few notes, and an arrow link to the stream.
+1. **Masthead** (the `Masthead` component): "Kodikion." centered across columns 3–10, drawn as outlines at about 200px, the full stop in `--accent`. It is typed in JetBrains Mono behind a block cursor, then each letter springs into Newsreader. It is the page's `h1` (real text for screen readers). Under it, centered, the `standfirst`: "A blog by Mal Nushi. Also on Substack." Then a 1px `--ink` rule across the content width. There is no eyebrow on this page: it would repeat the name above itself.
+2. **Articles, columns 1–8**, in this order, with 128px (`space-block`) between:
+   - the lead: a 3:2 image, eyebrow, headline in `quote`, subtitle in `body`, date in `meta`;
+   - two more, in a 5 + 3 column pair (3:2 and 3:4 images), the second dropped by `space-block`; eyebrow and `index-title` headline;
+   - **Newsletters:** a section label, then The Kernel and Dev Journal side by side. Each is a `label` name, the newest issue (its number in `stat`, in `--accent`, the title in `index-title`, the date) and an arrow link, then the earlier issues as one-line rows between hairlines;
+   - **All articles:** a section label, filter pills (one per category, plus All) and the index list, which the pills filter in place.
+3. **Notes rail, columns 10–12:** a section label, the latest notes set in `ui` with a `meta` date link, and an arrow link to the stream. It is sticky (`top: --space-lg`) and stays in view while the articles scroll. The rail is an `aside` landmark named "Notes".
 
-Newsletter issues and notes never mix into the article list.
+Newsletter issues and notes never mix into the article list. Images are placeholders until the content repository supplies them (ADR 0006).
+
+**Masthead behaviour.** Plays once per page load, about 2.5s. With reduced motion, or no JavaScript, the finished serif is shown still. The outlines come from `scripts/masthead-glyphs.mjs` (ADR 0007); the box never changes size, so nothing shifts. On a phone it is not designed yet (Open questions).
 
 ### Newsletter page
 
@@ -591,7 +596,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
-- Writing index: choose between the three mockups at `/components/writing` (A Broadsheet, B Running rail, C Live index; design log 2026-10-04). B is the front-runner and is being revised, starting with a large centered "Kodikion." masthead that is typed in the mono and springs into the serif (not yet checked in Safari, Firefox or on a phone); whether that masthead should span the notes rail is undecided, since notes are not part of Kodikion. The "Writing index" section above still describes the current page.
+- Writing index: the masthead has not been checked in Safari or Firefox or on a phone, and has no mobile size (it scales with the column, so the 88px h1 rule does not apply to it). The sticky notes rail needs a mobile layout too (below the articles, not sticky). Undecided: whether the masthead should span the notes rail, since notes are not part of Kodikion; whether it plays once per session instead of every load; the full-stop spacing.
 - Writing: whether a note can carry an image or a link preview. The chosen stream layout is built at `/writing/notes` (`src/app/writing/notes/page.tsx`).
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.

@@ -4,7 +4,7 @@
  * already built.
  *
  *   npm run build                       (so .next/static/media has the fonts)
- *   node scripts/masthead-glyphs.mjs > src/app/components/writing/masthead-glyphs.json
+ *   node scripts/masthead-glyphs.mjs > src/components/masthead-glyphs.json
  *
  * Needs `fontkit`, `wawoff2` and `paper`, which are not project dependencies:
  * this runs by hand, only when the word or the fonts change. Install them

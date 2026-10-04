@@ -6,6 +6,14 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-04
 
+### Writing index: Kodikion masthead built at /writing
+Mal chose mockup B ("Running rail", with the typed-then-morphed masthead) for `/writing`. It replaces the old page, which was four stacked lists.
+- **Built as mocked up**, with the sample content now inline in `src/app/writing/page.tsx`. Mockups A and C, the `/components/writing` chooser and their shared files are deleted.
+- **Pieces moved to `src/components/`:** `Masthead` (and its outlines), `ArticleFilter`, `IssueStub` and `EarlierIssues`, `WireNotes`, and `ImageSlot` (in `image-placeholder.tsx`).
+- **Spec rules loosened, now written into DESIGN.md:** the Writing index is the one page with no eyebrow; the index list replaces card grids except where articles lead with images here; this page has filter pills outside a collection, and a sticky notes rail beside the articles.
+- **Left open (Open questions):** Safari, Firefox and a real phone; the mobile size and layout; whether the masthead spans the notes rail; once per session or every load. ADR 0007 records the generated outlines.
+- **Dropped with A and C:** the broadsheet nameplate with a mono dateline, vertical column rules, and the hover-driven image beside the list.
+
 ### Writing index: three mockups
 Mal finds `/writing` bland and linear: every section looks the same, nothing leads, it is one column from top to bottom, and there is little to look at but titles. The brief: a front page that mixes a lead article with the latest notes and newsletter issues; images and category filters are welcome; newspaper-like in structure, but "structured, but also fun", not a copy of the New York Times.
 - **Three directions** are built at `/components/writing` on the same sample content, as was done for the note stream. None is chosen yet (see Open questions in DESIGN.md).
@@ -30,7 +38,7 @@ Mal finds `/writing` bland and linear: every section looks the same, nothing lea
   - **Measured (Chromium, 1440px):** 60fps throughout, also with the CPU throttled 4× and 6× (one or two long frames at page load in each run, none during the morph). The outlines add 17 kB gzipped of script to this page only. No font has to load for the masthead and its box never changes size, so it cannot shift the layout. Not measured: Safari and Firefox (their Playwright builds are out of date here), and a real phone.
   - **My choices, for review:** the cursor-to-full-stop idea; 8 columns wide; cap heights matched, so the word narrows as it morphs; plays on every load, not once per visit.
   - **Owed if B is chosen:** an ADR for generated outlines (the script's three tools are not project dependencies and it runs by hand), a smaller data format, and a mobile size.
-- **What would change it:** the pieces live in `src/app/components/writing/` only. When one is chosen it moves to `/writing`, its pieces move to `src/components/`, and the other two are deleted.
+- **Outcome:** B was chosen and built at `/writing` (entry above); the other two are deleted.
 
 ## 2026-10-03
 
