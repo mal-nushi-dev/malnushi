@@ -20,6 +20,7 @@ import { ArrowLink, InlineLink } from "@/components/links";
 import { MetaItem, MetaRow } from "@/components/meta-row";
 import { Nav } from "@/components/nav";
 import { NextLink } from "@/components/next-link";
+import { Note, NoteList, type NoteItem } from "@/components/note";
 import { OtherCollections } from "@/components/other-collections";
 import { PullQuote } from "@/components/pull-quote";
 import { SectionLabel } from "@/components/section-label";
@@ -32,6 +33,11 @@ export const metadata: Metadata = {
   title: "Components · Mal Nushi",
   robots: { index: false },
 };
+
+const sampleNotes: NoteItem[] = [
+  { id: "2026-10-03-1412", day: "2026-10-03", time: "2:12 PM EDT", body: "A Carolina wren has been shouting at the window since seven." },
+  { id: "2026-10-01-2204", day: "2026-10-01", time: "10:04 PM EDT", body: "Every charger I own is now smaller than the cable that goes with it. The spring took an afternoon; deciding that the top edge should never move took two days and made the bigger difference." },
+];
 
 const lifeList: LifeListRow[] = [
   { no: "001", species: { common: "Carolina Wren", scientific: "Thryothorus ludovicianus" }, family: "Troglodytidae", firstSeen: "12 Mar 2019", where: "Freedom Park" },
@@ -168,6 +174,16 @@ export default function ComponentsPage() {
               { href: "#4", title: "Forty-one sets, sorted by color", category: "Work / Lego", year: 2025 },
             ]}
           />
+          <Specimen name="Note">
+            <div className="max-w-(--measure)">
+              <Note note={sampleNotes[0]} />
+            </div>
+          </Specimen>
+          <Specimen name="Note List">
+            <div className="max-w-(--measure)">
+              <NoteList notes={sampleNotes} />
+            </div>
+          </Specimen>
           <Specimen name="Data Table: Life list">
             <DataTable caption="Life list" columns={lifeListColumns} rows={lifeList} />
           </Specimen>

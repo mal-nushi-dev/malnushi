@@ -3,6 +3,7 @@ import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { InlineLink } from "@/components/links";
 import { Nav } from "@/components/nav";
+import { NoteList, type NoteItem } from "@/components/note";
 
 // Mockup of the note stream (the layout Mal chose, 2026-10-03). Not linked
 // from the site. Desktop only; the copy is placeholder. Delete once the real
@@ -12,9 +13,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-type Note = { id: string; day: string; time: string; body: React.ReactNode };
-
-const notes: Note[] = [
+const notes: NoteItem[] = [
   {
     id: "2026-10-03-1412",
     day: "2026-10-03",
@@ -51,32 +50,6 @@ const notes: Note[] = [
   },
 ];
 
-const grid = "grid grid-cols-12 gap-x-(--col-gap)";
-
-/** The essay's reading column. Text, then a mono date underneath. */
-function ReadingColumn() {
-  return (
-    <div className={grid}>
-      <ol className="col-span-7 col-start-3 max-w-(--measure)">
-        {notes.map((n) => (
-          <li
-            key={n.id}
-            className="flex flex-col gap-(--space-sm) border-t border-line py-(--space-lg) first:border-t-0 first:pt-0"
-          >
-            <p className="type-body text-ink">{n.body}</p>
-            <a
-              href={`/writing/notes/${n.id}`}
-              className="type-meta text-ink-2 hover:text-ink"
-            >
-              {n.day} · {n.time}
-            </a>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
 export default function NoteMockup() {
   return (
     <>
@@ -90,7 +63,11 @@ export default function NoteMockup() {
           </p>
         </header>
         <section className="page pt-(--space-block)">
-          <ReadingColumn />
+          <div className="grid grid-cols-12 gap-x-(--col-gap)">
+            <div className="col-span-7 col-start-3 max-w-(--measure)">
+              <NoteList notes={notes} />
+            </div>
+          </div>
         </section>
       </main>
       <Footer />

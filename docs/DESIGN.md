@@ -347,7 +347,7 @@ Newsletter issues and notes never mix into the article list.
 
 A note has no title, no standfirst and no feature tier.
 
-- **Stream** (`/writing/notes`): eyebrow, `h1`, standfirst, then the notes, newest first, in the 680px reading column (offset two columns, as on an essay). Each note is its text in `body`, then 16px below it a mono `meta` line in `--ink-2` that links to the note's own page. Notes are separated by a hairline with 32px above and below.
+- **Stream** (`/writing/notes`): eyebrow, `h1`, standfirst, then the notes, newest first, in the 680px reading column (offset two columns, as on an essay). Each note is its text in `body`, then 16px below it a mono `meta` line in `--ink-2` that links to the note's own page. Notes are separated by a hairline with 32px above and below. The `Note` component is one note and `NoteList` is the list; the list supplies the hairlines and the page supplies the column.
 - **Date line:** the date, a middle dot, then the time on a 12-hour clock with the time zone: `2026-10-03 · 2:12 PM EDT`. The time and zone are those where the note was written (Eastern, so `EDT` or `EST` by date), not the reader's.
 - **Single note** (`/writing/notes/[id]`): the same note alone, with a link back to the stream.
 
