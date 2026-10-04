@@ -14,7 +14,7 @@ const height: Record<Mode, number> = { idle: REST, search: 144, menu: 416 };
  * Springs. Opening overshoots a little and settles (width about 7%, height
  * about 5%); closing is close to critically damped so the bar lands still.
  */
-const spring = {
+export const spring = {
   width: { type: "spring", stiffness: 260, damping: 21, mass: 1 },
   height: { type: "spring", stiffness: 220, damping: 21, mass: 1 },
   close: { type: "spring", stiffness: 320, damping: 34, mass: 1 },
