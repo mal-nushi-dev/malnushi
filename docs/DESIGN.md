@@ -342,7 +342,7 @@ A post that is also on Substack links to that copy ("Also on Substack") after th
 
 Newsletter issues and notes never mix into the article list. Images are placeholders until the content repository supplies them (ADR 0006).
 
-**Masthead behaviour.** Plays once per page load, about 2.5s. With reduced motion, or no JavaScript, the finished serif is shown still. The outlines come from `scripts/masthead-glyphs.mjs` (ADR 0007); the box never changes size, so nothing shifts. On a phone it is not designed yet (Open questions).
+**Masthead behaviour.** Plays on every page load, about 2.5s. Pressing it plays the morph again, serif to monospace (the full stop becoming the block cursor), a 0.3s hold, then back to serif; presses during a play are ignored. It is a button covering the masthead, named "Play the masthead animation again", so it works from the keyboard. With reduced motion, or no JavaScript, the finished serif is shown still and there is no button. The outlines come from `scripts/masthead-glyphs.mjs` (ADR 0007); the box never changes size, so nothing shifts. On a phone it is not designed yet (Open questions).
 
 ### Newsletter page
 
@@ -596,7 +596,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
-- Writing index: the masthead has not been checked in Safari or Firefox or on a phone, and has no mobile size (it scales with the column, so the 88px h1 rule does not apply to it). The sticky notes rail needs a mobile layout too (below the articles, not sticky). Undecided: whether the masthead should span the notes rail, since notes are not part of Kodikion; whether it plays once per session instead of every load; the full-stop spacing.
+- Writing index: the masthead and its sticky notes rail are not checked in Safari, Firefox or on a phone and have no mobile layout (set aside by Mal 2026-10-04, not dropped). The full-stop spacing in the masthead is unreviewed.
 - Writing: whether a note can carry an image or a link preview. The chosen stream layout is built at `/writing/notes` (`src/app/writing/notes/page.tsx`).
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.

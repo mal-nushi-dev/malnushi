@@ -6,6 +6,12 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-04
 
+### Writing index: masthead replays on press
+Mal settled the open points: the masthead does not span the notes rail, it plays on every load, and pressing "Kodikion." plays it again.
+- **Replay:** serif to monospace (the full stop becomes the block cursor), a 0.3s hold, then back to serif, on the same springs and stagger. A press during a play is ignored, so plays never overlap.
+- **Keyboard and screen readers:** a transparent button covers the masthead, named "Play the masthead animation again", outside the `h1` so the heading still reads "Kodikion.". It appears only when the animation runs: not with reduced motion, not without JavaScript. The `h1` keeps its text and is not itself clickable (my choice, for review).
+- **Set aside for now:** Safari, Firefox and phone checks, and the mobile layout. They stay in Open questions in DESIGN.md.
+
 ### Writing index: Kodikion masthead built at /writing
 Mal chose mockup B ("Running rail", with the typed-then-morphed masthead) for `/writing`. It replaces the old page, which was four stacked lists.
 - **Built as mocked up**, with the sample content now inline in `src/app/writing/page.tsx`. Mockups A and C, the `/components/writing` chooser and their shared files are deleted.
