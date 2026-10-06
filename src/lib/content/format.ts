@@ -1,4 +1,4 @@
-import type { Entry, NoteEntry, PhotoData } from "./schema";
+import type { Entry, NoteEntry, PhotoData, TrackData } from "./schema";
 
 /** Minutes to read a body, at 230 words a minute. */
 export function readingTime(body: string) {
@@ -49,4 +49,14 @@ export function exifLine(photo: PhotoData) {
     photo.shutter,
     photo.iso && `ISO ${photo.iso}`,
   ].filter((item): item is string => Boolean(item));
+}
+
+/**
+ * A track's facts in a fixed order (duration, tempo, key): only the ones it
+ * has.
+ */
+export function trackLine(track: TrackData) {
+  return [track.duration, track.bpm && `${track.bpm} BPM`, track.key].filter(
+    (item): item is string => Boolean(item),
+  );
 }

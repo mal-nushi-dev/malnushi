@@ -80,6 +80,8 @@ for (const path of [
   "/writing/the-list-that-keeps-me-looking",
   "/photography",
   "/photography/2026-10-02-wren-at-the-window",
+  "/music",
+  "/music/ebb",
   "/components",
   "/no-such-page",
 ]) {

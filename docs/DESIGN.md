@@ -42,7 +42,7 @@ The wordmark ("Mal Nushi") links home and sits in the centre of the toolbar. Fea
 
 ### Page types
 
-Every piece of content is one of six types. Each has its own house template.
+Every piece of content is one of seven types. Each has its own house template.
 
 | Type | What it is | Leads with | Promotable to feature |
 |---|---|---|---|
@@ -51,9 +51,10 @@ Every piece of content is one of six types. Each has its own house template.
 | **Photography series** | A sequenced set of photographs | Image: sequencing and pacing do the work | Yes |
 | **Note** | A short, untitled post, the length of a social post | Text: the note itself, then a mono date | No |
 | **Photo** | One photograph, on its own | Image: the photograph, then its caption and EXIF | No |
+| **Track** | One recording of Mal's own, on its own | Type: the title, then its duration, tempo and key, then liner notes | No |
 | **Collection** | A structured, growing list (life list, recs, music, travels, Lego inventory) | Data: header, stats, then rows | No (rows are anchors on the list, not pages) |
 
-The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. A **photo** is the same for images: it has its own URL and is read in the archive, never art-directed; photographs that belong together and need pacing are a series, which is an ordered selection of photos. **Collections** are different. A bird sighting or a recommendation is written once, as its own entry with its own notes, and read as a row in a list. It has no page of its own yet: its address is an anchor on its list. A row can still be named and shown elsewhere (in an essay, on the home page); it links back to its list. A list is never kept by hand: the life list is the first sighting of each species, worked out from the sightings. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list. Music by other people is a recommendation; Mal's own recordings are projects.
+The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. A **photo** is the same for images: it has its own URL and is read in the archive, never art-directed; photographs that belong together and need pacing are a series, which is an ordered selection of photos. A **track** is the same for music: it has its own URL (`/music/[id]`) whether or not it is on a release, and a release (an album, EP or single) is an ordered selection of tracks, shown as a project. **Collections** are different. A bird sighting or a recommendation is written once, as its own entry with its own notes, and read as a row in a list. It has no page of its own yet: its address is an anchor on its list. A row can still be named and shown elsewhere (in an essay, on the home page); it links back to its list. A list is never kept by hand: the life list is the first sighting of each species, worked out from the sightings. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list. Music by other people is a recommendation; Mal's own recordings are projects.
 
 ### Two tiers: house and feature
 
@@ -427,7 +428,7 @@ Each collection defines its own columns:
 |---|---|
 | Life list | No. · Species (common + *scientific*) · Family · First seen · Where |
 | Recommendations | No. · Title · Kind (book, film, tool, place…) · Why (one line) · Added |
-| Music | No. · Title · Artist · Year · Key / BPM (for own work) |
+| Music | No. · Title · Artist · Year (other people's music: these rows are recommendations. Mal's own tracks are at `/music`) |
 | Travels | No. · Place · Country · When · Notes |
 | Lego inventory | No. · Set name · Set number · Pieces · Year · Status |
 
@@ -479,12 +480,14 @@ The **Atomic Content Model**: everything published is an **entry**: a file in `c
 | Photo series | `content/photo-series/<slug>.mdx` | `/projects/[slug]` |
 | Post series | `content/post-series/<slug>.mdx` | no page: its first part |
 | Project | `content/projects/<slug>.mdx` | `/projects/[slug]` |
+| Track | `content/tracks/<id>.mdx`, with an optional `<id>.mp3` or `.m4a` | `/music/[id]`, listed at `/music` |
+| Album | `content/albums/<slug>.mdx` | `/projects/[slug]` |
 | Collection | `content/collections/<slug>.yml` | `/collections/[slug]` |
 | Sighting | `content/sightings/<id>.md` | no page: `/collections/life-list#<id>` |
 | Recommendation | `content/recommendations/<id>.md` | no page: `/collections/recommendations#<id>` |
 | Collection row | an item in its collection's file, for a plain table | no page: `/collections/[slug]#<id>` |
 
-`/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A photo series and a project share `/projects/`, so they cannot share a slug.
+`/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A photo series, an album and a project share `/projects/`, so no two of them can share a slug.
 
 **Primitives and composites.** A photograph, a post, a note, a sighting and a recommendation are single pieces of work. A photo series, a post series and a collection are groupings: entries of their own that list what they contain, in order, and copy nothing from it. Membership is written once, on the grouping; a photograph never names its series. What an entry belongs to, and its place there, is worked out from that.
 
@@ -548,6 +551,8 @@ The slug is the file name. Reading time and word count are worked out at build t
 A note has a `date` with a time and a UTC offset (`2026-10-03T14:12-04:00`) and its text. `tags` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
 
 A post series (`content/post-series/<slug>.mdx`) has a `title`, its `posts` in order and, while parts are still unwritten, a `total`. Its text is what the series is about.
+
+A track has `title`, `date` and `duration` (minutes and seconds: `3:42`, `12:05`), and may add `subtitle`, `bpm`, `key`, `composer` (on a cover, the original writers), `credits` (a role and a name each), `instruments`, `cover` and `tags`; its text is the liner notes. An album has `title`, `date`, `format` (`album`, `ep`, `single` or `compilation`) and its `tracks` in order, and may add `subtitle`, `role`, `tools`, `status`, `cover`, `tags` and a `feature` block; its text is the release notes. A track never names its album.
 
 A sighting has `species`, `scientific`, `family`, `date` and `place`, and may add `coordinates`, `habitat`, `count` and `tags`; its text is the field notes. A recommendation has `title`, `medium` (Book, Film, Album, Tool, Place) and `date`, and may add `url`, `creator` and `tags`; its text is why.
 
@@ -654,6 +659,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Tags are now shown to readers (decided 2026-10-05), but no page shows them yet. Decide where they appear (essay header, index rows, a photograph's caption) and whether a tag links to a list of everything carrying it.
 - Post series: whether it gets a page of its own (`/writing/series/[slug]`), and how previous and next parts are linked on an essay. Only "Part 2 of 3" is shown today.
+- Music: the track page (`/music/[id]`) and the track list (`/music`) are a first pass built from existing components, not designed, with placeholder copy. Decide their layout, where `/music` is linked from, the audio player, and how a release shows its tracks once the project template exists.
 - Sightings and recommendations: when one has enough written about it to earn its own page, and what that page looks like.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
 - Writing index: the masthead and its sticky notes rail are not checked in Safari, Firefox or on a phone and have no mobile layout (set aside by Mal 2026-10-04, not dropped). The full-stop spacing in the masthead is unreviewed.

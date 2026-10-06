@@ -3,7 +3,7 @@ import { cp, mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { exifLine, noteDateLine, readingTime } from "./format";
+import { exifLine, noteDateLine, readingTime, trackLine } from "./format";
 import { ContentError, loadContent } from "./load";
 import { createQueries } from "./query";
 import { kinds, parseRef, refsInBody, urlFor } from "./refs";
@@ -87,6 +87,8 @@ describe("the fixture folder", async () => {
 
   it("loads every kind, without the draft", () => {
     expect(q.stream({ kinds: [...kinds] }).map((e) => e.ref).sort()).toEqual([
+      "album:collected",
+      "album:tides",
       "collection:inventory",
       "collection:life-list",
       "collection:recommendations",
@@ -104,6 +106,9 @@ describe("the fixture folder", async () => {
       "sighting:2026-09-21-great-blue-heron",
       "sighting:2026-09-23-carolina-wren",
       "sighting:2026-09-27-carolina-wren",
+      "track:demo",
+      "track:ebb",
+      "track:shanty",
     ]);
   });
 
@@ -267,6 +272,51 @@ describe("the fixture folder", async () => {
     expect(q.partOf("project:lamp")).toEqual([]);
   });
 
+  it("gives a track one address, whatever releases it is on", () => {
+    const ebb = q.need("track", "ebb");
+    expect(ebb.url).toBe("/music/ebb");
+    expect(ebb.data).toMatchObject({ duration: "11:27", bpm: 60, audio: "ebb.mp3" });
+    expect(trackLine(ebb.data)).toEqual(["11:27", "60 BPM", "A minor"]);
+    expect(ebb.facets).toEqual({
+      artist: "Mal Nushi",
+      bpm: 60,
+      key: "A minor",
+      instruments: ["Modular synth"],
+      credits: ["A. Fixture"],
+    });
+    // Newest release first; its place differs in each.
+    expect(
+      q.partOf(ebb.ref, "album").map((p) => [p.parent.ref, p.position, p.total]),
+    ).toEqual([
+      ["album:collected", 2, 2],
+      ["album:tides", 1, 2],
+    ]);
+
+    // A cover is found by who wrote it.
+    const shanty = q.need("track", "shanty");
+    expect(shanty.facets.composer).toEqual(["Traditional"]);
+    expect(shanty.data.audio).toBeUndefined();
+    expect(trackLine(shanty.data)).toEqual(["2:58"]);
+
+    // A track needs no release to exist.
+    expect(q.partOf("track:demo")).toEqual([]);
+    expect(q.need("track", "demo").url).toBe("/music/demo");
+  });
+
+  it("makes a release an entry that lists its tracks", () => {
+    const tides = q.need("album", "tides");
+    expect(tides.url).toBe("/projects/tides");
+    expect(tides.category).toBe("EP");
+    expect(tides.facets).toEqual({
+      category: "EP",
+      format: "EP",
+      artist: "Mal Nushi",
+      tools: ["Ableton Live"],
+      status: "Finished",
+    });
+    expect(q.members(tides).map((e) => e.ref)).toEqual(["track:ebb", "track:shanty"]);
+  });
+
   it("sends a series of posts to its first part, with that part's date", () => {
     const series = q.need("post-series", "field-notes");
     expect(series.url).toBe("/writing/first-post");
@@ -338,6 +388,41 @@ describe("a folder with mistakes", () => {
     expect(problems).toContain("photo-series/mixed.mdx: lists post:a, which is not a photo");
     expect(problems).toContain("post-series/twice.mdx: lists post:a twice");
     expect(problems.some((p) => p.startsWith("post-series/short.mdx: total:"))).toBe(true);
+  });
+
+  it("checks a track's duration, its audio file and what a release lists", async () => {
+    const track = (duration: string) =>
+      `---\ntitle: T\ndate: 2026-01-01\nduration: "${duration}"\n---\n`;
+    const album = (tracks: string) =>
+      `---\ntitle: T\ndate: 2026-01-01\nformat: ep\ntracks: [${tracks}]\n---\n`;
+    const problems = await problemsOf(
+      await folder({
+        "tracks/short.mdx": track("3:42"),
+        "tracks/long.mdx": track("12:05"),
+        "tracks/longer.mdx": track("72:10"),
+        "tracks/words.mdx": track("3m42"),
+        "tracks/seconds.mdx": track("3:60"),
+        "tracks/digit.mdx": track("3:4"),
+        "tracks/short.m4a": "",
+        "tracks/orphan.mp3": "",
+        "tracks/notes.txt": "",
+        "posts/a.mdx": post(),
+        "albums/mixed.mdx": album("track:short, post:a"),
+        "albums/twice.mdx": album("track:long, track:long"),
+      }),
+    );
+    const bad = 'duration: use minutes and seconds, such as "3:42"';
+    expect(problems.sort()).toEqual(
+      [
+        "albums/mixed.mdx: lists post:a, which is not a track",
+        "albums/twice.mdx: lists track:long twice",
+        `tracks/digit.mdx: ${bad}`,
+        "tracks/notes.txt: expected a .mdx file",
+        "tracks/orphan.mp3: there is no track named orphan",
+        `tracks/seconds.mdx: ${bad}`,
+        `tracks/words.mdx: ${bad}`,
+      ].sort(),
+    );
   });
 
   it("rejects two sightings that name one species differently", async () => {

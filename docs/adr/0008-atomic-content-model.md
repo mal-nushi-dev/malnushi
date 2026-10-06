@@ -12,8 +12,8 @@ Mal wants the opposite: the site as a graph of pieces of work, not a set of page
 
 Three things have to be kept apart for that to work:
 
-- **What a piece of work is.** A photograph, a post, a note, a sighting, a recommendation. Call these primitives.
-- **How pieces are grouped.** A photo series, a series of posts, a collection. These are composites: entries in their own right, holding an ordered list of the primitives they contain and nothing copied from them.
+- **What a piece of work is.** A photograph, a post, a note, a track, a sighting, a recommendation. Call these primitives.
+- **How pieces are grouped.** A photo series, a series of posts, an album, a collection. These are composites: entries in their own right, holding an ordered list of the primitives they contain and nothing copied from them.
 - **How a piece is described.** Its category, tags, camera, species, place. These are fields on the entry, never entries themselves.
 
 Mal also decided that content lives in this repository, which will be made private, instead of the separate private repository ADR 0006 set out.
@@ -33,6 +33,9 @@ Three layers. Each knows nothing about the one after it.
      photos/<id>.jpg              the photograph, exported for the web
      photos/<id>.yml              optional: alt, caption, place, tags, or any field to override
      projects/<slug>.mdx          the spec fields
+     tracks/<id>.mdx              one recording; the text is the liner notes
+     tracks/<id>.mp3              optional: its audio (.mp3 or .m4a), under the same name
+     albums/<slug>.mdx            a release of any length: an ordered list of tracks
      sightings/<id>.md            one time a bird was seen; the text is the field notes
      recommendations/<id>.md      something worth passing on; the text is why
      photo-series/<slug>.mdx      an ordered list of photographs
@@ -59,13 +62,13 @@ Three layers. Each knows nothing about the one after it.
 | `facets` | The fields a reader might search or filter by, flat: `camera`, `place`, `species`, `medium` |
 | `edges` | What this entry points at, each with its sort |
 
-**Refs.** An entry is named `kind:id`: `photo:2026-10-02-wren-at-the-window`, `post:the-rise-of-gan`, `sighting:2026-09-27-carolina-wren`.
+**Refs.** An entry is named `kind:id`: `photo:2026-10-02-wren-at-the-window`, `post:the-rise-of-gan`, `track:ebb`, `sighting:2026-09-27-carolina-wren`.
 
 **Edges are typed.** One entry points at another in its frontmatter or its body, and each pointer says what it means:
 
 | Edge | Written as | Meaning |
 |---|---|---|
-| `contains` | `photos` on a photo series, `posts` on a post series, a collection's rows | Membership, in order |
+| `contains` | `photos` on a photo series, `posts` on a post series, `tracks` on an album, a collection's rows | Membership, in order |
 | `cover` | `cover` | The photograph used as the hero |
 | `related` | `related` | What the entry is about |
 | `embeds` | `<Embed of="…" />` in a body | Drawn in place |
@@ -80,6 +83,10 @@ Three layers. Each knows nothing about the one after it.
 - A collection is resolved from the entries already loaded, so a draft sighting is neither a row nor able to stand in for a published one.
 - Two sightings of one species must agree on its scientific name and family, or a slip would start a new row.
 - A column of such a collection reads the entry's date, title or a facet.
+
+**Music.** A track is a primitive with its own page (`/music/<id>`), as a photograph has. An album is the composite, whatever its length (`format`: album, EP, single, compilation), and lives beside the projects (`/projects/<slug>`). A track can be released alone and later on an EP, so no release can own its address, and a track needs no release to exist: a demo is one file. These kinds are for Mal's own recordings. Other people's music is a recommendation, which keeps tempo and key off reviews and streaming links off the player.
+- Duration, tempo, key and credits are written in frontmatter. A cover names its writers in `composer`, which is a facet, so the writer is found by search without being an entry.
+- A track's audio is a file beside it under the same name. The loader records it and fails on an audio file with no track. Nothing reads or plays it yet.
 
 **Not every entry has a page.** A sighting, a recommendation and a table row live at an anchor on their collection's page (`/collections/life-list#<id>`); one or two sentences do not earn a route. A post series has no page yet and takes its first part's URL and date. Any of these can be given a page later without changing its ref or its file.
 
@@ -100,6 +107,7 @@ Dependencies added: `zod`, `yaml`, `exifr`, `@next/mdx`, `@mdx-js/loader`, `rema
 - **Tags and categories as entries.** Every label would be a file with a string in it and a page with nothing on it. Facets give the same search and filtering.
 - **One category and no tags, or tags and no category.** A single category forces a piece about a connected kitchen appliance to be filed under either technology or home. Tags alone leave templates guessing which label to show.
 - **Membership written on the member** (a `series` and `part` on each post, a series name on each photograph), or on both sides. Renumbering means editing every part, and two records of one fact drift.
+- **A track anchored to its album** (`/projects/<album>#<track>`), as a sighting is to its list. A track on two releases would have two addresses or an arbitrary owner, and a lone track would need a one-track release invented for it.
 - **Sightings and recommendations as rows of a table.** Cells hold text or a number only: no field notes, coordinates, tags or typed fields, and the list has to be kept by hand.
 - **Untyped links** (a list of refs). A photograph's page could list everything that points at it, but could not tell the series it belongs to from an essay that mentions it.
 - **`gray-matter`** for frontmatter. It parses dates into `Date` objects, which loses a note's offset.
@@ -117,15 +125,16 @@ Dependencies added: `zod`, `yaml`, `exifr`, `@next/mdx`, `@mdx-js/loader`, `rema
 - The whole folder is read on each build, and on each request in development. Fine at hundreds of entries; cache it if it becomes slow.
 - Photographs are `.jpg` only, for the same bundler reason: a second format is added in `load.ts` and `photo-figure.tsx` together, once a file of that type exists.
 - Photographs are in git, so the repository grows with each one. Export at web size (long edge 2400px or less). Git LFS is the remedy if it becomes a problem and changes nothing above the files.
+- Audio will be in git too, and is larger: several megabytes a track. Commit a web encoding (`.mp3` or `.m4a`), never a master or stems, and settle Git LFS before the first real file. Test fixtures use a stand-in of a few bytes.
 - `exifr` is unmaintained and its file reader fails on current Node, so the loader hands it a buffer, and it is kept out of the server bundle (`serverExternalPackages`).
 - This repository is still public. Only placeholder content is committed until it is private.
 - No sample-content fallback is needed: CI and local builds read the same folder.
 
 ## Deferred
 
-- **Music.** A track (primitive: audio, duration, tempo, key) and an album or EP (composite of tracks), for Mal's own recordings under Projects. Other people's music is a recommendation.
+- **Playing music.** The player, serving audio through the bundler, reading a track's duration from its file (a metadata library, so its own ADR), stems, and album artwork as an image file beside the album (`cover` pointing at a photograph works today).
 - **Search.** A build-time index over the envelope and facets of every kind, with results labelled by kind.
 - **Topics.** A subject with its own prose and a chosen reading list becomes an entry that contains others. Until one exists, a subject is a tag.
 - **Proof images on a sighting.** A picture that only confirms a field mark stays a file beside the sighting. One that stands on its own is a photograph, which the sighting points at with `related`.
-- **Pages** for projects, photo series, collections and post series (their entries already load); margin asides and the feature tier on the essay page.
+- **Pages** for projects, photo series, albums, collections and post series (their entries already load); margin asides and the feature tier on the essay page.
 - RSS feeds, which are route handlers over `query.ts`; pointing Pages CMS at this repository; Git LFS.

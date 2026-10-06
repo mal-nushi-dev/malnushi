@@ -1,6 +1,7 @@
 import type { z } from "zod";
 import type { Kind } from "./refs";
 import {
+  albumData,
   noteData,
   photoSeriesData,
   postData,
@@ -8,6 +9,7 @@ import {
   projectData,
   recommendationData,
   sightingData,
+  trackData,
   type Edge,
   type Facet,
   type Rel,
@@ -41,8 +43,13 @@ type Definition<S extends z.ZodType> = {
   folder: string;
   extension: ".mdx" | ".md";
   schema: S;
-  /** For a series: the kind its members must be. */
+  /** For a series or an album: the kind its members must be. */
   contains?: Kind;
+  /**
+   * Files that may sit beside an entry under its name, by the field that
+   * records them: a track's audio.
+   */
+  assets?: Record<string, string[]>;
   describe: (data: z.infer<S>, body: string) => Described;
   /** Problems the schema cannot name. */
   check?: (id: string, data: z.infer<S>, body: string) => string[];
@@ -61,6 +68,14 @@ export function edges(rel: Rel, ...to: (string | undefined)[]): Edge[] {
 
 /** Slugs a post cannot take: they are routes under /writing. */
 export const reservedPostSlugs = ["the-kernel", "dev-journal", "notes"];
+
+/** A release's format as it is shown. */
+export const albumFormats = {
+  album: "Album",
+  ep: "EP",
+  single: "Single",
+  compilation: "Compilation",
+} as const;
 
 export const definitions: KindDefinition[] = [
   define({
@@ -152,6 +167,55 @@ export const definitions: KindDefinition[] = [
       tags: data.tags,
       facets: {},
       edges: [...edges("contains", ...data.posts), ...edges("related", ...data.related)],
+      draft: data.draft,
+    }),
+  }),
+  define({
+    kind: "track",
+    folder: "tracks",
+    extension: ".mdx",
+    schema: trackData,
+    assets: { audio: [".mp3", ".m4a"] },
+    describe: (data) => ({
+      date: data.date,
+      title: data.title,
+      summary: data.subtitle,
+      tags: data.tags,
+      facets: {
+        artist: data.artist,
+        composer: data.composer,
+        bpm: data.bpm,
+        key: data.key,
+        instruments: data.instruments,
+        credits: data.credits.map((credit) => credit.name),
+      },
+      edges: [...edges("cover", data.cover), ...edges("related", ...data.related)],
+      draft: data.draft,
+    }),
+  }),
+  define({
+    kind: "album",
+    folder: "albums",
+    extension: ".mdx",
+    schema: albumData,
+    contains: "track",
+    describe: (data) => ({
+      date: data.date,
+      title: data.title,
+      summary: data.subtitle,
+      category: albumFormats[data.format],
+      tags: data.tags,
+      facets: {
+        format: albumFormats[data.format],
+        artist: data.artist,
+        tools: data.tools,
+        status: data.status,
+      },
+      edges: [
+        ...edges("contains", ...data.tracks),
+        ...edges("cover", data.cover),
+        ...edges("related", ...data.related),
+      ],
       draft: data.draft,
     }),
   }),

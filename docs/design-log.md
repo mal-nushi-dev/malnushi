@@ -6,6 +6,16 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-05
 
+### A track has its own page
+Decided with Mal. The engineering is in `docs/adr/0008-atomic-content-model.md`.
+- **Track is a seventh type,** with its own URL at `/music/[id]`, as a photo has `/photography/[id]` (Mal's choice; I had proposed an anchor on its album). Mal's reasons: a recording is a piece of work in itself, with its own notes, tempo and key; the same track can be a single and later sit on an EP, so no release can own its address; and a lone cover or demo should be one file, not a file plus an invented one-track release.
+- **A release is `album`, whatever its length,** with a `format` of album, EP, single or compilation. It lists its tracks and lives at `/projects/[slug]` beside projects and photo series (my choice, following where photo series went). It has no page until the project template is built.
+- **Track page and `/music`** are built from existing tokens and components only: eyebrow `MUSIC / TRACK`, `h1`, standfirst, a meta row of date, duration, tempo, key and composer, the liner notes in the reading column, then "Appears on" (its releases) and "Appears in" (entries that embed it) as index lists and a next link. `/music` is one index list. Not designed with Mal; in Open questions. There is no player.
+- **Embedded** in an essay, a track is a label, its title and its facts between two hairlines, linking to its page, as a sighting is.
+- **Home:** "Latest work" now lists releases with projects, so music still shows there.
+- **Placeholder content:** the two mock music projects (Porch Light, Low Tide Sketches) were replaced by three placeholder tracks and one EP.
+- **What would change it:** if tracks are only ever heard in the context of a release, the track pages could redirect to the release; the refs and files would not change.
+
 ### Content model: groupings, tags and observations
 Decided with Mal. The engineering is in `docs/adr/0008-atomic-content-model.md`, which was rewritten for it. What it changes in the design:
 - **Tags are shown to readers.** `keywords` (search only, hidden) is gone; every kind has `tags`. Reason: a piece about a connected kitchen appliance is technology, home and food at once, and a reader should be able to arrive from any of them. Where tags appear is not designed; in Open questions.

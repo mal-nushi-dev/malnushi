@@ -215,8 +215,20 @@ export async function loadContent(
   // The kinds that are one file per entry: see kinds.ts.
   for (const definition of definitions) {
     const { kind, folder, extension, schema } = definition;
-    for (const name of await filesIn(root, folder)) {
+    const names = await filesIn(root, folder);
+    const assets = Object.entries(definition.assets ?? {});
+    const isAsset = (name: string) =>
+      assets.some(([, extensions]) => extensions.includes(path.extname(name)));
+    for (const name of names) {
       const source = `${folder}/${name}`;
+      if (isAsset(name)) {
+        // A file that belongs to an entry: a track's audio beside its .mdx.
+        const stem = path.basename(name, path.extname(name));
+        if (!names.includes(`${stem}${extension}`)) {
+          problems.push(`${source}: there is no ${kind} named ${stem}`);
+        }
+        continue;
+      }
       if (path.extname(name) !== extension) {
         problems.push(`${source}: expected a ${extension} file`);
         continue;
@@ -235,7 +247,18 @@ export async function loadContent(
       problems.push(...found.map((problem) => `${source}: ${problem}`));
       // A reserved slug has no address to be given.
       if (kind === "post" && found.length > 0) continue;
-      add(kind, id, source, { ...definition.describe(data, parsed.body), body: parsed.body, data });
+      // The files beside it, each under its field.
+      const beside = Object.fromEntries(
+        assets.flatMap(([field, extensions]) => {
+          const file = extensions.map((ext) => `${id}${ext}`).find((n) => names.includes(n));
+          return file ? [[field, file]] : [];
+        }),
+      );
+      add(kind, id, source, {
+        ...definition.describe(data, parsed.body),
+        body: parsed.body,
+        data: { ...(data as object), ...beside },
+      });
     }
   }
 

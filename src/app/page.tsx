@@ -38,7 +38,8 @@ export default async function Home() {
   const feature = q.need(lead.kind, lead.id);
   const [first, second, third] = features.map(({ kind, id }) => q.need(kind, id));
   const essays = q.list("post", { where: (p) => p.data.type === "article", limit: 3 });
-  const projects = q.list("project", { limit: 3 });
+  // A release is work too: it lives beside the projects.
+  const projects = q.stream({ kinds: ["project", "album"], limit: 3 });
   const lifeList = q.need("collection", "life-list");
   const recommendations = q.need("collection", "recommendations");
   // The newest species on the list, not the newest sighting of any bird.

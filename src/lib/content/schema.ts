@@ -171,6 +171,52 @@ export const projectData = z.strictObject({
   feature: feature.optional(),
 });
 
+/** Minutes and seconds: "3:42", "12:05". A long piece runs past 59 minutes. */
+const duration = z.string().regex(/^\d+:[0-5]\d$/, 'use minutes and seconds, such as "3:42"');
+
+const artist = z.string().default("Mal Nushi");
+
+/** One recording. The text under the frontmatter is the liner notes. */
+export const trackData = z.strictObject({
+  title: z.string().min(1),
+  subtitle: z.string().optional(),
+  date: day,
+  duration,
+  bpm: z.number().positive().optional(),
+  /** The musical key: "A minor". */
+  key: z.string().optional(),
+  artist,
+  /** Who wrote it. On a cover, the original writers. */
+  composer: z.array(z.string().min(1)).optional(),
+  credits: z
+    .array(z.strictObject({ role: z.string().min(1), name: z.string().min(1) }))
+    .default([]),
+  instruments: z.array(z.string().min(1)).optional(),
+  tags,
+  cover: ref.optional(),
+  related: refs,
+  draft,
+});
+
+/** A release of any length. The text under the frontmatter is the release notes. */
+export const albumData = z.strictObject({
+  title: z.string().min(1),
+  subtitle: z.string().optional(),
+  date: day,
+  format: z.enum(["album", "ep", "single", "compilation"]),
+  /** The running order. */
+  tracks: z.array(ref).min(1),
+  artist,
+  role: z.string().optional(),
+  tools: z.array(z.string().min(1)).optional(),
+  status: z.string().optional(),
+  tags,
+  cover: ref.optional(),
+  related: refs,
+  draft,
+  feature: feature.optional(),
+});
+
 /** One time a bird was seen. The text under the frontmatter is the field notes. */
 export const sightingData = z.strictObject({
   /** The common name: "Carolina Wren". */
@@ -260,6 +306,11 @@ export type NoteData = z.infer<typeof noteData>;
 export type PhotoData = z.infer<typeof photoData>;
 export type PhotoSeriesData = z.infer<typeof photoSeriesData>;
 export type PostSeriesData = z.infer<typeof postSeriesData>;
+export type TrackData = z.infer<typeof trackData> & {
+  /** The audio file beside it in content/tracks/, when there is one. */
+  audio?: string;
+};
+export type AlbumData = z.infer<typeof albumData>;
 export type SightingData = z.infer<typeof sightingData>;
 export type RecommendationData = z.infer<typeof recommendationData>;
 export type ProjectData = z.infer<typeof projectData>;
@@ -325,6 +376,8 @@ export type NoteEntry = Of<"note", NoteData>;
 export type PhotoEntry = Of<"photo", PhotoData>;
 export type PhotoSeriesEntry = Of<"photo-series", PhotoSeriesData>;
 export type PostSeriesEntry = Of<"post-series", PostSeriesData>;
+export type TrackEntry = Of<"track", TrackData>;
+export type AlbumEntry = Of<"album", AlbumData>;
 export type SightingEntry = Of<"sighting", SightingData>;
 export type RecommendationEntry = Of<"recommendation", RecommendationData>;
 export type ProjectEntry = Of<"project", ProjectData>;
@@ -337,6 +390,8 @@ export type Entry =
   | PhotoEntry
   | PhotoSeriesEntry
   | PostSeriesEntry
+  | TrackEntry
+  | AlbumEntry
   | SightingEntry
   | RecommendationEntry
   | ProjectEntry

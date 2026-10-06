@@ -11,6 +11,8 @@ export const kinds = [
   "photo-series",
   "post-series",
   "project",
+  "track",
+  "album",
   "sighting",
   "recommendation",
   "collection",
@@ -62,7 +64,10 @@ export function urlFor(kind: Kind, id: string) {
       return `/writing/notes/${id}`;
     case "photo":
       return `/photography/${id}`;
+    case "track":
+      return `/music/${id}`;
     case "photo-series":
+    case "album":
     case "project":
       return `/projects/${id}`;
     case "post-series":

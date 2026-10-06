@@ -68,3 +68,13 @@ test("a note has its own page", async ({ page }) => {
   expect((await page.goto("/writing/notes/2026-10-03-1412"))?.status()).toBe(200);
   await expect(page.getByText("2026-10-03 · 2:12 PM EDT")).toBeVisible();
 });
+
+test("a track has its own page, and names the release it is on", async ({ page }) => {
+  expect((await page.goto("/music/ebb"))?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1, name: "Ebb" })).toBeVisible();
+  await expect(page.getByText("11:27")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Low Tide Sketches/ })).toBeVisible();
+
+  await page.goto("/music");
+  await expect(page.getByRole("link", { name: /Ebb/ })).toHaveAttribute("href", "/music/ebb");
+});

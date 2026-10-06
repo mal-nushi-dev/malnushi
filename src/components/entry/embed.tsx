@@ -4,6 +4,7 @@ import { content, dayOf, homes } from "@/lib/content";
 import { ItemSummary } from "./item-summary";
 import { categoryOf, titleOf, toNoteItem } from "./mappers";
 import { PhotoFigure } from "./photo-figure";
+import { TrackSummary } from "./track-summary";
 
 /**
  * Another entry, inside this one: `<Embed of="photo:2026-10-02-wren" />`.
@@ -29,6 +30,12 @@ export async function Embed({
       return (
         <div className="border-y border-line py-(--space-md)">
           <Note note={toNoteItem(entry)} />
+        </div>
+      );
+    case "track":
+      return (
+        <div className="border-y border-line py-(--space-md)">
+          <TrackSummary track={entry} />
         </div>
       );
     case "item":

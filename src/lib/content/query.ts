@@ -25,6 +25,8 @@ const streamKinds: Kind[] = [
   "photo",
   "photo-series",
   "project",
+  "track",
+  "album",
   "sighting",
   "recommendation",
   "item",
