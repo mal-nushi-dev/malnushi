@@ -17,11 +17,13 @@ const content = async () =>
 
 /**
  * Sections in the nav and in links that have no page yet. Remove a prefix
- * when its route is built, and its links are checked from then on.
+ * when its route is built, and its links are checked from then on. A prefix
+ * that ends in a slash is a section whose index is built and whose pages are
+ * not: `/projects` is a page, `/projects/skyline` is not yet.
  */
 const notBuilt = [
   "/about",
-  "/projects",
+  "/projects/",
   "/collections",
   "/writing/the-kernel",
   "/writing/dev-journal",
@@ -30,7 +32,11 @@ const notBuilt = [
 ];
 
 const isBuilt = (href: string) =>
-  !notBuilt.some((prefix) => href === prefix || href.startsWith(`${prefix}/`) || href.startsWith(`${prefix}#`));
+  !notBuilt.some((prefix) =>
+    prefix.endsWith("/")
+      ? href.startsWith(prefix)
+      : href === prefix || href.startsWith(`${prefix}/`) || href.startsWith(`${prefix}#`),
+  );
 
 async function routes(request: import("@playwright/test").APIRequestContext) {
   const sitemap = await (await request.get("/sitemap.xml")).text();

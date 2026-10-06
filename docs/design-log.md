@@ -4,6 +4,26 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-06
+
+### Projects index: a tight gallery of tiles
+Decided with Mal, from four mockups (an even card grid, varied ratios, mixed card styles, then a "gallery wall" with captions under each piece, which Mal did not like). Built at `/projects`. The engineering is in `docs/adr/0009-tiles-css-springs-and-filters-in-the-address.md`.
+- **A gallery, not an index list.** Mal: the index list "is very boring sounding". DESIGN.md said both "image-forward card grid" and "the index list replaces card grids"; the Projects index is now a named exception, as the Writing index is.
+- **"Projects" in `feature-display`, centered under the nav,** with no eyebrow, standfirst or full stop (Mal's choices; I had tried a sage full stop to echo "Kodikion." and a standfirst).
+- **Tiles 4px apart both ways, at the content width** (Mal's choices, over 2px, touching, or edge to edge). 4 is off the 8px scale, so it is its own token, `space.tile-gap`.
+- **No hero; sizes vary.** Mal: equal weight does not mean the tiles must look alike. A tile is one cell, two across, two down or four. **Sizes come from position** in a repeating run of twelve (my choice): no content field decides layout, and filtering never resizes a tile. The cost is that a piece's size changes as newer ones arrive. In Open questions.
+- **The plate is the nav's effect** (Mal asked for something like the nav and the "Kodikion." masthead): sage over the whole tile at some opacity, on the nav's springs, with the words arriving 150ms later as the nav's panel does. Mal chose the sage covering the whole tile over a plate floating 8px inside it, and turned down a mono-to-serif title morph. With the whole tile covered, the spring's overshoot is hidden by the tile's edge, so the plate lands without a visible bounce.
+- **`sage.700` (`#4D5749`), a new primitive, at 90%** (my choice; Mal offered a new color if the tokens had none that worked). The nav's `sage.600` at 90% over a white cover leaves `#FAFAFA` at 4.2:1 and `#EDEEEB` at 3.7:1, under AA. `sage.700` gives 5.6:1 and 5.0:1 in that worst case.
+- **On the plate:** label, year, title, one line of summary and status (my suggestion; Mal approved "for now"). The label counts what a series or a release holds (`Photo series · 12`, `EP · 3 tracks`). These are views of the entry: filtering and search read the entry, never the label.
+- **Ordering:** the last changed first, `updated` then `date` (Mal: "updated, then newest"). This is the first page to order by `updated`.
+- **Filters are small (32px), centered, just above the gallery** (Mal). Multi-select, and a piece must answer to all that are on; a pill that would leave nothing is hidden (Mal: hide combinations that do not exist). The selection is in the address so it can be shared (Mal).
+- **Disciplines need no new field.** I first proposed a `disciplines` list on each entry; Mal asked what the content model says. It already has the answer: `category` is the one label shown and `tags` are the many used for finding. A piece answers to its discipline and to any tag that names one. Only disciplines get pills, so a tag such as `swift` does not flood the row (my choice).
+- **Nothing related is shown on a tile** (Mal): a project's essays, source and design files belong on its own page, which Mal expects to style piece by piece.
+- **"All photos" and "All music"** link the two archives from under the gallery (Mal: photographs and tracks would otherwise swamp it).
+- **No cover:** an image placeholder (Mal), which carries the piece's title (my choice, so a coverless tile still says what it is). A photo series without a `cover` uses its first photograph (my choice).
+- **Small pills are under the 44px touch target.** Fine for a pointer; revisit with mobile, which Mal set aside for this page.
+- **What would change it:** many more pieces than a screen or two would want paging or grouping by year. If position-based sizes feel arbitrary, an entry could ask for its size. If touch readers cannot tell tiles apart, the tile needs a resting caption.
+
 ## 2026-10-05
 
 ### A series counts a part still in draft

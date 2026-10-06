@@ -78,6 +78,7 @@ for (const path of [
   "/writing/notes",
   "/writing/notes/2026-10-03-0931",
   "/writing/the-list-that-keeps-me-looking",
+  "/projects",
   "/photography",
   "/photography/2026-10-02-wren-at-the-window",
   "/music",

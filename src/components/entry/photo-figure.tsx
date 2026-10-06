@@ -14,7 +14,7 @@ import { exifLine, type PhotoEntry } from "@/lib/content";
  * needs at least one file to match, which is why photographs are .jpg only
  * (src/lib/content/load.ts): add a format in both places together.
  */
-async function imageOf(photo: PhotoEntry): Promise<StaticImageData> {
+export async function imageOf(photo: PhotoEntry): Promise<StaticImageData> {
   return (await import(`@content/photos/${photo.id}.jpg`)).default;
 }
 

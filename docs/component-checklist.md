@@ -28,13 +28,14 @@ Components are grouped in sections 01–06. States (hover, focus) are CSS; varia
 
 - [x] Inline Link
 - [x] Arrow Link
-- [x] Filter Pill (`active`)
+- [x] Filter Pill (`active`; `size`: md 44px, sm 32px)
 - [x] Collection Link
 
 ## 04 Lists and tables
 
 - [x] Index List (rows are whole links)
 - [x] Data Table (`columns`: life list, Lego inventory)
+- [x] Tile and Tile Grid (`size`: square, wide, tall, large; sage plate on hover and focus)
 
 ## 05 Editorial content
 
@@ -50,6 +51,7 @@ Components are grouped in sections 01–06. States (hover, focus) are CSS; varia
 - [x] Toolbar (filter pills and sort label; presentational)
 - [x] Other Collections Row
 - [x] Essay Header
+- [x] Tile Gallery (filter pills over a tile grid; `UrlTileGallery` keeps the selection in the address). Not on the preview page: see `/projects`.
 
 ## Where things are
 
@@ -57,7 +59,7 @@ Components are in `src/components/`. Tokens are in `tokens/*.json`, mirrored by 
 
 ## Next
 
-Essay page (house version), assembled at 1440 from these components; add components only where the page shows a gap. Then project, collection and photography pages, and feature variants.
+Essay page (house version), assembled at 1440 from these components; add components only where the page shows a gap. Then project, collection and photography pages, and feature variants. The projects index (`/projects`) is built.
 
 ## Open
 

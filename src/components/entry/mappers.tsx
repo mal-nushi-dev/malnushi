@@ -1,6 +1,7 @@
 import type { IndexItem } from "@/components/index-list";
 import type { Issue } from "@/components/issue-stub";
 import type { NoteItem } from "@/components/note";
+import type { TileProps } from "@/components/tile";
 import {
   dayOf,
   noteDateLine,
@@ -8,7 +9,9 @@ import {
   type Entry,
   type Kind,
   type NoteEntry,
+  type PhotoEntry,
   type PostEntry,
+  type Queries,
 } from "@/lib/content";
 import { EntryBody } from "./body";
 
@@ -78,5 +81,58 @@ export function toNoteItem(note: NoteEntry): NoteItem {
     id: note.id,
     ...noteDateLine(note.date),
     body: <EntryBody entry={note} components={noteComponents} />,
+  };
+}
+
+/*
+ * The gallery at /projects: projects, photo series and releases side by side.
+ */
+
+/** The kinds that are one discipline whatever their category says. */
+const disciplines: Partial<Record<Kind, string>> = {
+  "photo-series": "Photography",
+  album: "Music",
+};
+
+/**
+ * What sort of work an entry is, for a filter: a project's category, and
+ * Photography or Music for a series or a release.
+ */
+export function disciplineOf(entry: Entry): string {
+  return disciplines[entry.kind] ?? categoryOf(entry);
+}
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** A tile's label: what it is and, for a series or a release, how much is in it. */
+export function tileLabel(entry: Entry, q: Queries): string {
+  const held = q.members(entry).length;
+  if (entry.kind === "photo-series") return `Photo series · ${held}`;
+  if (entry.kind === "album") return `${categoryOf(entry)} · ${plural(held, "track", "tracks")}`;
+  return categoryOf(entry);
+}
+
+/**
+ * The photograph that stands for an entry: its `cover`, or for a photo series
+ * without one, its first photograph.
+ */
+export function coverOf(entry: Entry, q: Queries): PhotoEntry | undefined {
+  const named = entry.edges.find((edge) => edge.rel === "cover");
+  const cover = named ? q.get(named.to) : undefined;
+  if (cover?.kind === "photo") return cover;
+  if (entry.kind !== "photo-series") return undefined;
+  return q.members(entry).find((member) => member.kind === "photo");
+}
+
+/** An entry as a `Tile` takes it, without its cover or its size. */
+export function toTile(entry: Entry, q: Queries): Omit<TileProps, "children" | "size"> {
+  const status = entry.facets.status;
+  return {
+    href: entry.url,
+    title: titleOf(entry),
+    summary: entry.summary,
+    label: tileLabel(entry, q),
+    year: yearOf(entry.date),
+    status: typeof status === "string" ? status : undefined,
   };
 }

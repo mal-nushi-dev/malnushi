@@ -30,7 +30,7 @@ The site is organized around five distinct pillars, each with a clear editorial 
 
 - **Home.** Acts as an active front porch rather than a static directory. It welcomes visitors with editorial curation: a personal introduction in the serif voice, a lead feature at display scale, varied-size secondary features, and live pulses from recent writing, projects, and collection activity.
 - **Writing.** Unifies your long-form blog and your short-form microblog under one roof, preventing your thoughts from feeling fragmented across the site. The cleanest layout here is a reverse-chronological feed with a subtle filter toggle at the top to isolate essays, quick notes, or all entries. Rendering microblog entries as brief, timestamped notes and longform articles with titles and reading times keeps your stream active without burying your in-depth pieces.
-- **Projects.** Serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. Structuring this hub as an image-forward card grid allows visitors to browse disparate disciplines side by side, with each card leading to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
+- **Projects.** Serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. The hub is a tight gallery of tiles, so visitors browse disparate disciplines side by side, with each tile leading to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
 - **Collections.** Operates as your personal encyclopedia and ongoing data hub. This is where your bird life list, plant tracker, flight stats, city guides, item inventories, and media recommendations live. Unlike projects, these are not finished deliverables, but living reference tables and personal dashboards that evolve over decades. Presenting this hub with visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—makes browsing feel like walking through a private museum.
 - **About.** Grounds the entire site by providing personal context, philosophy, and connection points. Alongside your background and current technical focus, it works well to include a colophon detailing how the site is built and hosted, a "Now" module outlining what you are currently reading or tinkering with, and direct ways to get in touch.
 
@@ -170,7 +170,7 @@ The `primitives` token set holds the raw values the tokens above point to:
 |---|---|
 | `color.neutral` | 50 `#FAFAFA`, 100 `#EDEEEB`, 200 `#D5D7D2`, 400 `#A4ADA6`, 600 `#626964`, 800 `#3D444C`, 900 `#2E2E2E`, 950 `#2A2F35` |
 | `color.slate` | 300 `#D2DDE4`, 600 `#485861` |
-| `color.sage` | 500 `#758072` (dark accent), 600 `#626E5E` (light accent) |
+| `color.sage` | 500 `#758072` (dark accent), 600 `#626E5E` (light accent), 700 `#4D5749` (a tile's plate) |
 
 Neutral 800 and 950 exist only for the provisional dark values.
 
@@ -198,7 +198,7 @@ A feature may override `--accent` with **one** color of its own, pulled from the
 
 An 8px base. Vertical rhythm uses these steps: 8, 16, 24, 32, 48, 64, 80, 96, 128, 160, 200.
 
-Four component values sit off the scale on purpose and are tokenized as written: 18 (table row padding), 22 (index row padding), 40 (nav item gap) and 120 (header top padding).
+Five component values sit off the scale on purpose and are tokenized as written: 4 (the gap between tiles), 18 (table row padding), 22 (index row padding), 40 (nav item gap) and 120 (header top padding).
 
 - **Between major blocks** within a piece: 128px.
 - **Between images** in a photography series: 160–200px. Whitespace is part of the pacing.
@@ -275,7 +275,7 @@ The index sits in a fixed 48px column with the caption text beside it (600px wid
 
 ### Index list
 
-Used for "More projects", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids, except on the Writing index, where the articles lead with images (see that section).
+Used for "More projects", section indexes and anything else that lists pieces. Each row is a grid: mono index, serif `index-title`, sans category, mono year aligned right. 22px row padding, hairlines between rows, a 1px `--ink` rule under the section label. This replaces card grids, except on the Writing index, where the articles lead with images, and the Projects index, which is a gallery of tiles (see those sections).
 
 ### Data table (collections)
 
@@ -284,6 +284,21 @@ Header row in `label` style over a 1px `--ink` rule. 18px row padding, hairlines
 ### Filter pills
 
 `small` style, 44px tall, fully rounded, 24px padding left and right. Inactive pills have a 1px `--line` border; the active pill is filled `--ink` with `--bg` text. **Hover** darkens the border to `--ink-2`. **Focus** uses the same 2px `--ink` ring as the nav, 4px outside the pill, keyboard focus only.
+
+**Small** (`size="sm"`): 32px tall with 16px padding, for a row of filters that should sit quietly, as over the projects gallery. It is under the 44px touch target, so it is for pointer layouts only until mobile is designed.
+
+### Tile and tile grid
+
+Decided with Mal 2026-10-06. A **tile** is one piece of work in a gallery: its cover fills it edge to edge, with `radius.image` corners and nothing else at rest. A **tile grid** is four columns of square cells, 4px (`space.tile-gap`) apart both ways, at the content width. A tile takes one cell, two across (wide), two down (tall) or four (large); later tiles move up into any cell left open. Sizes come from the tile's place in the whole list, in a run of twelve that fills the grid exactly and repeats, so filtering never resizes a tile. No tile is a hero.
+
+**The plate.** On hover, and on keyboard focus, a sage plate covers the whole tile at 90%, so the cover shows through, with a glance of the piece on it in the light-on-sage tokens the open nav uses: its label (`label`) and year (`meta`) on the top line; at the bottom its title (`index-title`, or `quote` on a tile two columns wide), one line of summary (`ui`) and its status after a dot (`meta`). The cover grows 3% under it.
+
+- **Motion** is the nav's. The plate grows from 86% about its center on the nav's opening spring (600ms, about 7% past its size, which the tile's edge hides) and the words fade in 150ms later over 350ms, as the nav's panel does. Leaving, the words go in 150ms and the plate on the nav's closing spring (350ms). With `prefers-reduced-motion` the plate appears and goes at once.
+- **Color** is `sage.700` (`#4D5749`), one step deeper than the nav's `sage.600`. At 90% over a white cover `sage.600` leaves light text at 4.2:1; `sage.700` keeps it at 5:1 or better over any cover.
+- **Without a cover** a tile shows an image placeholder carrying the piece's title.
+- **For screen readers** the tile is one link named by its title (a heading), label, year, summary and status. The plate and the cover are decoration and are not read out.
+
+The component is `Tile`, with `TileGrid` and `TileGridItem`; `TileGallery` adds a row of filters over a grid. A tile knows nothing about content: its cover is whatever it is given.
 
 ### Next link (footer)
 
@@ -376,9 +391,26 @@ A note has no title, no standfirst and no feature tier.
 
 Notes are not part of Kodikion and are not sent to Substack.
 
+### Projects index
+
+`/projects`. Decided with Mal 2026-10-06; see the design log. Projects serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. From the top:
+
+1. **"Projects"**, centered directly under the nav, in `feature-display`. It is the page's `h1`. No eyebrow and no standfirst.
+2. **Filters:** small filter pills, centered, 24px above the gallery. "All", then one pill for each discipline, the most used first.
+3. **The gallery:** a tile grid of every project, photo series and release, the last changed first (by `updated`, or `date` where a piece has never been revised). Flat: no lead and no feature.
+4. **Archives:** two arrow links centered under the gallery, "All photos" (`/photography`) and "All music" (`/music`).
+
+**Filtering.** Several pills can be on at once, and a piece must answer to all of them. A pill that would leave nothing is not shown, so no combination comes up empty. The selection is in the address (`/projects?t=code,design`), so a filtered view can be linked to; it replaces the history entry, so Back leaves the page. Without JavaScript the whole gallery is shown.
+
+**Disciplines** come from the content, with no fixed list. A piece's discipline is a project's `category`, Photography for a photo series and Music for a release, and each discipline in use gets a pill. A piece also answers to any of its `tags` that names a discipline, so a design project that involved code (`category: Design`, `tags: [code]`) is found under both. A tag that names no discipline adds no pill.
+
+**A tile's label** is the project's category, `Photo series · 12` (its photographs) or `EP · 3 tracks` (its format and tracks). **Its cover** is the entry's `cover`, or a photo series' first photograph.
+
+Nothing related to a piece (its essays, its source) is shown here: that belongs on the piece's own page.
+
 ### Project
 
-Projects serves as your creative workshop, focusing strictly on things you have made, engineered, or arranged. Here live your software repositories, original music compositions, Lego creations, and photography portfolios. Structuring this hub as an image-forward card grid allows visitors to browse disparate disciplines side by side, with each card leading to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
+One template covers every project page. Each leads to a dedicated case study detailing the backstory, tools used, audio players, or photo galleries.
 
 Image leads. One template covers code, digital design, hardware and Lego; the spec block is what flexes.
 
@@ -586,6 +618,7 @@ The tokens live in `src/app/globals.css`: color, spacing, size and radius as CSS
 
   --gutter: 96px; --col-gap: 24px; --measure: 680px;
   --radius-img: 4px; --radius-code: 8px; --radius-nav: 14px; --radius-nav-open: 20px;
+  --space-tile-gap: 4px; --pill-height-sm: 32px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -622,6 +655,8 @@ The design tokens live in `tokens/` as W3C DTCG JSON in four sets: `primitives` 
 | `size.reading-measure` | `--measure` |
 | `radius.image` / `radius.code` / `radius.pill` | `--radius-img` / `--radius-code` / fully rounded |
 | `radius.nav` / `radius.nav-open` | `--radius-nav` / `--radius-nav-open` |
+| `space.tile-gap` | `--space-tile-gap` (4px) |
+| `size.pill-height-sm` | `--pill-height-sm` (32px) |
 
 Other semantic tokens have no CSS variable yet:
 
@@ -631,6 +666,8 @@ Other semantic tokens have no CSS variable yet:
 | Sizing | `size.content-width` (1248), `size.touch-target` (44), `size.pill-height` (44) |
 | Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
 | Shadow | `shadow.nav`, CSS `--shadow-nav` (values in Components → Nav). Code only: not in `tokens/` yet. |
+| Motion | `--ease-spring-open` and `--ease-spring-close`: the nav's opening and closing springs as CSS easings, for transitions CSS runs (600ms and 350ms). Code only: written from `cssSprings` in `src/lib/motion.ts`. |
+| Tile plate | `[data-tile-plate]` re-points `--bg` to `sage.700` and `--ink`, `--ink-2` and `--accent` to the light-on-sage values. Code only. |
 
 The files are `tokens/primitives.json`, `tokens/semantic.json`, `tokens/modes/light.json` and `tokens/modes/dark.json`. `src/app/globals.css` mirrors them: change the JSON first, then the CSS.
 
@@ -660,11 +697,19 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Tags are now shown to readers (decided 2026-10-05), but no page shows them yet. Decide where they appear (essay header, index rows, a photograph's caption) and whether a tag links to a list of everything carrying it.
 - `updated`: no page shows it or orders by it (the sitemap reads it). Decide whether an essay shows "Updated" beside its date, and whether the home page brings a revised piece back to the top.
 - Post series: whether it gets a page of its own (`/writing/series/[slug]`), and how previous and next parts are linked on an essay. Only "Part 2 of 3" is shown today.
-- Music: the track page (`/music/[id]`) and the track list (`/music`) are a first pass built from existing components, not designed, with placeholder copy. Decide their layout, where `/music` is linked from, the audio player, and how a release shows its tracks once the project template exists.
+- Music: the track page (`/music/[id]`) and the track list (`/music`) are a first pass built from existing components, not designed, with placeholder copy. Decide their layout, the audio player, and how a release shows its tracks once the project template exists.
 - Sightings and recommendations: when one has enough written about it to earn its own page, and what that page looks like.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
 - Writing index: the masthead and its sticky notes rail are not checked in Safari, Firefox or on a phone and have no mobile layout (set aside by Mal 2026-10-04, not dropped). The full-stop spacing in the masthead is unreviewed.
-- Photo archive (`/photography`): the layout is a first pass built from existing components, not designed. Decide the layout, the page's copy, whether captions show in the archive, and where the archive is linked from.
+- Projects index (`/projects`, built 2026-10-06):
+  - **Touch.** The plate needs a pointer or a keyboard, so on a touch screen (tablets use the desktop layout) a tile shows only its cover until it is tapped, which opens the piece. Decide what a tile shows at rest there.
+  - **Covers that move.** Mal wants some tiles to animate. `cover` can only name a photograph. Decide where motion lives in the content model (a second `motion` field beside a still `cover` is my suggestion, so search, feeds and reduced motion keep a still) and record it in an ADR. `Tile` already takes any cover.
+  - **Who sizes a tile.** Sizes come from position, so the newest piece is always wide and a piece changes size as newer ones arrive. Decide whether an entry may ask for a size.
+  - **A short gallery** leaves empty cells at its end (five pieces leave two). It fills as pieces are added.
+  - **The project page** (`/projects/[slug]`) is not built, so every tile leads to a 404 until it is.
+  - A sage-heavy cover barely changes when the plate comes over it. On a placeholder, the placeholder's label shows faintly through the plate.
+  - Not checked in Safari or Firefox. No mobile layout.
+- Photo archive (`/photography`): the layout is a first pass built from existing components, not designed. Decide the layout, the page's copy and whether captions show in the archive. It is linked from under the projects gallery.
 - Photography series now live at `/projects/[slug]`, so `/photography/[id]` is a single photo (my choice, 2026-10-04; not confirmed by Mal). The series template is not built.
 - Home: the "latest photograph" in the collections strip is text only. Decide whether it shows the image.
 - Essay page (`/writing/[slug]`): margin asides and the feature tier are not built; an aside renders inline.
