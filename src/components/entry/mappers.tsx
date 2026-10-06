@@ -6,6 +6,7 @@ import {
   noteDateLine,
   yearOf,
   type Entry,
+  type Kind,
   type NoteEntry,
   type PostEntry,
 } from "@/lib/content";
@@ -22,26 +23,26 @@ export const newsletters = {
   "dev-journal": "Dev Journal",
 } as const;
 
+/** What a kind is called when an entry has no category of its own. */
+const kindLabels: Record<Kind, string> = {
+  post: "",
+  note: "Note",
+  photo: "Photograph",
+  "photo-series": "Photography",
+  "post-series": "Series",
+  project: "",
+  sighting: "Sighting",
+  recommendation: "Recommendation",
+  collection: "Collection",
+  item: "Collection",
+};
+
 /** The sub-category in an eyebrow or an index row. */
 export function categoryOf(entry: Entry): string {
-  switch (entry.kind) {
-    case "post":
-      return entry.data.type === "article"
-        ? (entry.data.category ?? "")
-        : newsletters[entry.data.type];
-    case "project":
-      return entry.data.category;
-    case "series":
-      return "Photography";
-    case "photo":
-      return "Photograph";
-    case "note":
-      return "Note";
-    case "collection":
-      return "Collection";
-    case "item":
-      return "Collection";
+  if (entry.kind === "post" && entry.data.type !== "article") {
+    return newsletters[entry.data.type];
   }
+  return entry.category ?? kindLabels[entry.kind];
 }
 
 /** A title for a row. A note or an untitled photograph is named by its words. */

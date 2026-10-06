@@ -1,6 +1,6 @@
 /*
  * A ref names one entry anywhere in the site: "photo:2026-10-02-wren",
- * "post:the-rise-of-gan", "item:life-list/carolina-wren". Entries point at
+ * "post:the-rise-of-gan", "sighting:2026-09-27-carolina-wren". Entries point at
  * each other with refs, in frontmatter and in `<Embed of="…" />`.
  */
 
@@ -8,8 +8,11 @@ export const kinds = [
   "post",
   "note",
   "photo",
-  "series",
+  "photo-series",
+  "post-series",
   "project",
+  "sighting",
+  "recommendation",
   "collection",
   "item",
 ] as const;
@@ -22,8 +25,20 @@ const id = "[a-z0-9][a-z0-9-]*";
 export const idPattern = new RegExp(`^${id}$`);
 
 export const refPattern = new RegExp(
-  `^(?:(?:post|note|photo|series|project|collection):${id}|item:${id}/${id})$`,
+  `^(?:(?:${kinds.filter((k) => k !== "item").join("|")}):${id}|item:${id}/${id})$`,
 );
+
+/**
+ * Kinds without a page of their own. Their address is somewhere on another
+ * page, so two of them never compete for one.
+ */
+export const pageless: readonly Kind[] = ["post-series", "sighting", "recommendation", "item"];
+
+/** The collection whose page an observation is read on. */
+export const homes = {
+  sighting: "life-list",
+  recommendation: "recommendations",
+} as const satisfies Partial<Record<Kind, string>>;
 
 export function toRef(kind: Kind, id: string) {
   return `${kind}:${id}`;
@@ -35,7 +50,10 @@ export function parseRef(ref: string): { kind: Kind; id: string } | null {
   return { kind: ref.slice(0, at) as Kind, id: ref.slice(at + 1) };
 }
 
-/** Where an entry lives. A collection row has no page: it is an anchor. */
+/**
+ * Where an entry lives. A collection row, a sighting or a recommendation has
+ * no page: it is an anchor on its collection's page.
+ */
 export function urlFor(kind: Kind, id: string) {
   switch (kind) {
     case "post":
@@ -44,9 +62,15 @@ export function urlFor(kind: Kind, id: string) {
       return `/writing/notes/${id}`;
     case "photo":
       return `/photography/${id}`;
-    case "series":
+    case "photo-series":
     case "project":
       return `/projects/${id}`;
+    case "post-series":
+      // No page yet: the loader points it at its first part.
+      return "/writing";
+    case "sighting":
+    case "recommendation":
+      return `/collections/${homes[kind]}#${id}`;
     case "collection":
       return `/collections/${id}`;
     case "item": {

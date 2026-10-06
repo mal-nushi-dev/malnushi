@@ -15,7 +15,7 @@ import Link from "next/link";
 const lead = { kind: "post", id: "the-list-that-keeps-me-looking" } as const;
 const features: { kind: Kind; id: string }[] = [
   { kind: "project", id: "dns-filter" },
-  { kind: "series", id: "early-light-on-the-marsh" },
+  { kind: "photo-series", id: "early-light-on-the-marsh" },
   { kind: "project", id: "skyline" },
 ];
 
@@ -41,8 +41,9 @@ export default async function Home() {
   const projects = q.list("project", { limit: 3 });
   const lifeList = q.need("collection", "life-list");
   const recommendations = q.need("collection", "recommendations");
-  const [bird] = q.list("item", { where: (i) => i.data.collection === lifeList.id, limit: 1 });
-  const [rec] = q.list("item", { where: (i) => i.data.collection === recommendations.id, limit: 1 });
+  // The newest species on the list, not the newest sighting of any bird.
+  const bird = q.members(lifeList).findLast((e) => e.kind === "sighting");
+  const [rec] = q.list("recommendation", { limit: 1 });
   const [photo] = q.list("photo", { limit: 1 });
   return (
     <>
@@ -113,7 +114,7 @@ export default async function Home() {
               <Eyebrow
                 section="Photography"
                 category={
-                  second.kind === "series" && second.data.number
+                  second.kind === "photo-series" && second.data.number
                     ? `Series ${String(second.data.number).padStart(2, "0")}`
                     : categoryOf(second)
                 }
@@ -150,14 +151,16 @@ export default async function Home() {
           <SectionLabel>Recent in collections</SectionLabel>
           <div className={`${grid} pt-(--space-xl)`}>
             <div className="col-span-4">
-              <ItemSummary item={bird} collection={lifeList} label="Latest bird" />
+              {bird && <ItemSummary item={bird} collection={lifeList} label="Latest bird" />}
             </div>
             <div className="col-span-4">
-              <ItemSummary
-                item={rec}
-                collection={recommendations}
-                label="Latest recommendation"
-              />
+              {rec && (
+                <ItemSummary
+                  item={rec}
+                  collection={recommendations}
+                  label="Latest recommendation"
+                />
+              )}
             </div>
             <Link href={photo.url} className="group col-span-4 flex flex-col gap-(--space-sm)">
               <p className="type-label text-ink-2">Latest photograph</p>

@@ -1,4 +1,4 @@
-import type { NoteEntry, PhotoData } from "./schema";
+import type { Entry, NoteEntry, PhotoData } from "./schema";
 
 /** Minutes to read a body, at 230 words a minute. */
 export function readingTime(body: string) {
@@ -12,6 +12,16 @@ export function yearOf(date: string) {
 
 export function dayOf(date: string) {
   return date.slice(0, 10);
+}
+
+/**
+ * What a collection's column shows for an entry: its day, its title or one
+ * of its facets.
+ */
+export function fieldOf(entry: Entry, key: string) {
+  if (key === "date") return dayOf(entry.date);
+  if (key === "title") return entry.title;
+  return entry.facets[key];
 }
 
 /** Notes are written in Eastern time; any other offset is shown as it is. */

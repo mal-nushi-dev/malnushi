@@ -1,6 +1,6 @@
 import type { ContentIndex } from "./load";
 import { toRef, type Kind } from "./refs";
-import type { Entry, EntryOf } from "./schema";
+import type { Entry, EntryOf, Rel } from "./schema";
 
 /** Days sort as midnight UTC; a moment sorts by its instant. */
 function instant(date: string) {
@@ -19,7 +19,16 @@ type ListOptions<E> = {
 };
 
 /** What appears in a stream of everything unless a page asks otherwise. */
-const streamKinds: Kind[] = ["post", "note", "photo", "series", "project", "item"];
+const streamKinds: Kind[] = [
+  "post",
+  "note",
+  "photo",
+  "photo-series",
+  "project",
+  "sighting",
+  "recommendation",
+  "item",
+];
 
 /**
  * The questions pages ask of the content. Bound to an index, so tests can
@@ -54,12 +63,55 @@ export function createQueries(index: ContentIndex) {
     return limit === undefined ? found : found.slice(0, limit);
   }
 
-  /** The entries that point at this one, newest first. */
-  function backlinks(ref: string) {
-    return (index.backlinks.get(ref) ?? [])
+  /**
+   * The entries that point at this one, newest first. With `rel`, only those
+   * that point in that way: `"embeds"` for the essays a photograph sits in.
+   */
+  function backlinks(ref: string, rel?: Rel) {
+    const from = (index.backlinks.get(ref) ?? [])
+      .filter((link) => rel === undefined || link.rel === rel)
+      .map((link) => link.from);
+    return [...new Set(from)]
       .map((r) => index.entries.get(r))
       .filter((e) => e !== undefined)
       .sort(newestFirst);
+  }
+
+  /** What a series or a collection holds, in its own order. */
+  function members(entry: Entry) {
+    return entry.edges
+      .filter((edge) => edge.rel === "contains")
+      .map((edge) => index.entries.get(edge.to))
+      .filter((e) => e !== undefined);
+  }
+
+  /**
+   * The series and collections this entry is in, with its place in each.
+   * Membership is written on the series; this reads it backwards.
+   */
+  function partOf<K extends Kind>(ref: string, kind?: K) {
+    return backlinks(ref, "contains")
+      .filter((parent): parent is EntryOf<K> => kind === undefined || parent.kind === kind)
+      .map((parent) => {
+        const siblings = members(parent);
+        const at = siblings.findIndex((e) => e.ref === ref);
+        // A series may announce parts that are not written yet.
+        const series: Entry = parent;
+        const announced = series.kind === "post-series" ? (series.data.total ?? 0) : 0;
+        return {
+          parent,
+          position: at + 1,
+          total: Math.max(announced, siblings.length),
+          previous: at > 0 ? siblings[at - 1] : undefined,
+          next: siblings[at + 1],
+        };
+      });
+  }
+
+  /** Everything carrying a tag, newest first. */
+  function tagged(tag: string) {
+    const wanted = tag.toLowerCase();
+    return all.filter((e) => e.tags.some((t) => t.toLowerCase() === wanted)).sort(newestFirst);
   }
 
   /** Its neighbours of the same kind, for the next link. */
@@ -75,7 +127,7 @@ export function createQueries(index: ContentIndex) {
     };
   }
 
-  return { get, need, list, stream, backlinks, adjacent };
+  return { get, need, list, stream, backlinks, members, partOf, tagged, adjacent };
 }
 
 export type Queries = ReturnType<typeof createQueries>;

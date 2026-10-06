@@ -4,6 +4,19 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-05
+
+### Content model: groupings, tags and observations
+Decided with Mal. The engineering is in `docs/adr/0008-atomic-content-model.md`, which was rewritten for it. What it changes in the design:
+- **Tags are shown to readers.** `keywords` (search only, hidden) is gone; every kind has `tags`. Reason: a piece about a connected kitchen appliance is technology, home and food at once, and a reader should be able to arrive from any of them. Where tags appear is not designed; in Open questions.
+- **Category stays, as the one primary label** (Mal's choice). Eyebrows, badges and index rows need a single word chosen by the author; picking one from an unordered list of tags would be a guess. Articles still require it.
+- **A sighting and a recommendation are entries, not table rows.** Each is its own file with notes. They are still read as rows and still have no page: the address is an anchor on the list (Mal's choice: one or two sentences do not earn a page). The life list is worked out from the sightings, one row a species.
+- **A multi-part run is a post series** with its own entry, which lists its parts. "Part 2 of 3" is worked out from that list. No page for the series yet (Mal's choice).
+- **Names:** `photo-series` and `post-series` (Mal's choice), so the two kinds of series cannot be confused.
+- **Music:** Mal's own recordings are projects (track and album kinds to come); other people's music is a recommendation.
+- **Home:** "Latest bird" is the newest species on the life list, not the newest sighting of any bird (my choice, to match the label's old meaning).
+- **What would change it:** if tags turn out not to be worth showing, they can go back to search only without touching content. If a subject gathers its own writing and a reading list, it becomes a topic entry instead of a tag.
+
 ## 2026-10-04
 
 ### One content model; a photo is its own kind

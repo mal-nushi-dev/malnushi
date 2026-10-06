@@ -3,18 +3,17 @@ import path from "node:path";
 import exifr from "exifr";
 import { parse as parseYaml } from "yaml";
 import type { z } from "zod";
-import { idPattern, refsInBody, toRef, urlFor, type Kind } from "./refs";
+import { fieldOf } from "./format";
+import { definitions, edges, type Described } from "./kinds";
+import { idPattern, pageless, refsInBody, toRef, urlFor, type Kind } from "./refs";
 import {
   cellValue,
   collectionFile,
-  noteData,
   photoData,
   photoOverrides,
-  postData,
-  projectData,
-  seriesData,
   type Entry,
-  type Envelope,
+  type Facet,
+  type Rel,
 } from "./schema";
 
 /*
@@ -27,8 +26,8 @@ import {
 export type ContentIndex = {
   /** Every entry, by ref. */
   entries: Map<string, Entry>;
-  /** For each ref, the refs of the entries that point at it. */
-  backlinks: Map<string, string[]>;
+  /** For each ref, the entries that point at it, and how. */
+  backlinks: Map<string, { rel: Rel; from: string }[]>;
 };
 
 export class ContentError extends Error {
@@ -37,9 +36,6 @@ export class ContentError extends Error {
     this.name = "ContentError";
   }
 }
-
-/** Slugs a post cannot take: they are routes under /writing. */
-export const reservedPostSlugs = ["the-kernel", "dev-journal", "notes"];
 
 /** Photographs are .jpg only: see `imageOf` in components/entry/photo-figure.tsx. */
 const imageExtensions = [".jpg"];
@@ -128,6 +124,20 @@ async function readImageMetadata(file: string) {
   };
 }
 
+/** Days sort as midnight UTC; a moment sorts by its instant. */
+function oldestFirst(a: Entry, b: Entry) {
+  return Date.parse(a.date) - Date.parse(b.date) || a.ref.localeCompare(b.ref);
+}
+
+/** The facets an entry has: nothing empty, and nothing that is not text or a number. */
+function searchable(fields: Record<string, Facet | undefined>) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(
+      ([, v]) => v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0),
+    ),
+  ) as Record<string, Facet>;
+}
+
 function defined<T extends object>(object: T) {
   return Object.fromEntries(
     Object.entries(object).filter(([, v]) => v !== undefined),
@@ -166,10 +176,7 @@ export async function loadContent(
     kind: Kind,
     id: string,
     source: string,
-    rest: Omit<Envelope, "kind" | "id" | "ref" | "url" | "source" | "links"> & {
-      data: unknown;
-      links: (string | undefined)[];
-    },
+    { facets, edges: written, ...rest }: Described & { body: string; data: unknown },
   ) {
     const ref = toRef(kind, id);
     if (rest.draft && !drafts) {
@@ -177,23 +184,37 @@ export async function loadContent(
       return;
     }
     const url = urlFor(kind, id);
-    const clash = [...entries.values()].find((e) => e.url === url);
-    if (clash) {
-      problems.push(`${source}: ${url} is already taken by ${clash.source}`);
-      return;
+    if (!pageless.includes(kind)) {
+      const clash = [...entries.values()].find((e) => e.url === url);
+      if (clash) {
+        problems.push(`${source}: ${url} is already taken by ${clash.source}`);
+        return;
+      }
     }
-    const links = [
-      ...new Set([...rest.links.filter((l) => l !== undefined), ...refsInBody(rest.body)]),
-    ];
-    entries.set(ref, { ...rest, kind, id, ref, url, source, links } as Entry);
+    const members = written.filter((e) => e.rel === "contains").map((e) => e.to);
+    for (const twice of new Set(members.filter((to, at) => members.indexOf(to) !== at))) {
+      problems.push(`${source}: lists ${twice} twice`);
+    }
+    // Each pointer once, in the order written: frontmatter, then the body.
+    const all = [...written, ...edges("embeds", ...refsInBody(rest.body))];
+    const once = all.filter(
+      (edge, at) => all.findIndex((e) => e.rel === edge.rel && e.to === edge.to) === at,
+    );
+    entries.set(ref, {
+      ...rest,
+      kind,
+      id,
+      ref,
+      url,
+      source,
+      edges: once,
+      facets: searchable({ category: rest.category, ...facets }),
+    } as Entry);
   }
 
-  async function documents<S extends z.ZodType>(
-    folder: string,
-    extension: string,
-    schema: S,
-    each: (id: string, source: string, data: z.infer<S>, body: string) => void,
-  ) {
+  // The kinds that are one file per entry: see kinds.ts.
+  for (const definition of definitions) {
+    const { kind, folder, extension, schema } = definition;
     for (const name of await filesIn(root, folder)) {
       const source = `${folder}/${name}`;
       if (path.extname(name) !== extension) {
@@ -209,65 +230,14 @@ export async function loadContent(
         continue;
       }
       const data = check(schema, parsed.data, source);
-      if (id && data) each(id, source, data, parsed.body);
+      if (!id || !data) continue;
+      const found = definition.check?.(id, data, parsed.body) ?? [];
+      problems.push(...found.map((problem) => `${source}: ${problem}`));
+      // A reserved slug has no address to be given.
+      if (kind === "post" && found.length > 0) continue;
+      add(kind, id, source, { ...definition.describe(data, parsed.body), body: parsed.body, data });
     }
   }
-
-  await documents("posts", ".mdx", postData, (id, source, data, body) => {
-    if (reservedPostSlugs.includes(id)) {
-      problems.push(`${source}: "${id}" is reserved; rename the file`);
-      return;
-    }
-    add("post", id, source, {
-      date: data.date,
-      title: data.title,
-      summary: data.description ?? data.subtitle,
-      tags: data.keywords,
-      draft: data.draft,
-      links: [data.cover, ...data.related],
-      body,
-      data,
-    });
-  });
-
-  await documents("notes", ".md", noteData, (id, source, data, body) => {
-    if (!body) problems.push(`${source}: a note needs its text`);
-    add("note", id, source, {
-      date: data.date,
-      summary: body,
-      tags: data.keywords,
-      draft: data.draft,
-      links: data.related,
-      body,
-      data,
-    });
-  });
-
-  await documents("projects", ".mdx", projectData, (id, source, data, body) => {
-    add("project", id, source, {
-      date: data.date,
-      title: data.title,
-      summary: data.subtitle,
-      tags: [data.category],
-      draft: data.draft,
-      links: [data.cover, ...data.related],
-      body,
-      data,
-    });
-  });
-
-  await documents("series", ".mdx", seriesData, (id, source, data, body) => {
-    add("series", id, source, {
-      date: data.date,
-      title: data.title,
-      summary: data.subtitle,
-      tags: [],
-      draft: data.draft,
-      links: [data.cover, ...data.photos, ...data.related],
-      body,
-      data,
-    });
-  });
 
   // Photographs: the image is the entry; a .yml of the same name overrides it.
   const photoFiles = await filesIn(root, "photos");
@@ -319,14 +289,42 @@ export async function loadContent(
       title: data.title,
       summary: data.caption,
       tags: tags ?? [],
+      facets: {
+        place: data.place,
+        camera: data.camera,
+        lens: data.lens,
+        focalLength: data.focalLength,
+        aperture: data.aperture,
+        iso: data.iso,
+      },
       draft,
-      links: related,
+      edges: edges("related", ...related),
       body: "",
       data,
     });
   }
 
-  // Collections: one file, one row per item. A row is an entry without a page.
+  // One species keeps one name: a slip in a sighting would start a new row
+  // in the life list.
+  const species = new Map<string, Entry>();
+  for (const sighting of entries.values()) {
+    if (sighting.kind !== "sighting") continue;
+    const first = species.get(sighting.data.species);
+    if (!first) {
+      species.set(sighting.data.species, sighting);
+      continue;
+    }
+    for (const key of ["scientific", "family"] as const) {
+      if (first.facets[key] !== sighting.facets[key]) {
+        problems.push(
+          `${sighting.source}: ${key} is "${sighting.facets[key]}", but ${first.source} has "${first.facets[key]}" for ${sighting.data.species}`,
+        );
+      }
+    }
+  }
+
+  // Collections: a table whose rows are written in the file, or a question
+  // asked of the entries of one kind. A row is an entry without a page.
   for (const name of await filesIn(root, "collections")) {
     const source = `collections/${name}`;
     if (path.extname(name) !== ".yml") {
@@ -346,70 +344,122 @@ export async function loadContent(
     const { items, ...collection } = file;
     const known = new Set(collection.columns.map((c) => c.key));
     const rows: string[] = [];
-    for (const item of items) {
-      const where = `${source}: item "${item.id}"`;
-      if (!idPattern.test(item.id)) {
-        problems.push(`${where}: use lowercase letters, digits and hyphens in the id`);
-        continue;
+    let latest: string | undefined;
+    if (collection.from) {
+      // Only what was loaded: a draft is not in `entries` during a build, so
+      // it can neither be a row nor stand in for a published one.
+      let members = [...entries.values()]
+        .filter((e) => e.kind === collection.from)
+        .sort(oldestFirst);
+      const { unique } = collection;
+      if (unique) {
+        const seen = new Set<string>();
+        members = members.filter((member) => {
+          const value = String(fieldOf(member, unique) ?? "");
+          if (!value) problems.push(`${member.source}: ${source} needs "${unique}"`);
+          if (!value || seen.has(value)) return false;
+          seen.add(value);
+          return true;
+        });
       }
-      const { id: row, related, ...cells } = item;
-      const fields: Record<string, string | number> = {};
-      for (const [key, value] of Object.entries(cells)) {
-        const parsedCell = cellValue.safeParse(value);
-        if (!known.has(key) && key !== "title" && key !== "date") {
-          problems.push(`${where}: "${key}" is not one of the collection's columns`);
-        } else if (!parsedCell.success) {
-          problems.push(`${where}: "${key}" must be text or a number`);
-        } else {
-          fields[key] = parsedCell.data;
+      for (const member of members) {
+        for (const column of collection.columns) {
+          if (!column.optional && fieldOf(member, column.key) === undefined) {
+            problems.push(`${member.source}: ${source} needs "${column.key}"`);
+          }
         }
+        rows.push(member.ref);
       }
-      for (const column of collection.columns) {
-        if (!column.optional && fields[column.key] === undefined) {
-          problems.push(`${where}: missing "${column.key}"`);
+      latest = members.at(-1)?.date;
+    } else {
+      for (const item of items) {
+        const where = `${source}: item "${item.id}"`;
+        if (!idPattern.test(item.id)) {
+          problems.push(`${where}: use lowercase letters, digits and hyphens in the id`);
+          continue;
         }
+        const { id: row, related, ...cells } = item;
+        const fields: Record<string, string | number> = {};
+        for (const [key, value] of Object.entries(cells)) {
+          const parsedCell = cellValue.safeParse(value);
+          if (!known.has(key) && key !== "title" && key !== "date") {
+            problems.push(`${where}: "${key}" is not one of the collection's columns`);
+          } else if (!parsedCell.success) {
+            problems.push(`${where}: "${key}" must be text or a number`);
+          } else {
+            fields[key] = parsedCell.data;
+          }
+        }
+        for (const column of collection.columns) {
+          if (!column.optional && fields[column.key] === undefined) {
+            problems.push(`${where}: missing "${column.key}"`);
+          }
+        }
+        const itemId = `${id}/${row}`;
+        if (rows.includes(toRef("item", itemId))) {
+          problems.push(`${where}: this id is used twice`);
+          continue;
+        }
+        rows.push(toRef("item", itemId));
+        const facets = Object.fromEntries(
+          Object.entries(fields).filter(([key]) => key !== "title" && key !== "date"),
+        );
+        add("item", itemId, source, {
+          date: item.date,
+          title: item.title,
+          tags: [],
+          facets,
+          draft: collection.draft,
+          edges: edges("related", ...related),
+          body: "",
+          data: { collection: id, fields },
+        });
       }
-      const itemId = `${id}/${row}`;
-      if (rows.includes(toRef("item", itemId))) {
-        problems.push(`${where}: this id is used twice`);
-        continue;
-      }
-      rows.push(toRef("item", itemId));
-      add("item", itemId, source, {
-        date: item.date,
-        title: item.title,
-        tags: [],
-        draft: collection.draft,
-        links: related,
-        body: "",
-        data: { collection: id, fields },
-      });
+      latest = items.map((i) => i.date).sort().at(-1);
     }
     add("collection", id, source, {
-      date: items.map((i) => i.date).sort().at(-1) ?? "1970-01-01",
+      date: latest ?? "1970-01-01",
       title: collection.title,
       summary: collection.description,
       tags: [],
+      facets: {},
       draft: collection.draft,
-      links: [],
+      edges: edges("contains", ...rows),
       body: "",
       data: { ...collection, items: rows },
     });
   }
 
-  const backlinks = new Map<string, string[]>();
+  const memberKind = new Map(definitions.map((d) => [d.kind, d.contains]));
+  const backlinks = new Map<string, { rel: Rel; from: string }[]>();
   for (const entry of entries.values()) {
-    for (const target of entry.links) {
-      if (entries.has(target)) {
-        backlinks.set(target, [...(backlinks.get(target) ?? []), entry.ref]);
-      } else {
+    for (const { rel, to } of entry.edges) {
+      const target = entries.get(to);
+      if (!target) {
         problems.push(
-          withheld.has(target)
-            ? `${entry.source}: points at ${target}, which is a draft`
-            : `${entry.source}: points at ${target}, which does not exist`,
+          withheld.has(to)
+            ? `${entry.source}: points at ${to}, which is a draft`
+            : `${entry.source}: points at ${to}, which does not exist`,
         );
+        continue;
       }
+      const expected = memberKind.get(entry.kind);
+      if (rel === "contains" && expected && target.kind !== expected) {
+        problems.push(`${entry.source}: lists ${to}, which is not a ${expected}`);
+        continue;
+      }
+      backlinks.set(to, [...(backlinks.get(to) ?? []), { rel, from: entry.ref }]);
     }
+  }
+
+  // A series of posts has no page and no date of its own: it takes its
+  // first part's.
+  for (const entry of entries.values()) {
+    if (entry.kind !== "post-series") continue;
+    const first = entries.get(entry.data.posts[0]);
+    if (first?.kind !== "post") continue;
+    entry.url = first.url;
+    entry.date = first.date;
   }
 
   if (problems.length > 0) throw new ContentError(problems);

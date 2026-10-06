@@ -1,6 +1,6 @@
 import { NextLink } from "@/components/next-link";
 import { Note } from "@/components/note";
-import { content, dayOf } from "@/lib/content";
+import { content, dayOf, homes } from "@/lib/content";
 import { ItemSummary } from "./item-summary";
 import { categoryOf, titleOf, toNoteItem } from "./mappers";
 import { PhotoFigure } from "./photo-figure";
@@ -32,9 +32,17 @@ export async function Embed({
         </div>
       );
     case "item":
+    case "sighting":
+    case "recommendation":
       return (
         <div className="border-y border-line py-(--space-md)">
-          <ItemSummary item={entry} collection={q.need("collection", entry.data.collection)} />
+          <ItemSummary
+            item={entry}
+            collection={q.need(
+              "collection",
+              entry.kind === "item" ? entry.data.collection : homes[entry.kind],
+            )}
+          />
         </div>
       );
     default:

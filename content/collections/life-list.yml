@@ -1,21 +1,11 @@
 title: Life list
 description: Every bird species I have identified, in the order I first saw it.
 itemName: bird
-summary: [date, where]
+# One row a species: the first sighting of it in content/sightings/.
+from: sighting
+unique: species
+summary: [date, place]
 columns:
   - { key: scientific, label: Species }
   - { key: family, label: Family }
-  - { key: where, label: Where }
-items:
-  - id: carolina-wren
-    title: Carolina Wren
-    scientific: Thryothorus ludovicianus
-    family: Troglodytidae
-    date: 2026-09-27
-    where: Charlotte
-  - id: great-blue-heron
-    title: Great Blue Heron
-    scientific: Ardea herodias
-    family: Ardeidae
-    date: 2026-09-21
-    where: Charlotte
+  - { key: place, label: Where }

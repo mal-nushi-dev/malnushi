@@ -51,9 +51,9 @@ Every piece of content is one of six types. Each has its own house template.
 | **Photography series** | A sequenced set of photographs | Image: sequencing and pacing do the work | Yes |
 | **Note** | A short, untitled post, the length of a social post | Text: the note itself, then a mono date | No |
 | **Photo** | One photograph, on its own | Image: the photograph, then its caption and EXIF | No |
-| **Collection** | A structured, growing list (life list, recs, music, travels, Lego inventory) | Data: header, stats, then rows | No (items are rows, not pages) |
+| **Collection** | A structured, growing list (life list, recs, music, travels, Lego inventory) | Data: header, stats, then rows | No (rows are anchors on the list, not pages) |
 
-The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. A **photo** is the same for images: it has its own URL and is read in the archive, never art-directed; photographs that belong together and need pacing are a series, which is an ordered selection of photos. **Collections** are different. A bird sighting, a recommendation or an album is a row in a list, never a page of its own. A row can still be named and shown elsewhere (in an essay, on the home page); it links back to its list. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list.
+The first three are **pieces**: each is a standalone page at its own URL. A **note** also has its own URL, so it can be linked to, but it is read in a stream and is never art-directed; if a note needs a headline, it is an essay. A **photo** is the same for images: it has its own URL and is read in the archive, never art-directed; photographs that belong together and need pacing are a series, which is an ordered selection of photos. **Collections** are different. A bird sighting or a recommendation is written once, as its own entry with its own notes, and read as a row in a list. It has no page of its own yet: its address is an anchor on its list. A row can still be named and shown elsewhere (in an essay, on the home page); it links back to its list. A list is never kept by hand: the life list is the first sighting of each species, worked out from the sightings. If an item grows into a story (a birding trip, say), that story becomes an essay or photo series that links back to the list. Music by other people is a recommendation; Mal's own recordings are projects.
 
 ### Two tiers: house and feature
 
@@ -335,7 +335,7 @@ Every Kodikion post uses this template. A post's `type` says what it is:
 - **Article** (the default). It has one topic category (Technology, Cars, Politics…) and can be promoted to a feature.
 - **The Kernel** or **Dev Journal**, a newsletter issue. It needs no category and is never promoted to a feature.
 
-A multi-part run (parts 1 to 3 on one subject) is a series name and a part number on any post, whatever its category. It adds "Part 2 of 3" to the meta row and links to the previous and next parts. A series has no page of its own.
+A multi-part run (parts 1 to 3 on one subject) is a post series: its own entry, which names its parts in order. Each part shows "Part 2 of 3" in the meta row and links to the previous and next parts; a post never states its own number. A post series has no page of its own yet.
 
 A post that is also on Substack links to that copy ("Also on Substack") after the body.
 
@@ -476,14 +476,23 @@ The **Atomic Content Model**: everything published is an **entry**: a file in `c
 | Post | `content/posts/<slug>.mdx` | `/writing/[slug]` |
 | Note | `content/notes/<id>.md` | `/writing/notes/[id]`, read at `/writing/notes` |
 | Photo | `content/photos/<id>.jpg`, with an optional `<id>.yml` | `/photography/[id]`, read at `/photography` |
-| Series | `content/series/<slug>.mdx` | `/projects/[slug]` |
+| Photo series | `content/photo-series/<slug>.mdx` | `/projects/[slug]` |
+| Post series | `content/post-series/<slug>.mdx` | no page: its first part |
 | Project | `content/projects/<slug>.mdx` | `/projects/[slug]` |
 | Collection | `content/collections/<slug>.yml` | `/collections/[slug]` |
-| Collection row | an item in its collection's file | no page: `/collections/[slug]#<id>` |
+| Sighting | `content/sightings/<id>.md` | no page: `/collections/life-list#<id>` |
+| Recommendation | `content/recommendations/<id>.md` | no page: `/collections/recommendations#<id>` |
+| Collection row | an item in its collection's file, for a plain table | no page: `/collections/[slug]#<id>` |
 
-`/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A series and a project share `/projects/`, so they cannot share a slug.
+`/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A photo series and a project share `/projects/`, so they cannot share a slug.
 
-**Refs.** An entry is named `kind:id`, for example `photo:2026-10-02-wren-at-the-window` or `item:life-list/carolina-wren`. One entry points at another in its frontmatter (`cover`, `photos`, `related`) or in its body with `<Embed of="photo:…" />`, which draws the other entry in place: a photograph as a figure with its EXIF, a note as a note, a collection row as its summary. Each entry's page can list what points at it ("Appears in"). The build fails on a ref that names nothing.
+**Primitives and composites.** A photograph, a post, a note, a sighting and a recommendation are single pieces of work. A photo series, a post series and a collection are groupings: entries of their own that list what they contain, in order, and copy nothing from it. Membership is written once, on the grouping; a photograph never names its series. What an entry belongs to, and its place there, is worked out from that.
+
+**Refs.** An entry is named `kind:id`, for example `photo:2026-10-02-wren-at-the-window` or `sighting:2026-09-27-carolina-wren`. One entry points at another in its frontmatter (`cover`, `related`, and `photos` or `posts` on a series) or in its body with `<Embed of="photo:…" />`, which draws the other entry in place: a photograph as a figure with its EXIF, a note as a note, a sighting or a recommendation as its summary. Each pointer keeps its meaning (contains, cover, related, embeds), so a photograph's page can tell the series it is in from an essay that shows it. Each entry's page can list what points at it ("Appears in"). The build fails on a ref that names nothing.
+
+**Category, tags and facets.** Every entry may have one `category`, the label its eyebrow or badge shows, and any number of `tags`, which readers see and search. Each kind also offers its descriptive fields (camera, place, species, medium) to search and filters under shared names. A category, tag or species is never an entry of its own.
+
+**Collections.** A collection's file gives its columns and either its rows (`items:`, for a plain table) or the kind whose entries are its rows (`from: sighting`, with `unique: species` to keep the first of each).
 
 **Views.** The same entry is drawn differently by context: its own page, a row in an index list, an item in a stream, an embed. Pages get entries from `src/lib/content` and never hold content themselves.
 
@@ -525,8 +534,7 @@ Post frontmatter. These fields are what search, the index lists, link previews a
 | `author` | No | Defaults to Mal Nushi |
 | `type` | No | `article` (default), `the-kernel` or `dev-journal` |
 | `category` | Articles | One per post, from a short fixed list |
-| `keywords` | No | Three to eight specific terms a reader would type. For search only; not shown as tags. |
-| `series`, `part` | No | A series name and this post's part number |
+| `tags` | No | Any number of labels a reader would look for. Shown and searched. A post about a smart microwave can be `tech`, `home` and `food` at once. |
 | `issue` | No | Newsletter issue number |
 | `image`, `imageAlt` | No | Hero and share image |
 | `cover` | No | A photo's ref, used as the hero |
@@ -537,11 +545,15 @@ Post frontmatter. These fields are what search, the index lists, link previews a
 
 The slug is the file name. Reading time and word count are worked out at build time, never written by hand.
 
-A note has a `date` with a time and a UTC offset (`2026-10-03T14:12-04:00`) and its text. `keywords` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
+A note has a `date` with a time and a UTC offset (`2026-10-03T14:12-04:00`) and its text. `tags` and `syndicated` (links to the copies on Threads or Bluesky) are optional. Its id is the file name.
+
+A post series (`content/post-series/<slug>.mdx`) has a `title`, its `posts` in order and, while parts are still unwritten, a `total`. Its text is what the series is about.
+
+A sighting has `species`, `scientific`, `family`, `date` and `place`, and may add `coordinates`, `habitat`, `count` and `tags`; its text is the field notes. A recommendation has `title`, `medium` (Book, Film, Album, Tool, Place) and `date`, and may add `url`, `creator` and `tags`; its text is why.
 
 **Canonical URLs.** Every post on the site is its own canonical URL, including posts that were first published on Substack. Substack cannot point its canonical URL elsewhere, so both copies are indexed.
 
-**Search** covers posts and notes. Matches are weighted: title first; then subtitle, keywords and category; then description; then body. Results can be filtered by kind (post or note), type, category and year.
+**Search** covers every kind, and each result says what it is, so a search for a place can return a photo series, single photographs and a sighting. It reads what all entries share: title, summary, category, tags, facets and body. Matches are weighted: title first; then subtitle, tags, category and facets; then description; then body. Results can be filtered by kind, category, tag and year. Not built yet.
 
 Projects add spec fields:
 
@@ -640,6 +652,9 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Pick the first three to five pieces to promote to features at launch.
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
+- Tags are now shown to readers (decided 2026-10-05), but no page shows them yet. Decide where they appear (essay header, index rows, a photograph's caption) and whether a tag links to a list of everything carrying it.
+- Post series: whether it gets a page of its own (`/writing/series/[slug]`), and how previous and next parts are linked on an essay. Only "Part 2 of 3" is shown today.
+- Sightings and recommendations: when one has enough written about it to earn its own page, and what that page looks like.
 - Writing: settle the fixed list of article categories, and file the two Substack posts that have no section there ("Can You Rebrand a Systemic Collapse?" and "Exile on Main St.").
 - Writing index: the masthead and its sticky notes rail are not checked in Safari, Firefox or on a phone and have no mobile layout (set aside by Mal 2026-10-04, not dropped). The full-stop spacing in the masthead is unreviewed.
 - Photo archive (`/photography`): the layout is a first pass built from existing components, not designed. Decide the layout, the page's copy, whether captions show in the archive, and where the archive is linked from.

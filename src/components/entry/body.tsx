@@ -16,8 +16,14 @@ async function load(entry: Entry): Promise<Body | null> {
       return (await import(`@content/notes/${entry.id}.md`)).default;
     case "project":
       return (await import(`@content/projects/${entry.id}.mdx`)).default;
-    case "series":
-      return (await import(`@content/series/${entry.id}.mdx`)).default;
+    case "photo-series":
+      return (await import(`@content/photo-series/${entry.id}.mdx`)).default;
+    case "post-series":
+      return (await import(`@content/post-series/${entry.id}.mdx`)).default;
+    case "sighting":
+      return (await import(`@content/sightings/${entry.id}.md`)).default;
+    case "recommendation":
+      return (await import(`@content/recommendations/${entry.id}.md`)).default;
     default:
       return null;
   }

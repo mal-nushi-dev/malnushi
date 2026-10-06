@@ -32,10 +32,8 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
   const q = await content();
   const post = q.need("post", slug);
   const cover = post.data.cover ? q.get(post.data.cover) : undefined;
-  // The parts of its series, to say "Part 2 of 3".
-  const parts = post.data.series
-    ? q.list("post", { where: (p) => p.data.series === post.data.series })
-    : [];
+  // Its place in a series, to say "Part 2 of 3".
+  const [part] = q.partOf(post.ref, "post-series");
   // The next piece is the one before it, of the same type.
   const { older } = q.adjacent(post, (p) => p.data.type === post.data.type);
   return (
@@ -49,11 +47,7 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
             standfirst={post.data.subtitle}
             date={post.data.date}
             readingTime={readingTime(post.body)}
-            tags={
-              post.data.part
-                ? [`Part ${post.data.part} of ${Math.max(post.data.part, parts.length)}`]
-                : []
-            }
+            tags={part ? [`Part ${part.position} of ${part.total}`] : []}
           />
           {cover?.kind === "photo" && (
             <PhotoFigure photo={cover} index="01" size="hero" />

@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { exifLine, noteDateLine, readingTime } from "./format";
 import { ContentError, loadContent } from "./load";
 import { createQueries } from "./query";
-import { parseRef, refsInBody, urlFor } from "./refs";
+import { kinds, parseRef, refsInBody, urlFor } from "./refs";
 
 const fixture = path.join(import.meta.dirname, "__fixtures__/site");
 
@@ -36,18 +36,29 @@ async function problemsOf(root: string) {
 describe("refs", () => {
   it("parses a ref and rejects anything else", () => {
     expect(parseRef("photo:2026-10-02-wren")).toEqual({ kind: "photo", id: "2026-10-02-wren" });
-    expect(parseRef("item:life-list/carolina-wren")).toEqual({
+    expect(parseRef("item:inventory/skyline")).toEqual({
       kind: "item",
-      id: "life-list/carolina-wren",
+      id: "inventory/skyline",
     });
     expect(parseRef("photo:Wren")).toBeNull();
+    expect(parseRef("photo-series:marsh")).toEqual({ kind: "photo-series", id: "marsh" });
+    expect(parseRef("series:marsh")).toBeNull();
     expect(parseRef("bird:wren")).toBeNull();
     expect(parseRef("item:wren")).toBeNull();
   });
 
   it("gives a collection row its collection's page and an anchor", () => {
-    expect(urlFor("item", "life-list/carolina-wren")).toBe("/collections/life-list#carolina-wren");
-    expect(urlFor("series", "marsh")).toBe("/projects/marsh");
+    expect(urlFor("item", "inventory/skyline")).toBe("/collections/inventory#skyline");
+    expect(urlFor("photo-series", "marsh")).toBe("/projects/marsh");
+  });
+
+  it("anchors an observation to its collection's page", () => {
+    expect(urlFor("sighting", "2026-09-23-carolina-wren")).toBe(
+      "/collections/life-list#2026-09-23-carolina-wren",
+    );
+    expect(urlFor("recommendation", "braiding-sweetgrass")).toBe(
+      "/collections/recommendations#braiding-sweetgrass",
+    );
   });
 
   it("finds the embeds in a body", () => {
@@ -75,17 +86,24 @@ describe("the fixture folder", async () => {
   const q = createQueries(await loadContent(fixture));
 
   it("loads every kind, without the draft", () => {
-    expect(q.stream({ kinds: ["post", "note", "photo", "series", "project", "collection", "item"] }).map((e) => e.ref).sort()).toEqual([
+    expect(q.stream({ kinds: [...kinds] }).map((e) => e.ref).sort()).toEqual([
+      "collection:inventory",
       "collection:life-list",
-      "item:life-list/carolina-wren",
-      "item:life-list/great-blue-heron",
+      "collection:recommendations",
+      "item:inventory/lighthouse",
+      "item:inventory/skyline",
       "note:2026-10-03-1412",
+      "photo-series:marsh",
       "photo:2026-08-09-scan",
       "photo:2026-10-02-wren",
+      "post-series:field-notes",
       "post:first-post",
       "post:issue-1",
       "project:lamp",
-      "series:marsh",
+      "recommendation:braiding-sweetgrass",
+      "sighting:2026-09-21-great-blue-heron",
+      "sighting:2026-09-23-carolina-wren",
+      "sighting:2026-09-27-carolina-wren",
     ]);
   });
 
@@ -122,17 +140,76 @@ describe("the fixture folder", async () => {
   it("keeps each kind's own fields", () => {
     expect(q.need("post", "issue-1").data).toMatchObject({ type: "the-kernel", issue: 1 });
     expect(q.need("project", "lamp").data.materials).toEqual(["brass", "walnut"]);
-    expect(q.need("item", "life-list/carolina-wren").data).toEqual({
-      collection: "life-list",
-      fields: {
-        title: "Carolina Wren",
-        date: "2026-09-27",
-        scientific: "Thryothorus ludovicianus",
-        family: "Troglodytidae",
-        where: "Charlotte",
-      },
+    expect(q.need("item", "inventory/skyline").data).toEqual({
+      collection: "inventory",
+      fields: { title: "Skyline", date: "2025-04-01", number: 21028, pieces: 598 },
     });
-    expect(q.need("collection", "life-list").data.items).toHaveLength(2);
+    expect(q.need("collection", "inventory").data.items).toHaveLength(2);
+    expect(q.need("sighting", "2026-09-21-great-blue-heron").data).toMatchObject({
+      species: "Great Blue Heron",
+      coordinates: { lat: 35.1, lng: -80.9 },
+      count: 1,
+    });
+    expect(q.need("recommendation", "braiding-sweetgrass").data.creator).toBe("Robin Wall Kimmerer");
+  });
+
+  it("gives every kind a label, tags and the fields to search by", () => {
+    const post = q.need("post", "first-post");
+    expect(post.category).toBe("Birding");
+    expect(post.tags).toEqual(["wren"]);
+    expect(post.facets).toEqual({ category: "Birding", type: "article", author: "Mal Nushi" });
+    expect(q.need("photo", "2026-10-02-wren").facets).toEqual({
+      camera: "FUJIFILM X-T5",
+      lens: "XF70-300mmF4-5.6 R LM OIS WR",
+      focalLength: 300,
+      aperture: 8,
+      iso: 800,
+    });
+    expect(q.need("project", "lamp").facets).toEqual({
+      category: "Hardware",
+      materials: ["brass", "walnut"],
+      status: "Finished",
+    });
+    const wren = q.need("sighting", "2026-09-23-carolina-wren");
+    expect(wren.title).toBe("Carolina Wren");
+    expect(wren.summary).toBe("On the fence, tail up.");
+    expect(wren.facets).toEqual({
+      species: "Carolina Wren",
+      scientific: "Thryothorus ludovicianus",
+      family: "Troglodytidae",
+      place: "Charlotte",
+      habitat: "Garden",
+    });
+    const book = q.need("recommendation", "braiding-sweetgrass");
+    expect(book.category).toBe("Book");
+    expect(book.facets).toEqual({ category: "Book", medium: "Book", creator: "Robin Wall Kimmerer" });
+    expect(q.need("item", "inventory/skyline").facets).toEqual({ number: 21028, pieces: 598 });
+    expect(q.tagged("Backyard").map((e) => e.ref)).toEqual(["sighting:2026-09-23-carolina-wren"]);
+  });
+
+  it("asks a collection of the entries of one kind", () => {
+    // One row a species, the first time it was seen, in the order of seeing.
+    const lifeList = q.need("collection", "life-list");
+    expect(lifeList.data.items).toEqual([
+      "sighting:2026-09-21-great-blue-heron",
+      "sighting:2026-09-23-carolina-wren",
+    ]);
+    expect(lifeList.date).toBe("2026-09-23");
+    expect(q.members(lifeList).map((e) => e.title)).toEqual(["Great Blue Heron", "Carolina Wren"]);
+    expect(q.need("collection", "recommendations").data.items).toEqual([
+      "recommendation:braiding-sweetgrass",
+    ]);
+    // A later sighting of the same bird is still an entry, only not a row.
+    expect(q.partOf("sighting:2026-09-27-carolina-wren")).toEqual([]);
+  });
+
+  it("keeps a draft sighting off the life list, and from hiding a published one", async () => {
+    expect(q.get("sighting", "2026-09-01-carolina-wren")).toBeUndefined();
+    const drafts = createQueries(await loadContent(fixture, { drafts: true }));
+    expect(drafts.need("collection", "life-list").data.items).toEqual([
+      "sighting:2026-09-01-carolina-wren",
+      "sighting:2026-09-21-great-blue-heron",
+    ]);
   });
 
   it("lists one kind, newest first, with a filter and a limit", () => {
@@ -140,7 +217,8 @@ describe("the fixture folder", async () => {
     expect(q.list("post", { where: (p) => p.data.type === "article" }).map((p) => p.id)).toEqual([
       "first-post",
     ]);
-    expect(q.list("item", { limit: 1 })[0].title).toBe("Carolina Wren");
+    expect(q.list("item", { limit: 1 })[0].title).toBe("Skyline");
+    expect(q.list("sighting", { limit: 1 })[0].id).toBe("2026-09-27-carolina-wren");
     expect(q.list("photo", { oldestFirst: true })[0].id).toBe("2026-08-09-scan");
   });
 
@@ -154,18 +232,46 @@ describe("the fixture folder", async () => {
     expect(q.stream().some((e) => e.kind === "collection")).toBe(false);
   });
 
-  it("collects links from frontmatter and embeds, and reverses them", () => {
-    expect(q.need("post", "first-post").links).toEqual([
-      "photo:2026-10-02-wren",
-      "project:lamp",
-      "item:life-list/carolina-wren",
+  it("collects edges from frontmatter and embeds, each with its sort, and reverses them", () => {
+    expect(q.need("post", "first-post").edges).toEqual([
+      { rel: "cover", to: "photo:2026-10-02-wren" },
+      { rel: "related", to: "project:lamp" },
+      { rel: "embeds", to: "sighting:2026-09-23-carolina-wren" },
     ]);
     expect(q.backlinks("photo:2026-10-02-wren").map((e) => e.ref)).toEqual([
       "post:first-post",
-      "series:marsh",
+      "photo-series:marsh",
     ]);
-    expect(q.backlinks("item:life-list/carolina-wren").map((e) => e.ref)).toEqual(["post:first-post"]);
+    expect(q.backlinks("photo:2026-10-02-wren", "cover").map((e) => e.ref)).toEqual(["post:first-post"]);
+    expect(q.backlinks("photo:2026-10-02-wren", "contains").map((e) => e.ref)).toEqual([
+      "photo-series:marsh",
+    ]);
+    expect(q.backlinks("sighting:2026-09-23-carolina-wren").map((e) => e.ref)).toEqual([
+      "post:first-post",
+      "collection:life-list",
+    ]);
     expect(q.backlinks("note:2026-10-03-1412")).toEqual([]);
+  });
+
+  it("works out what an entry is part of from the series that lists it", () => {
+    const [inMarsh] = q.partOf("photo:2026-08-09-scan", "photo-series");
+    expect(inMarsh.parent.ref).toBe("photo-series:marsh");
+    expect(inMarsh).toMatchObject({ position: 2, total: 2, next: undefined });
+    expect(inMarsh.previous?.ref).toBe("photo:2026-10-02-wren");
+
+    // Three parts announced, two written.
+    const [inNotes] = q.partOf("post:first-post", "post-series");
+    expect(inNotes).toMatchObject({ position: 1, total: 3, previous: undefined });
+    expect(inNotes.next?.ref).toBe("post:issue-1");
+    expect(q.partOf("post:first-post", "photo-series")).toEqual([]);
+    expect(q.partOf("project:lamp")).toEqual([]);
+  });
+
+  it("sends a series of posts to its first part, with that part's date", () => {
+    const series = q.need("post-series", "field-notes");
+    expect(series.url).toBe("/writing/first-post");
+    expect(series.date).toBe("2026-09-28");
+    expect(q.stream().some((e) => e.kind === "post-series")).toBe(false);
   });
 
   it("finds an entry's neighbours", () => {
@@ -213,9 +319,65 @@ describe("a folder with mistakes", () => {
     const project = `---\ntitle: "T"\nsubtitle: "S"\ndate: 2026-01-01\ncategory: Code\n---\n`;
     const series = `---\ntitle: "T"\ndate: 2026-01-01\nphotos: [photo:x]\n---\n`;
     const problems = await problemsOf(
-      await folder({ "projects/same.mdx": project, "series/same.mdx": series }),
+      await folder({ "projects/same.mdx": project, "photo-series/same.mdx": series }),
     );
-    expect(problems).toContain("series/same.mdx: /projects/same is already taken by projects/same.mdx");
+    expect(problems).toContain(
+      "photo-series/same.mdx: /projects/same is already taken by projects/same.mdx",
+    );
+  });
+
+  it("rejects a series that lists the wrong kind, or one entry twice", async () => {
+    const problems = await problemsOf(
+      await folder({
+        "posts/a.mdx": post(),
+        "photo-series/mixed.mdx": `---\ntitle: "T"\ndate: 2026-01-01\nphotos: [post:a]\n---\n`,
+        "post-series/twice.mdx": `---\ntitle: "T"\nposts: [post:a, post:a]\n---\n`,
+        "post-series/short.mdx": `---\ntitle: "T"\nposts: [post:a]\ntotal: 0\n---\n`,
+      }),
+    );
+    expect(problems).toContain("photo-series/mixed.mdx: lists post:a, which is not a photo");
+    expect(problems).toContain("post-series/twice.mdx: lists post:a twice");
+    expect(problems.some((p) => p.startsWith("post-series/short.mdx: total:"))).toBe(true);
+  });
+
+  it("rejects two sightings that name one species differently", async () => {
+    const sighting = (family: string) =>
+      `---\nspecies: Carolina Wren\nscientific: Thryothorus ludovicianus\nfamily: ${family}\ndate: 2026-01-01\nplace: Here\n---\n`;
+    const problems = await problemsOf(
+      await folder({
+        "sightings/a.md": sighting("Troglodytidae"),
+        "sightings/b.md": sighting("Trogloditidae"),
+      }),
+    );
+    expect(problems).toEqual([
+      'sightings/b.md: family is "Trogloditidae", but sightings/a.md has "Troglodytidae" for Carolina Wren',
+    ]);
+  });
+
+  it("checks what a collection asks of its entries", async () => {
+    const problems = await problemsOf(
+      await folder({
+        "recommendations/a.md": `---\ntitle: A\nmedium: Book\ndate: 2026-01-01\n---\n`,
+        "collections/recommendations.yml": [
+          "title: Recs",
+          "from: recommendation",
+          "columns:",
+          "  - { key: creator, label: By }",
+        ].join("\n"),
+        "collections/both.yml": [
+          "title: Both",
+          "from: sighting",
+          "columns:",
+          "  - { key: place, label: Where }",
+          "items:",
+          "  - { id: a, title: A, date: 2026-01-01, place: Here }",
+        ].join("\n"),
+      }),
+    );
+    expect(problems).toEqual([
+      "collections/both.yml: items: a collection has `items` or `from`, not both",
+      'recommendations/a.md: collections/recommendations.yml needs "creator"',
+    ]);
   });
 
   it("rejects a photograph with no alt text, and one with no date", async () => {

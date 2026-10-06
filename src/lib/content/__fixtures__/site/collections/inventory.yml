@@ -1,0 +1,17 @@
+title: Lego inventory
+itemName: set
+columns:
+  - { key: number, label: Set }
+  - { key: pieces, label: Pieces }
+  - { key: notes, label: Notes, optional: true }
+items:
+  - id: skyline
+    title: Skyline
+    number: 21028
+    pieces: 598
+    date: 2025-04-01
+  - id: lighthouse
+    title: Lighthouse
+    number: 21335
+    pieces: 2065
+    date: 2025-02-11

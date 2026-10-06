@@ -3,8 +3,8 @@ import { refPattern, type Kind } from "./refs";
 
 /*
  * One schema per kind, each in its own shape: a photograph keeps its
- * exposure, a post its newsletter issue, a bird its family. `Envelope` is the
- * part every entry shares, which is what the cross-kind views (the home
+ * exposure, a post its newsletter issue, a sighting its family. `Envelope` is
+ * the part every entry shares, which is what the cross-kind views (the home
  * stream, backlinks, later search and feeds) read.
  */
 
@@ -26,6 +26,8 @@ const ref = z
 
 const refs = z.array(ref).default([]);
 const draft = z.boolean().default(false);
+/** Shown to readers and searched. The same field on every kind. */
+const tags = z.array(z.string().min(1)).default([]);
 
 const feature = z.strictObject({
   accent: z.string().regex(/^#[0-9a-fA-F]{6}$/, "use a six-digit hex color"),
@@ -43,9 +45,7 @@ export const postData = z
     author: z.string().default("Mal Nushi"),
     type: z.enum(["article", "the-kernel", "dev-journal"]).default("article"),
     category: z.string().optional(),
-    keywords: z.array(z.string()).default([]),
-    series: z.string().optional(),
-    part: z.number().int().positive().optional(),
+    tags,
     issue: z.number().int().positive().optional(),
     image: z.string().optional(),
     imageAlt: z.string().optional(),
@@ -67,7 +67,7 @@ export const postData = z
 
 export const noteData = z.strictObject({
   date: stamp,
-  keywords: z.array(z.string()).default([]),
+  tags,
   syndicated: z.array(z.url()).default([]),
   related: refs,
   draft,
@@ -116,7 +116,7 @@ export const photoData = z.object({
   height: z.number().optional(),
 });
 
-export const seriesData = z.strictObject({
+export const photoSeriesData = z.strictObject({
   title: z.string().min(1),
   subtitle: z.string().optional(),
   date: day,
@@ -126,10 +126,29 @@ export const seriesData = z.strictObject({
   /** The sequence, in order. */
   photos: z.array(ref).min(1),
   cover: ref.optional(),
+  tags,
   related: refs,
   draft,
   feature: feature.optional(),
 });
+
+/** A piece of writing in parts. It has no page: each part shows its place. */
+export const postSeriesData = z
+  .strictObject({
+    title: z.string().min(1),
+    subtitle: z.string().optional(),
+    /** The parts, in order. */
+    posts: z.array(ref).min(1),
+    /** How many parts there will be, while some are still unwritten. */
+    total: z.number().int().positive().optional(),
+    tags,
+    related: refs,
+    draft,
+  })
+  .refine((s) => s.total === undefined || s.total >= s.posts.length, {
+    path: ["total"],
+    message: "cannot be fewer than the parts listed",
+  });
 
 export const projectData = z.strictObject({
   title: z.string().min(1),
@@ -142,6 +161,7 @@ export const projectData = z.strictObject({
   stack: z.array(z.string()).optional(),
   materials: z.array(z.string()).optional(),
   status: z.string().optional(),
+  tags,
   links: z
     .array(z.strictObject({ label: z.string(), href: z.string() }))
     .default([]),
@@ -151,44 +171,100 @@ export const projectData = z.strictObject({
   feature: feature.optional(),
 });
 
-const cell = z.union([z.string(), z.number()]);
-
-export const collectionFile = z.strictObject({
-  title: z.string().min(1),
-  description: z.string().optional(),
-  /** What one row is called on the home page: "bird", "recommendation". */
-  itemName: z.string().optional(),
-  /** The fields that sum a row up in one line elsewhere, in order. */
-  summary: z.array(z.string()).default(["date"]),
-  columns: z
-    .array(
-      z.strictObject({
-        key: z.string(),
-        label: z.string(),
-        optional: z.boolean().default(false),
-      }),
-    )
-    .min(1),
-  items: z
-    .array(
-      z.looseObject({
-        id: z.string(),
-        title: z.string().min(1),
-        date: day,
-        related: refs,
-      }),
-    )
-    .default([]),
+/** One time a bird was seen. The text under the frontmatter is the field notes. */
+export const sightingData = z.strictObject({
+  /** The common name: "Carolina Wren". */
+  species: z.string().min(1),
+  scientific: z.string().min(1),
+  family: z.string().min(1),
+  date: z.union([stamp, day]),
+  place: z.string().min(1),
+  coordinates: z
+    .strictObject({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .optional(),
+  habitat: z.string().optional(),
+  /** How many birds. */
+  count: z.number().int().positive().optional(),
+  tags,
+  related: refs,
   draft,
 });
+
+/** Something worth passing on. The text under the frontmatter is why. */
+export const recommendationData = z.strictObject({
+  title: z.string().min(1),
+  /** What it is: Book, Film, Album, Tool, Place… */
+  medium: z.string().min(1),
+  url: z.url().optional(),
+  /** Who made it: the author, director or artist. */
+  creator: z.string().optional(),
+  date: day,
+  tags,
+  related: refs,
+  draft,
+});
+
+const cell = z.union([z.string(), z.number()]);
+
+/**
+ * A collection is either a table, with its rows written in the file, or a
+ * question asked of the entries of one kind (`from`).
+ */
+export const collectionFile = z
+  .strictObject({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    /** What one row is called on the home page: "bird", "recommendation". */
+    itemName: z.string().optional(),
+    /** The fields that sum a row up in one line elsewhere, in order. */
+    summary: z.array(z.string()).default(["date"]),
+    columns: z
+      .array(
+        z.strictObject({
+          key: z.string(),
+          label: z.string(),
+          optional: z.boolean().default(false),
+        }),
+      )
+      .min(1),
+    items: z
+      .array(
+        z.looseObject({
+          id: z.string(),
+          title: z.string().min(1),
+          date: day,
+          related: refs,
+        }),
+      )
+      .default([]),
+    /** The kind whose entries are the rows, instead of `items`. */
+    from: z.enum(["sighting", "recommendation"]).optional(),
+    /** With `from`: one row for each value of this field, the earliest. */
+    unique: z.string().optional(),
+    draft,
+  })
+  .refine((c) => !c.from || c.items.length === 0, {
+    path: ["items"],
+    message: "a collection has `items` or `from`, not both",
+  })
+  .refine((c) => c.from || !c.unique, {
+    path: ["unique"],
+    message: "`unique` needs `from`",
+  });
 
 export type PostData = z.infer<typeof postData>;
 export type NoteData = z.infer<typeof noteData>;
 export type PhotoData = z.infer<typeof photoData>;
-export type SeriesData = z.infer<typeof seriesData>;
+export type PhotoSeriesData = z.infer<typeof photoSeriesData>;
+export type PostSeriesData = z.infer<typeof postSeriesData>;
+export type SightingData = z.infer<typeof sightingData>;
+export type RecommendationData = z.infer<typeof recommendationData>;
 export type ProjectData = z.infer<typeof projectData>;
 export type CollectionData = Omit<z.infer<typeof collectionFile>, "items"> & {
-  /** Refs of the rows, in file order. */
+  /** Refs of the rows: in file order, or oldest first when asked `from` a kind. */
   items: string[];
 };
 export type ItemData = {
@@ -199,6 +275,19 @@ export type ItemData = {
 };
 
 export const cellValue = cell;
+
+/** How one entry points at another. */
+export const rels = ["contains", "cover", "related", "embeds"] as const;
+export type Rel = (typeof rels)[number];
+
+/**
+ * A pointer from the entry that holds it. Membership (`contains`) is written
+ * once, on the series or collection; what an entry belongs to is worked out
+ * from that, never written on the member.
+ */
+export type Edge = { rel: Rel; to: string };
+
+export type Facet = string | number | string[];
 
 export type Envelope = {
   kind: Kind;
@@ -211,10 +300,18 @@ export type Envelope = {
   date: string;
   title?: string;
   summary?: string;
+  /** The one label an eyebrow or a badge shows. */
+  category?: string;
   tags: string[];
+  /**
+   * The fields a reader might search or filter by, flat, under names the
+   * kinds share (`place`, `camera`, `medium`). A copy for search and filters:
+   * a kind's own views read `data`.
+   */
+  facets: Record<string, Facet>;
   draft: boolean;
-  /** Refs this entry points at, from its frontmatter and its body. */
-  links: string[];
+  /** What this entry points at, from its frontmatter and its body. */
+  edges: Edge[];
   /** The file it came from, relative to the content folder. */
   source: string;
   /** The text under the frontmatter. Empty for kinds without one. */
@@ -226,7 +323,10 @@ type Of<K extends Kind, D> = Envelope & { kind: K; data: D };
 export type PostEntry = Of<"post", PostData>;
 export type NoteEntry = Of<"note", NoteData>;
 export type PhotoEntry = Of<"photo", PhotoData>;
-export type SeriesEntry = Of<"series", SeriesData>;
+export type PhotoSeriesEntry = Of<"photo-series", PhotoSeriesData>;
+export type PostSeriesEntry = Of<"post-series", PostSeriesData>;
+export type SightingEntry = Of<"sighting", SightingData>;
+export type RecommendationEntry = Of<"recommendation", RecommendationData>;
 export type ProjectEntry = Of<"project", ProjectData>;
 export type CollectionEntry = Of<"collection", CollectionData>;
 export type ItemEntry = Of<"item", ItemData>;
@@ -235,7 +335,10 @@ export type Entry =
   | PostEntry
   | NoteEntry
   | PhotoEntry
-  | SeriesEntry
+  | PhotoSeriesEntry
+  | PostSeriesEntry
+  | SightingEntry
+  | RecommendationEntry
   | ProjectEntry
   | CollectionEntry
   | ItemEntry;
