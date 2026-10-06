@@ -105,6 +105,23 @@ test("search open (sage plate) has no violations", async ({ page }) => {
   await scan(page);
 });
 
+test("a tile's plate (sage over its cover) has no violations", async ({ page }) => {
+  // On the preview page the covers are flat, so the text on the plate can be
+  // measured: over a photograph axe cannot tell.
+  await page.goto("/components");
+  const tile = page.getByRole("link", { name: /A DNS filter/ });
+  await tile.scrollIntoViewIfNeeded();
+  await tile.hover();
+  const words = tile.locator("[data-tile-plate] > div").nth(1);
+  await expect(words).toHaveCSS("opacity", "1");
+  await expect(tile.locator("[data-tile-plate] > div").first()).toHaveCSS("opacity", "1");
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(tags)
+    .include("[data-tile-plate]")
+    .analyze();
+  expect(violations.map((v) => [v.id, v.nodes.map((n) => n.any[0]?.message)])).toEqual([]);
+});
+
 test("menu open (sage plate) has no violations", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Open menu" }).click();

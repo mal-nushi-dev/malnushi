@@ -14,7 +14,7 @@ import { Eyebrow } from "@/components/eyebrow";
 import { Figure } from "@/components/figure";
 import { FilterPill } from "@/components/filter-pill";
 import { Footer } from "@/components/footer";
-import { ImagePlaceholder } from "@/components/image-placeholder";
+import { ImagePlaceholder, ImageSlot } from "@/components/image-placeholder";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink, InlineLink } from "@/components/links";
 import { MetaItem, MetaRow } from "@/components/meta-row";
@@ -26,6 +26,7 @@ import { PullQuote } from "@/components/pull-quote";
 import { SectionLabel } from "@/components/section-label";
 import { SpecBlock } from "@/components/spec-block";
 import { Stat, Stats } from "@/components/stat";
+import { Tile, TileGrid, TileGridItem } from "@/components/tile";
 import { Toolbar } from "@/components/toolbar";
 
 // Component preview. Not linked from the site.
@@ -157,6 +158,12 @@ export default function ComponentsPage() {
               <FilterPill>Passerines</FilterPill>
             </div>
           </Specimen>
+          <Specimen name="Filter Pill, small: Default, Active">
+            <div className="flex gap-2">
+              <FilterPill size="sm" active>All</FilterPill>
+              <FilterPill size="sm">Code</FilterPill>
+            </div>
+          </Specimen>
           <Specimen name="Collection Link">
             <div>
               <CollectionLink href="#" name="Recommendations" count={128} />
@@ -174,6 +181,38 @@ export default function ComponentsPage() {
               { href: "#4", title: "Forty-one sets, sorted by color", category: "Projects / Lego", year: 2025 },
             ]}
           />
+          <Specimen name="Tile Grid: wide, tall, square (hover or tab to a tile for its plate)">
+            <TileGrid>
+              <TileGridItem size="wide">
+                <Tile
+                  href="#tile-1"
+                  size="wide"
+                  title="A DNS filter for the whole house"
+                  summary="A small macOS app that keeps the router honest."
+                  label="Code"
+                  year={2026}
+                  status="In progress"
+                >
+                  <ImageSlot label="Cover" className="size-full" />
+                </Tile>
+              </TileGridItem>
+              <TileGridItem size="tall">
+                <Tile href="#tile-2" size="tall" title="Salvaged desk lamp" label="Hardware" year={2025}>
+                  <ImageSlot label="Cover" className="size-full" />
+                </Tile>
+              </TileGridItem>
+              <TileGridItem>
+                <Tile
+                  href="#tile-3"
+                  title="Early light on the marsh"
+                  label="Photo series · 12"
+                  year={2026}
+                >
+                  <ImageSlot label="Cover" className="size-full" />
+                </Tile>
+              </TileGridItem>
+            </TileGrid>
+          </Specimen>
           <Specimen name="Note">
             <div className="max-w-(--measure)">
               <Note note={sampleNotes[0]} />
