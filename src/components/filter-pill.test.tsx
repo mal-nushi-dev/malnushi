@@ -21,6 +21,14 @@ describe("FilterPill", () => {
     expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("is the standard height unless asked to be small", () => {
+    const { rerender } = render(<FilterPill>Warblers</FilterPill>);
+    expect(screen.getByRole("button")).toHaveClass("h-(--pill-height)");
+    rerender(<FilterPill size="sm">Warblers</FilterPill>);
+    expect(screen.getByRole("button")).toHaveClass("h-(--pill-height-sm)");
+    expect(screen.getByRole("button")).not.toHaveClass("h-(--pill-height)");
+  });
+
   it("calls onClick, and not when disabled", async () => {
     const onClick = vi.fn();
     const { rerender } = render(<FilterPill onClick={onClick}>Wrens</FilterPill>);
