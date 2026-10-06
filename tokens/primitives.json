@@ -148,10 +148,29 @@
           ],
           "hex": "#626e5e"
         }
+      },
+      "700": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.301961,
+            0.341176,
+            0.286275
+          ],
+          "hex": "#4d5749"
+        }
       }
     }
   },
   "spacing": {
+    "4": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
     "8": {
       "$type": "dimension",
       "$value": {
@@ -287,6 +306,13 @@
         "$type": "dimension",
         "$value": {
           "value": 44,
+          "unit": "px"
+        }
+      },
+      "height-sm": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
           "unit": "px"
         }
       }

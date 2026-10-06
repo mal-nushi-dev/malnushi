@@ -71,6 +71,10 @@
         "$type": "dimension",
         "$value": "{spacing.64}"
       }
+    },
+    "tile-gap": {
+      "$type": "dimension",
+      "$value": "{spacing.4}"
     }
   },
   "size": {
@@ -89,6 +93,10 @@
     "pill-height": {
       "$type": "dimension",
       "$value": "{size.pill.height}"
+    },
+    "pill-height-sm": {
+      "$type": "dimension",
+      "$value": "{size.pill.height-sm}"
     }
   },
   "radius": {

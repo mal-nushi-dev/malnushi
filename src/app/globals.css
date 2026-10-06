@@ -32,12 +32,14 @@
   --space-meta-item: 32px;
   --space-row-index: 22px;
   --space-row-table: 18px;
+  --space-tile-gap: 4px;
 
   /* size.* */
   --content-width: 1248px;
   --measure: 680px;
   --touch-target: 44px;
   --pill-height: 44px;
+  --pill-height-sm: 32px;
 
   /* radius.* */
   --radius-img: 4px;
@@ -81,6 +83,33 @@
   --line: color-mix(in srgb, #edeeeb 35%, #626e5e);
   --accent: #edeeeb;
 }
+
+/*
+ * A tile's plate (hover or keyboard focus): a deeper sage over the cover, at
+ * 90%, so the cover shows through. sage.700, not the nav's sage.600: at 90%
+ * over a white image sage.600 leaves light text at 4.2:1; this keeps it at
+ * 5:1 or better over any cover. Same in light and dark mode.
+ */
+[data-tile-plate] {
+  --bg: #4d5749;
+  --ink: #fafafa;
+  --ink-2: #edeeeb;
+  --accent: #edeeeb;
+}
+
+/*
+ * The nav's springs as CSS easings, for transitions CSS runs (a tile's
+ * plate). Written from `cssSprings` in src/lib/motion.ts with
+ * `springEasing`; motion.test.ts fails if they drift. Open takes 600ms and
+ * close 350ms.
+ */
+@theme static {
+  --ease-spring-open: linear(0, 0.045, 0.155, 0.298, 0.452, 0.599, 0.729, 0.837, 0.922, 0.985, 1.027, 1.052, 1.065, 1.067, 1.063, 1.056, 1.046, 1.035, 1.026, 1.017, 1.01, 1.004, 1, 0.998, 0.996, 0.996, 0.995, 0.996, 0.996, 0.997, 1);
+  --ease-spring-close: linear(0, 0.019, 0.067, 0.133, 0.208, 0.287, 0.366, 0.441, 0.512, 0.577, 0.636, 0.689, 0.736, 0.776, 0.812, 0.842, 0.869, 0.891, 0.91, 0.926, 0.939, 0.95, 0.96, 0.967, 0.974, 0.979, 0.983, 0.987, 0.989, 0.992, 1);
+}
+
+/* A tile shows its plate when the pointer is on it or the keyboard is. */
+@custom-variant tile-open (.tile:is(:hover, :focus-visible) &);
 
 @theme inline {
   --color-bg: var(--bg);
