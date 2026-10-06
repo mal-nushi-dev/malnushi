@@ -85,9 +85,15 @@ export function urlFor(kind: Kind, id: string) {
   }
 }
 
-/** Every `<Embed of="…" />` in an MDX or Markdown body, in order. */
+/** Fenced blocks, then inline code: text that is shown, not run. */
+const codeInBody = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[^\n]*$|`[^`\n]*`/gm;
+
+/**
+ * Every `<Embed of="…" />` in an MDX or Markdown body, in order. One written
+ * inside code is an example and is not drawn, so it is not an embed.
+ */
 export function refsInBody(body: string) {
-  return [...body.matchAll(/<Embed\s[^>]*?\bof=["']([^"']+)["']/g)].map(
+  return [...body.replace(codeInBody, "").matchAll(/<Embed\s[^>]*?\bof=["']([^"']+)["']/g)].map(
     (m) => m[1],
   );
 }

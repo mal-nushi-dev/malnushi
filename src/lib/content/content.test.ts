@@ -47,6 +47,8 @@ describe("refs", () => {
       "photo:a",
       "note:b",
     ]);
+    // One shown as an example is not an embed.
+    expect(refsInBody("```mdx\n<Embed of=\"photo:a\" />\n```\n\nOr `<Embed of=\"photo:b\" />`.")).toEqual([]);
   });
 });
 
