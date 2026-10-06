@@ -26,6 +26,8 @@ const ref = z
 
 const refs = z.array(ref).default([]);
 const draft = z.boolean().default(false);
+/** The day of a real revision, on the kinds that are revised. Never before `date`. */
+const updated = z.union([stamp, day]).optional();
 /** Shown to readers and searched. The same field on every kind. */
 const tags = z.array(z.string().min(1)).default([]);
 
@@ -41,7 +43,7 @@ export const postData = z
     subtitle: z.string().min(1),
     description: z.string().optional(),
     date: day,
-    updated: day.optional(),
+    updated,
     author: z.string().default("Mal Nushi"),
     type: z.enum(["article", "the-kernel", "dev-journal"]).default("article"),
     category: z.string().optional(),
@@ -112,14 +114,16 @@ export const photoData = z.object({
   aperture: z.number().optional(),
   shutter: z.string().optional(),
   iso: z.number().optional(),
-  width: z.number().optional(),
-  height: z.number().optional(),
+  /** Its pixels as a browser shows it, read from the file: see image-size.ts. */
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
 });
 
 export const photoSeriesData = z.strictObject({
   title: z.string().min(1),
   subtitle: z.string().optional(),
   date: day,
+  updated,
   /** "Series 04". */
   number: z.number().int().positive().optional(),
   camera: z.string().optional(),
@@ -154,6 +158,7 @@ export const projectData = z.strictObject({
   title: z.string().min(1),
   subtitle: z.string().min(1),
   date: day,
+  updated,
   /** The discipline: Code, Hardware, Lego… */
   category: z.string().min(1),
   role: z.string().optional(),
@@ -181,6 +186,7 @@ export const trackData = z.strictObject({
   title: z.string().min(1),
   subtitle: z.string().optional(),
   date: day,
+  updated,
   duration,
   bpm: z.number().positive().optional(),
   /** The musical key: "A minor". */
@@ -203,6 +209,7 @@ export const albumData = z.strictObject({
   title: z.string().min(1),
   subtitle: z.string().optional(),
   date: day,
+  updated,
   format: z.enum(["album", "ep", "single", "compilation"]),
   /** The running order. */
   tracks: z.array(ref).min(1),
@@ -224,6 +231,7 @@ export const sightingData = z.strictObject({
   scientific: z.string().min(1),
   family: z.string().min(1),
   date: z.union([stamp, day]),
+  updated,
   place: z.string().min(1),
   coordinates: z
     .strictObject({
@@ -248,6 +256,7 @@ export const recommendationData = z.strictObject({
   /** Who made it: the author, director or artist. */
   creator: z.string().optional(),
   date: day,
+  updated,
   tags,
   related: refs,
   draft,
@@ -349,6 +358,8 @@ export type Envelope = {
   url: string;
   /** What streams sort by. A day, or a moment with its offset. */
   date: string;
+  /** When it was last revised, if it has been. Written by hand, never a file time. */
+  updated?: string;
   title?: string;
   summary?: string;
   /** The one label an eyebrow or a badge shows. */

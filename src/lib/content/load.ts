@@ -3,7 +3,8 @@ import path from "node:path";
 import exifr from "exifr";
 import { parse as parseYaml } from "yaml";
 import type { z } from "zod";
-import { fieldOf } from "./format";
+import { fieldOf, isBefore, orientationOf } from "./format";
+import { jpegSize } from "./image-size";
 import { definitions, edges, type Described } from "./kinds";
 import { idPattern, pageless, refsInBody, toRef, urlFor, type Kind } from "./refs";
 import {
@@ -97,17 +98,20 @@ function number(value: unknown) {
 
 /** What the image file itself says, in the photo schema's terms. */
 async function readImageMetadata(file: string) {
+  const image = await readFile(file);
   let tags: Record<string, unknown> = {};
+  // 1 to 8, as EXIF numbers the ways an image can be turned.
+  let orientation: number | undefined;
   try {
-    tags =
-      (await exifr.parse(await readFile(file), {
-        xmp: true,
-        iptc: true,
-        reviveValues: false,
-      })) ?? {};
+    tags = (await exifr.parse(image, { xmp: true, iptc: true, reviveValues: false })) ?? {};
+    orientation = await exifr.orientation(image);
   } catch {
     // No readable metadata (a scan, a stripped export): the .yml supplies it.
   }
+  const frame = jpegSize(image);
+  // Orientations 5 to 8 are stored on their side: a browser turns them, so
+  // the size it shows has the two swapped.
+  const turned = orientation !== undefined && orientation >= 5;
   return {
     alt: text(tags.AltTextAccessibility),
     caption: text(tags.ImageDescription) ?? text(tags.description) ?? text(tags.Caption),
@@ -119,8 +123,8 @@ async function readImageMetadata(file: string) {
     aperture: number(tags.FNumber),
     shutter: shutterSpeed(tags.ExposureTime),
     iso: number(tags.ISO),
-    width: number(tags.ExifImageWidth),
-    height: number(tags.ExifImageHeight),
+    width: turned ? frame?.height : frame?.width,
+    height: turned ? frame?.width : frame?.height,
   };
 }
 
@@ -183,6 +187,12 @@ export async function loadContent(
       withheld.add(ref);
       return;
     }
+    if (rest.updated && isBefore(rest.updated, rest.date)) {
+      problems.push(`${source}: updated: ${rest.updated} is before its date, ${rest.date}`);
+    }
+    if (refsInBody(rest.body).includes(ref)) {
+      problems.push(`${source}: embeds itself`);
+    }
     const url = urlFor(kind, id);
     if (!pageless.includes(kind)) {
       const clash = [...entries.values()].find((e) => e.url === url);
@@ -244,6 +254,10 @@ export async function loadContent(
       const data = check(schema, parsed.data, source);
       if (!id || !data) continue;
       const found = definition.check?.(id, data, parsed.body) ?? [];
+      // Plain Markdown has no components: the tag would be dropped unseen.
+      if (extension === ".md" && refsInBody(parsed.body).length > 0) {
+        problems.push(`${source}: <Embed> is only drawn in an .mdx file, and a ${kind} is a .md`);
+      }
       problems.push(...found.map((problem) => `${source}: ${problem}`));
       // A reserved slug has no address to be given.
       if (kind === "post" && found.length > 0) continue;
@@ -305,6 +319,10 @@ export async function loadContent(
       );
       continue;
     }
+    if (!merged.width || !merged.height) {
+      problems.push(`${source}: could not read the image's size. Export it again as a JPEG`);
+      continue;
+    }
     const data = check(photoData, merged, source);
     if (!data) continue;
     add("photo", id, source, {
@@ -319,6 +337,7 @@ export async function loadContent(
         focalLength: data.focalLength,
         aperture: data.aperture,
         iso: data.iso,
+        orientation: orientationOf(data),
       },
       draft,
       edges: edges("related", ...related),
@@ -456,9 +475,19 @@ export async function loadContent(
   const memberKind = new Map(definitions.map((d) => [d.kind, d.contains]));
   const backlinks = new Map<string, { rel: Rel; from: string }[]>();
   for (const entry of entries.values()) {
+    const listed = entry.edges.filter((edge) => edge.rel === "contains");
+    // A series may list a part that is still a draft. The part keeps its
+    // place in the count and is never linked: see `partOf` in query.ts.
+    // A series with nothing published in it has nothing to show.
+    if (listed.length > 0 && listed.every((edge) => withheld.has(edge.to))) {
+      const what = memberKind.get(entry.kind) ?? "entry";
+      problems.push(`${entry.source}: every ${what} it lists is a draft; mark it a draft too`);
+      continue;
+    }
     for (const { rel, to } of entry.edges) {
       const target = entries.get(to);
       if (!target) {
+        if (rel === "contains" && withheld.has(to)) continue;
         problems.push(
           withheld.has(to)
             ? `${entry.source}: points at ${to}, which is a draft`
@@ -475,11 +504,11 @@ export async function loadContent(
     }
   }
 
-  // A series of posts has no page and no date of its own: it takes its
-  // first part's.
+  // A series of posts has no page and no date of its own: it takes those of
+  // its first published part.
   for (const entry of entries.values()) {
     if (entry.kind !== "post-series") continue;
-    const first = entries.get(entry.data.posts[0]);
+    const first = entry.data.posts.map((part) => entries.get(part)).find((part) => part);
     if (first?.kind !== "post") continue;
     entry.url = first.url;
     entry.date = first.date;

@@ -29,6 +29,7 @@ import {
 /** What an entry of a kind gives the envelope. */
 export type Described = {
   date: string;
+  updated?: string;
   title?: string;
   summary?: string;
   category?: string;
@@ -87,6 +88,7 @@ export const definitions: KindDefinition[] = [
       reservedPostSlugs.includes(id) ? [`"${id}" is reserved; rename the file`] : [],
     describe: (data) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: data.description ?? data.subtitle,
       category: data.category,
@@ -118,6 +120,7 @@ export const definitions: KindDefinition[] = [
     schema: projectData,
     describe: (data) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: data.subtitle,
       category: data.category,
@@ -141,6 +144,7 @@ export const definitions: KindDefinition[] = [
     contains: "photo",
     describe: (data) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: data.subtitle,
       tags: data.tags,
@@ -178,6 +182,7 @@ export const definitions: KindDefinition[] = [
     assets: { audio: [".mp3", ".m4a"] },
     describe: (data) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: data.subtitle,
       tags: data.tags,
@@ -201,6 +206,7 @@ export const definitions: KindDefinition[] = [
     contains: "track",
     describe: (data) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: data.subtitle,
       category: albumFormats[data.format],
@@ -226,6 +232,7 @@ export const definitions: KindDefinition[] = [
     schema: sightingData,
     describe: (data, body) => ({
       date: data.date,
+      updated: data.updated,
       title: data.species,
       summary: body || undefined,
       tags: data.tags,
@@ -247,6 +254,7 @@ export const definitions: KindDefinition[] = [
     schema: recommendationData,
     describe: (data, body) => ({
       date: data.date,
+      updated: data.updated,
       title: data.title,
       summary: body || undefined,
       category: data.medium,

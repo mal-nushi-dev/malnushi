@@ -71,12 +71,12 @@ export function toIssue(post: PostEntry): Issue {
 }
 
 /** A note's text sits inside the Note's own paragraph. */
-const inline = { p: ({ children }: { children?: React.ReactNode }) => <>{children}</> };
+export const noteComponents = { p: ({ children }: { children?: React.ReactNode }) => <>{children}</> };
 
 export function toNoteItem(note: NoteEntry): NoteItem {
   return {
     id: note.id,
     ...noteDateLine(note.date),
-    body: <EntryBody entry={note} components={inline} />,
+    body: <EntryBody entry={note} components={noteComponents} />,
   };
 }

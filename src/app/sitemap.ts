@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { content, type Kind } from "@/lib/content";
+import { changedAt, content, type Kind } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 
 // Only routes that exist. Add a kind here when its page is built, so the
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/music`, changeFrequency: "weekly", priority: 0.7 },
     ...entries.map((entry) => ({
       url: `${siteUrl}${entry.url}`,
-      lastModified: entry.date,
+      lastModified: changedAt(entry),
     })),
   ];
 }

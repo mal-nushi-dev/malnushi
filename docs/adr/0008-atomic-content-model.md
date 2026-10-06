@@ -47,7 +47,7 @@ Three layers. Each knows nothing about the one after it.
    - `schema.ts` has one zod schema per kind, each in its own shape, and the `Envelope` every entry shares.
    - `kinds.ts` is the registry: for each kind that is one file per entry, its folder, its schema, the kind its members must be if it is a series, and how an entry fills the envelope. Photographs (an image and a `.yml`) and collections (many rows in a file) are read by their own code in `load.ts`.
    - `load.ts` parses and checks every file and collects every problem before failing, each named by file and field. Drafts are left out of a build and shown in development.
-   - `query.ts` is what pages ask: `get`, `need`, `list`, `stream` (several kinds, newest first), `backlinks`, `members`, `partOf`, `tagged` and `adjacent`.
+   - `query.ts` is what pages ask: `get`, `need`, `list`, `stream` (several kinds, newest first), `backlinks`, `members`, `partOf`, `tagged` and `adjacent`. `list` and `stream` order by `date` unless asked for `by: "updated"`.
    - `index.ts` binds the queries to `content/`. Pages call `content()`.
 3. **Views live in `src/components/entry/`.** Mappers turn an entry into what the existing components take (`toIndexItem`, `toNoteItem`, `toIssue`); `PhotoFigure`, `ItemSummary` and `EntryBody` draw one entry; `Embed` draws any entry by ref and is available in every MDX body.
 
@@ -56,6 +56,7 @@ Three layers. Each knows nothing about the one after it.
 | Field | What it holds |
 |---|---|
 | `kind`, `id`, `ref`, `url`, `date` | What it is, its name, where it lives, when |
+| `updated` | When it was last revised, on the kinds that are revised. Optional. |
 | `title`, `summary`, `body` | The text to show and to search |
 | `category` | The one label an eyebrow or a badge shows. Optional. |
 | `tags` | Free labels, the same field on every kind, shown to readers |
@@ -75,6 +76,15 @@ Three layers. Each knows nothing about the one after it.
 
 **Membership is written once, on the composite.** A photo series lists its photographs; a photograph never names its series. What an entry belongs to, and its place there ("Part 2 of 3", the next photograph in a series), is worked out by reading the edges backwards (`partOf`). Reordering a series or adding a part is one edit in one file, and the two directions cannot disagree. A series may only list entries of its own member kind, and each only once.
 
+**A draft member holds its place.** A published series or album may list a part that is still a draft. In a build the draft is not loaded, so nothing links to it or draws it, but its place in the list counts.
+- `partOf` gives a position and a total that include it, and its `previous` and `next` step over it to the nearest published part. With part 3 of 3 in draft, part 2 reads "Part 2 of 3" and has no next.
+- `members` returns only what is published, so an album's track list leaves the draft out.
+- A series with nothing published in it fails the build: mark the series a draft too.
+- Every other pointer at a draft (`cover`, `related`, an embed) still fails the build, since each would have to draw or link it.
+- A post series takes its address from its first published part. `total` remains for parts that have no file yet.
+
+**Embeds are one level deep.** `Embed` draws most kinds as a card, which shows no body. Where it shows a body (a note), an `<Embed>` inside that body is drawn as a link to the entry and is not opened. Two entries that embed each other therefore cannot loop, and a page holds only what its own text asked for. An entry that embeds itself fails the build. So does an `<Embed>` in a note, a sighting or a recommendation: those are plain Markdown (`.md`), which has no components, and the tag would be dropped without a trace.
+
 **Facets, not taxonomy entries.** Each kind copies its descriptive fields into `facets` under names the kinds share: `place` is the same key on a photograph and a sighting. Search and filters read that one map and need no code per kind. A category, a tag, a camera, a composer or a species is therefore never an entry: it would be a file holding one string. A subject becomes an entry only when it has prose of its own (see Deferred, topics). `facets` is a copy for searching; templates read the typed fields in `data`.
 
 **`category` and `tags` are both kept.** Tags are many and unordered, for finding. Category is one, chosen by the author, for display: a template that had only tags would have to guess which one to put in the eyebrow.
@@ -88,13 +98,17 @@ Three layers. Each knows nothing about the one after it.
 - Duration, tempo, key and credits are written in frontmatter. A cover names its writers in `composer`, which is a facet, so the writer is found by search without being an entry.
 - A track's audio is a file beside it under the same name. The loader records it and fails on an audio file with no track. Nothing reads or plays it yet.
 
-**Not every entry has a page.** A sighting, a recommendation and a table row live at an anchor on their collection's page (`/collections/life-list#<id>`); one or two sentences do not earn a route. A post series has no page yet and takes its first part's URL and date. Any of these can be given a page later without changing its ref or its file.
+**Not every entry has a page.** A sighting, a recommendation and a table row live at an anchor on their collection's page (`/collections/life-list#<id>`); one or two sentences do not earn a route. A post series has no page yet and takes the URL and date of its first published part. Any of these can be given a page later without changing its ref or its file.
 
-**Photographs.** The image's EXIF and IPTC are read with `exifr`. Anything written in the `.yml` wins over the file. Alt text is required, from the `.yml` or from the image's own alt text field. The image is imported through the bundler (`import(\`@content/photos/${id}.jpg\`)`), so Next knows its dimensions before render, gives it a blur placeholder and a hashed URL, and serves it through `next/image` as ADR 0005 requires.
+**Photographs.** The image's EXIF and IPTC are read with `exifr`. Anything written in the `.yml` wins over the file. Alt text is required, from the `.yml` or from the image's own alt text field. The image is imported through the bundler (`import(\`@content/photos/${id}.jpg\`)`), so Next gives it a blur placeholder and a hashed URL, and serves it through `next/image` as ADR 0005 requires.
+- **Its pixel size is on the entry** (`width`, `height`, and an `orientation` facet). The loader reads it from the JPEG's frame header (`image-size.ts`), not from EXIF, which a scan or a stripped export lacks. It is the size as shown: the two are swapped when EXIF says the image is stored on its side. A `.yml` cannot override it.
+- Every view takes a photograph's proportions from the entry, so the box is reserved before the image loads wherever it is drawn, and anything outside React (search, feeds, share images) has them too.
 
 **Bodies** are compiled by `@next/mdx` when imported (`EntryBody`), with `remark-frontmatter` to drop the frontmatter the loader has already read. Notes, sightings and recommendations go through the same path as posts.
 
 **Dates are kept as written.** YAML is parsed with `yaml`, which leaves `2026-10-03T14:12-04:00` a string, so a note keeps the offset of the place it was written.
+
+**`updated` is written by hand,** for a real revision, on posts, projects, photo series, tracks, albums, sightings and recommendations. A note and a photograph are moments and have none; a collection's date is already that of its newest row. File times are not used: a corrected typo would count as a revision, and a deploy's checkout does not keep them. `updated` cannot be before `date`. Two moments are compared as instants; if either is a bare day, the days are compared as written, so a revision on the day of publication is valid in any time zone. The sitemap gives `updated` as an entry's last change. No page shows it or orders by it yet.
 
 Dependencies added: `zod`, `yaml`, `exifr`, `@next/mdx`, `@mdx-js/loader`, `remark-frontmatter`, and `@types/mdx` for development.
 
@@ -118,7 +132,7 @@ Dependencies added: `zod`, `yaml`, `exifr`, `@next/mdx`, `@mdx-js/loader`, `rema
 
 - Publishing is adding a file and pushing. Logging a sighting updates the life list; nothing else is edited.
 - A new kind is a declaration in `kinds.ts`, its schema and its views. Streams, backlinks, embeds, tags and facets work for it at once.
-- A mistake in content stops the build, with the file named: a missing or misspelled field, a reserved slug, two entries at one URL, a photograph without alt text or a date, a ref that names nothing or names a draft, a series listing the wrong kind or one entry twice, a species named two ways. A published entry cannot embed or contain a draft, so a part that is not written yet is announced with `total`, not listed.
+- A mistake in content stops the build, with the file named: a missing or misspelled field, a reserved slug, two entries at one URL, a photograph without alt text or a date, a photograph whose size cannot be read, a ref that names nothing, a cover, related link or embed that names a draft, an entry that embeds itself, an embed in a `.md` file, a series listing the wrong kind, one entry twice or only drafts, an `updated` before its `date`, a species named two ways.
 - Facet names are a shared vocabulary. A new kind should reuse an existing key where the meaning is the same, or one search splits into two.
 - Renaming an entry's file changes its ref. Everything that points at it then fails the build until it is updated.
 - `EntryBody` imports bodies by folder and extension, and the bundler needs at least one file to match each pattern. A folder for a kind with a body must not be empty.

@@ -489,9 +489,9 @@ The **Atomic Content Model**: everything published is an **entry**: a file in `c
 
 `/writing/the-kernel` and `/writing/dev-journal` list the two newsletters. `the-kernel`, `dev-journal` and `notes` are reserved: no post may use them as a slug. A photo series, an album and a project share `/projects/`, so no two of them can share a slug.
 
-**Primitives and composites.** A photograph, a post, a note, a sighting and a recommendation are single pieces of work. A photo series, a post series and a collection are groupings: entries of their own that list what they contain, in order, and copy nothing from it. Membership is written once, on the grouping; a photograph never names its series. What an entry belongs to, and its place there, is worked out from that.
+**Primitives and composites.** A photograph, a post, a note, a sighting and a recommendation are single pieces of work. A photo series, a post series and a collection are groupings: entries of their own that list what they contain, in order, and copy nothing from it. Membership is written once, on the grouping; a photograph never names its series. What an entry belongs to, and its place there, is worked out from that. A grouping may list a part that is still a draft: the part is not published or linked, but it keeps its place, so the part before it still reads "Part 2 of 3".
 
-**Refs.** An entry is named `kind:id`, for example `photo:2026-10-02-wren-at-the-window` or `sighting:2026-09-27-carolina-wren`. One entry points at another in its frontmatter (`cover`, `related`, and `photos` or `posts` on a series) or in its body with `<Embed of="photo:…" />`, which draws the other entry in place: a photograph as a figure with its EXIF, a note as a note, a sighting or a recommendation as its summary. Each pointer keeps its meaning (contains, cover, related, embeds), so a photograph's page can tell the series it is in from an essay that shows it. Each entry's page can list what points at it ("Appears in"). The build fails on a ref that names nothing.
+**Refs.** An entry is named `kind:id`, for example `photo:2026-10-02-wren-at-the-window` or `sighting:2026-09-27-carolina-wren`. One entry points at another in its frontmatter (`cover`, `related`, and `photos` or `posts` on a series) or in its body with `<Embed of="photo:…" />`, which draws the other entry in place: a photograph as a figure with its EXIF, a note as a note, a sighting or a recommendation as its summary. Embeds are one level deep: an embedded entry never opens embeds of its own. Only `.mdx` bodies (posts, projects, series, tracks, albums) can embed; a note, a sighting or a recommendation cannot. Each pointer keeps its meaning (contains, cover, related, embeds), so a photograph's page can tell the series it is in from an essay that shows it. Each entry's page can list what points at it ("Appears in"). The build fails on a ref that names nothing.
 
 **Category, tags and facets.** Every entry may have one `category`, the label its eyebrow or badge shows, and any number of `tags`, which readers see and search. Each kind also offers its descriptive fields (camera, place, species, medium) to search and filters under shared names. A category, tag or species is never an entry of its own.
 
@@ -501,7 +501,7 @@ The **Atomic Content Model**: everything published is an **entry**: a file in `c
 
 **Content is in this repository,** which will be made private. Until it is, only placeholder content is committed. Notes are still to be posted with Pages CMS.
 
-**Photo metadata.** A photograph's date, camera, lens and exposure are read from the image file. Its `.yml` can add `alt`, `caption`, `place` and `tags`, and can override anything the file says (for a film scan, it supplies everything). Alt text is required, from the `.yml` or from the image's own alt text field. Photographs are `.jpg`, exported with the long edge at 2400px or less.
+**Photo metadata.** A photograph's date, camera, lens and exposure are read from the image file. Its `.yml` can add `alt`, `caption`, `place` and `tags`, and can override anything the file says (for a film scan, it supplies everything). Alt text is required, from the `.yml` or from the image's own alt text field. Photographs are `.jpg`, exported with the long edge at 2400px or less. Each photograph's pixel size is read from the file and kept on its entry, so its box is reserved before it loads wherever it is shown.
 
 **RSS.** Two feeds: `/writing/feed.xml` for Kodikion posts and `/writing/notes/feed.xml` for notes. Both carry the full text.
 
@@ -533,7 +533,7 @@ Post frontmatter. These fields are what search, the index lists, link previews a
 | `subtitle` | Yes | The standfirst under the `h1` |
 | `description` | No | One or two sentences for search results, link previews and SEO. Falls back to `subtitle`. |
 | `date` | Yes | First published |
-| `updated` | No | Only for a real revision |
+| `updated` | No | Only for a real revision. A day, never before `date`. Projects, photo series, tracks, albums, sightings and recommendations take it too. |
 | `author` | No | Defaults to Mal Nushi |
 | `type` | No | `article` (default), `the-kernel` or `dev-journal` |
 | `category` | Articles | One per post, from a short fixed list |
@@ -658,6 +658,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Replace the homepage placeholder content once the first features exist (built in `src/app/page.tsx` 2026-10-02). The lead feature's accent (`#8a5a3c`) is a placeholder; pick it from the real piece. Links go to routes that don't exist yet.
 - Wire up the toolbar search (no route or index yet). What it indexes and how matches are weighted is in Implementation → Writing metadata; the search library is not chosen.
 - Tags are now shown to readers (decided 2026-10-05), but no page shows them yet. Decide where they appear (essay header, index rows, a photograph's caption) and whether a tag links to a list of everything carrying it.
+- `updated`: no page shows it or orders by it (the sitemap reads it). Decide whether an essay shows "Updated" beside its date, and whether the home page brings a revised piece back to the top.
 - Post series: whether it gets a page of its own (`/writing/series/[slug]`), and how previous and next parts are linked on an essay. Only "Part 2 of 3" is shown today.
 - Music: the track page (`/music/[id]`) and the track list (`/music`) are a first pass built from existing components, not designed, with placeholder copy. Decide their layout, where `/music` is linked from, the audio player, and how a release shows its tracks once the project template exists.
 - Sightings and recommendations: when one has enough written about it to earn its own page, and what that page looks like.

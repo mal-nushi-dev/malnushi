@@ -1,3 +1,4 @@
+import { changedAt } from "./format";
 import type { ContentIndex } from "./load";
 import { toRef, type Kind } from "./refs";
 import type { Entry, EntryOf, Rel } from "./schema";
@@ -11,11 +12,28 @@ function newestFirst(a: Entry, b: Entry) {
   return instant(b.date) - instant(a.date) || a.ref.localeCompare(b.ref);
 }
 
+/** As `newestFirst`, with a revised entry placed by its revision. */
+function lastChangedFirst(a: Entry, b: Entry) {
+  return instant(changedAt(b)) - instant(changedAt(a)) || newestFirst(a, b);
+}
+
+/**
+ * `"date"` orders by when an entry was published, `"updated"` by when it
+ * last changed.
+ */
+type By = "date" | "updated";
+
+function order(by: By = "date") {
+  return by === "updated" ? lastChangedFirst : newestFirst;
+}
+
 type ListOptions<E> = {
   where?: (entry: E) => boolean;
   limit?: number;
   /** Newest first unless set. */
   oldestFirst?: boolean;
+  /** By publication unless set. */
+  by?: By;
 };
 
 /** What appears in a stream of everything unless a page asks otherwise. */
@@ -53,15 +71,19 @@ export function createQueries(index: ContentIndex) {
   }
 
   function list<K extends Kind>(kind: K, options: ListOptions<EntryOf<K>> = {}) {
-    let found = all.filter((e): e is EntryOf<K> => e.kind === kind).sort(newestFirst);
+    let found = all.filter((e): e is EntryOf<K> => e.kind === kind).sort(order(options.by));
     if (options.where) found = found.filter(options.where);
     if (options.oldestFirst) found.reverse();
     return options.limit === undefined ? found : found.slice(0, options.limit);
   }
 
   /** Dated entries of several kinds together, newest first. */
-  function stream({ kinds = streamKinds, limit }: { kinds?: Kind[]; limit?: number } = {}) {
-    const found = all.filter((e) => kinds.includes(e.kind)).sort(newestFirst);
+  function stream({
+    kinds = streamKinds,
+    limit,
+    by,
+  }: { kinds?: Kind[]; limit?: number; by?: By } = {}) {
+    const found = all.filter((e) => kinds.includes(e.kind)).sort(order(by));
     return limit === undefined ? found : found.slice(0, limit);
   }
 
@@ -90,22 +112,28 @@ export function createQueries(index: ContentIndex) {
   /**
    * The series and collections this entry is in, with its place in each.
    * Membership is written on the series; this reads it backwards.
+   *
+   * A part still in draft is not in a build, but it keeps its place: the
+   * position and the total count it, and `previous` and `next` step over it
+   * to the nearest part that is published.
    */
   function partOf<K extends Kind>(ref: string, kind?: K) {
     return backlinks(ref, "contains")
       .filter((parent): parent is EntryOf<K> => kind === undefined || parent.kind === kind)
       .map((parent) => {
-        const siblings = members(parent);
-        const at = siblings.findIndex((e) => e.ref === ref);
+        const places = parent.edges
+          .filter((edge) => edge.rel === "contains")
+          .map((edge) => index.entries.get(edge.to));
+        const at = places.findIndex((e) => e?.ref === ref);
         // A series may announce parts that are not written yet.
         const series: Entry = parent;
         const announced = series.kind === "post-series" ? (series.data.total ?? 0) : 0;
         return {
           parent,
           position: at + 1,
-          total: Math.max(announced, siblings.length),
-          previous: at > 0 ? siblings[at - 1] : undefined,
-          next: siblings[at + 1],
+          total: Math.max(announced, places.length),
+          previous: places.slice(0, at).findLast((e) => e !== undefined),
+          next: places.slice(at + 1).find((e) => e !== undefined),
         };
       });
   }

@@ -15,6 +15,28 @@ export function dayOf(date: string) {
 }
 
 /**
+ * Whether `a` falls before `b`. Two moments are compared as instants. If
+ * either is a bare day, the days are compared as they are written: a day
+ * parses as midnight UTC, which would put an evening in New York on the
+ * following day and call a same-day revision early.
+ */
+export function isBefore(a: string, b: string) {
+  if (a.length > 10 && b.length > 10) return Date.parse(a) < Date.parse(b);
+  return dayOf(a) < dayOf(b);
+}
+
+/** When an entry last changed: its revision, or the day it was published. */
+export function changedAt(entry: { date: string; updated?: string }) {
+  return entry.updated ?? entry.date;
+}
+
+/** How a photograph sits, for a filter. */
+export function orientationOf({ width, height }: { width: number; height: number }) {
+  if (width === height) return "square";
+  return width > height ? "landscape" : "portrait";
+}
+
+/**
  * What a collection's column shows for an entry: its day, its title or one
  * of its facets.
  */

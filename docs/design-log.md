@@ -6,6 +6,14 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-05
 
+### A series counts a part still in draft
+Decided with Mal. The engineering is in `docs/adr/0008-atomic-content-model.md`.
+- **A draft part keeps its place** in a published series or album (Mal's choice, from three I offered). With part 3 of 3 in draft, part 2 reads "Part 2 of 3" and has no link onward. The draft has no page and nothing links to it.
+- **Reason:** the other two readings are both wrong to a reader. Counting the draft and linking it leads to a 404. Dropping it makes the count shrink to "Part 2 of 2", which misstates a series that is planned as three. Holding the place also means a part can be listed as soon as it is started, and publishing it is one flag in one file.
+- **An album's track list leaves a draft track out,** while the track's number on the release still counts it. Not designed: no album page exists yet.
+- **`updated`** is now read from every kind that can be revised, but no page shows it. In Open questions.
+- **What would change it:** if a release should never go out with a track missing, albums and photo series can fail the build on a draft member while post series keep this rule.
+
 ### A track has its own page
 Decided with Mal. The engineering is in `docs/adr/0008-atomic-content-model.md`.
 - **Track is a seventh type,** with its own URL at `/music/[id]`, as a photo has `/photography/[id]` (Mal's choice; I had proposed an anchor on its album). Mal's reasons: a recording is a piece of work in itself, with its own notes, tempo and key; the same track can be a single and later sit on an EP, so no release can own its address; and a lone cover or demo should be one file, not a file plus an invented one-track release.

@@ -1,37 +1,18 @@
 // @vitest-environment node
-import { cp, mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { cp, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { exifLine, noteDateLine, readingTime, trackLine } from "./format";
-import { ContentError, loadContent } from "./load";
+import { exifLine, isBefore, noteDateLine, readingTime, trackLine } from "./format";
+import { jpegSize } from "./image-size";
+import { loadContent } from "./load";
 import { createQueries } from "./query";
 import { kinds, parseRef, refsInBody, urlFor } from "./refs";
+import { exifOrientation, folder, jpeg, problemsOf } from "./testing";
 
 const fixture = path.join(import.meta.dirname, "__fixtures__/site");
 
 const post = (extra = "") =>
   `---\ntitle: "T"\nsubtitle: "S"\ndate: 2026-01-01\ncategory: Tech\n${extra}---\n\nText.\n`;
-
-/** A throwaway content folder holding the given files. */
-async function folder(files: Record<string, string>) {
-  const root = await mkdtemp(path.join(tmpdir(), "content-"));
-  for (const [name, text] of Object.entries(files)) {
-    await mkdir(path.dirname(path.join(root, name)), { recursive: true });
-    await writeFile(path.join(root, name), text);
-  }
-  return root;
-}
-
-async function problemsOf(root: string) {
-  try {
-    await loadContent(root);
-  } catch (error) {
-    if (error instanceof ContentError) return error.problems;
-    throw error;
-  }
-  return [];
-}
 
 describe("refs", () => {
   it("parses a ref and rejects anything else", () => {
@@ -79,6 +60,50 @@ describe("format", () => {
   it("never reads faster than a minute", () => {
     expect(readingTime("three short words")).toBe(1);
     expect(readingTime("word ".repeat(690))).toBe(3);
+  });
+});
+
+describe("dates", () => {
+  it("compares two moments as instants", () => {
+    expect(isBefore("2026-10-05T09:00-04:00", "2026-10-05T21:00-04:00")).toBe(true);
+    expect(isBefore("2026-10-05T21:00-04:00", "2026-10-05T09:00-04:00")).toBe(false);
+    // The same instant, written in two places.
+    expect(isBefore("2026-10-05T21:00-04:00", "2026-10-06T03:00+02:00")).toBe(false);
+  });
+
+  it("compares a day with a moment by the days as written", () => {
+    // 21:30 in New York is already the 6th in UTC.
+    expect(isBefore("2026-10-05", "2026-10-05T21:30-04:00")).toBe(false);
+    expect(isBefore("2026-10-05T21:30-04:00", "2026-10-05")).toBe(false);
+    // 00:30 in Berlin is still the 4th in UTC.
+    expect(isBefore("2026-10-05T00:30+02:00", "2026-10-05")).toBe(false);
+    expect(isBefore("2026-10-05", "2026-10-05")).toBe(false);
+    expect(isBefore("2026-10-04", "2026-10-05T00:30+02:00")).toBe(true);
+    expect(isBefore("2026-10-04", "2026-10-05")).toBe(true);
+  });
+});
+
+describe("a JPEG's size", () => {
+  it("reads a baseline and a progressive frame", () => {
+    expect(jpegSize(jpeg(0xc0, 2400, 1600))).toEqual({ width: 2400, height: 1600 });
+    expect(jpegSize(jpeg(0xc2, 1600, 2400))).toEqual({ width: 1600, height: 2400 });
+  });
+
+  it("passes over a thumbnail's frame inside another segment", () => {
+    const thumbnail = [0xff, 0xc0, 0, 11, 8, 0, 16, 0, 16, 1, 1, 0x11, 0];
+    const exif = [0xff, 0xe1, 0, thumbnail.length + 2, ...thumbnail];
+    expect(jpegSize(jpeg(0xc2, 300, 200, exif))).toEqual({ width: 300, height: 200 });
+  });
+
+  it("does not take a table for a frame", () => {
+    const huffman = [0xff, 0xc4, 0, 4, 0, 0];
+    expect(jpegSize(jpeg(0xc0, 300, 200, huffman))).toEqual({ width: 300, height: 200 });
+  });
+
+  it("gives nothing for a cut-off file or another format", () => {
+    expect(jpegSize(jpeg(0xc0, 300, 200).slice(0, 7))).toBeUndefined();
+    expect(jpegSize(Uint8Array.from([0x89, 0x50, 0x4e, 0x47]))).toBeUndefined();
+    expect(jpegSize(new Uint8Array())).toBeUndefined();
   });
 });
 
@@ -142,6 +167,13 @@ describe("the fixture folder", async () => {
     expect(exifLine(scan.data)).toEqual([]);
   });
 
+  it("knows every photograph's size, whatever the file says about itself", () => {
+    for (const photo of q.list("photo")) {
+      expect(photo.data).toMatchObject({ width: 300, height: 200 });
+      expect(photo.facets.orientation).toBe("landscape");
+    }
+  });
+
   it("keeps each kind's own fields", () => {
     expect(q.need("post", "issue-1").data).toMatchObject({ type: "the-kernel", issue: 1 });
     expect(q.need("project", "lamp").data.materials).toEqual(["brass", "walnut"]);
@@ -169,6 +201,7 @@ describe("the fixture folder", async () => {
       focalLength: 300,
       aperture: 8,
       iso: 800,
+      orientation: "landscape",
     });
     expect(q.need("project", "lamp").facets).toEqual({
       category: "Hardware",
@@ -331,6 +364,119 @@ describe("the fixture folder", async () => {
   });
 });
 
+describe("a series with a part in draft", () => {
+  const series = (posts: string) => `---\ntitle: "T"\nposts: [${posts}]\n---\n`;
+  const parts = {
+    "posts/one.mdx": post(),
+    "posts/two.mdx": post("draft: true\n"),
+    "posts/three.mdx": post(),
+  };
+
+  it("keeps the draft's place, and steps over it", async () => {
+    const q = createQueries(
+      await loadContent(
+        await folder({ ...parts, "post-series/s.mdx": series("post:one, post:two, post:three") }),
+      ),
+    );
+    expect(q.get("post", "two")).toBeUndefined();
+    expect(q.members(q.need("post-series", "s")).map((e) => e.ref)).toEqual([
+      "post:one",
+      "post:three",
+    ]);
+    const [first] = q.partOf("post:one");
+    expect(first).toMatchObject({ position: 1, total: 3, previous: undefined });
+    expect(first.next?.ref).toBe("post:three");
+    const [last] = q.partOf("post:three");
+    expect(last).toMatchObject({ position: 3, total: 3, next: undefined });
+    expect(last.previous?.ref).toBe("post:one");
+  });
+
+  it("ends at the last published part", async () => {
+    const q = createQueries(
+      await loadContent(
+        await folder({ ...parts, "post-series/s.mdx": series("post:one, post:three, post:two") }),
+      ),
+    );
+    const [second] = q.partOf("post:three");
+    expect(second).toMatchObject({ position: 2, total: 3, next: undefined });
+  });
+
+  it("takes its address from the first part that is published", async () => {
+    const q = createQueries(
+      await loadContent(await folder({ ...parts, "post-series/s.mdx": series("post:two, post:three") })),
+    );
+    expect(q.need("post-series", "s").url).toBe("/writing/three");
+    expect(q.partOf("post:three")[0]).toMatchObject({ position: 2, total: 2, previous: undefined });
+  });
+
+  it("shows every part while writing", async () => {
+    const root = await folder({ ...parts, "post-series/s.mdx": series("post:one, post:two, post:three") });
+    const q = createQueries(await loadContent(root, { drafts: true }));
+    expect(q.partOf("post:one")[0].next?.ref).toBe("post:two");
+  });
+
+  it("lets a release list a track in draft, and leaves it out", async () => {
+    const track = (extra = "") => `---\ntitle: T\ndate: 2026-01-01\nduration: "3:42"\n${extra}---\n`;
+    const q = createQueries(
+      await loadContent(
+        await folder({
+          "tracks/a.mdx": track(),
+          "tracks/b.mdx": track("draft: true\n"),
+          "albums/ep.mdx": `---\ntitle: T\ndate: 2026-01-01\nformat: ep\ntracks: [track:a, track:b]\n---\n`,
+        }),
+      ),
+    );
+    expect(q.members(q.need("album", "ep")).map((e) => e.ref)).toEqual(["track:a"]);
+    expect(q.partOf("track:a", "album")[0]).toMatchObject({ position: 1, total: 2, next: undefined });
+  });
+
+  it("rejects a series with nothing published in it", async () => {
+    const problems = await problemsOf(
+      await folder({ ...parts, "post-series/s.mdx": series("post:two") }),
+    );
+    expect(problems).toEqual([
+      "post-series/s.mdx: every post it lists is a draft; mark it a draft too",
+    ]);
+  });
+});
+
+describe("a revised entry", () => {
+  it("carries the day it was revised, and can be ordered by it", async () => {
+    const q = createQueries(
+      await loadContent(
+        await folder({
+          "posts/old.mdx": post("updated: 2026-06-01\n"),
+          "posts/new.mdx": post().replace("2026-01-01", "2026-03-01"),
+        }),
+      ),
+    );
+    expect(q.need("post", "old").updated).toBe("2026-06-01");
+    expect(q.need("post", "new").updated).toBeUndefined();
+    expect(q.list("post").map((e) => e.id)).toEqual(["new", "old"]);
+    expect(q.list("post", { by: "updated" }).map((e) => e.id)).toEqual(["old", "new"]);
+    expect(q.stream({ by: "updated" }).map((e) => e.id)).toEqual(["old", "new"]);
+  });
+
+  it("accepts a revision on the day of publication, in any time zone", async () => {
+    const sighting = (species: string, date: string, updated: string) =>
+      `---\nspecies: ${species}\nscientific: S ${species}\nfamily: F\ndate: ${date}\nupdated: ${updated}\nplace: P\n---\n`;
+    const problems = await problemsOf(
+      await folder({
+        "posts/same-day.mdx": post("updated: 2026-01-01\n"),
+        "posts/earlier.mdx": post("updated: 2025-12-31\n"),
+        "sightings/evening.md": sighting("a", "2026-10-05T21:30-04:00", "2026-10-05"),
+        "sightings/abroad.md": sighting("b", "2026-10-05", "2026-10-05T00:30+02:00"),
+        "sightings/later.md": sighting("c", "2026-10-05T09:00-04:00", "2026-10-05T21:00-04:00"),
+        "sightings/sooner.md": sighting("d", "2026-10-05T21:00-04:00", "2026-10-05T09:00-04:00"),
+      }),
+    );
+    expect(problems.sort()).toEqual([
+      "posts/earlier.mdx: updated: 2025-12-31 is before its date, 2026-01-01",
+      "sightings/sooner.md: updated: 2026-10-05T09:00-04:00 is before its date, 2026-10-05T21:00-04:00",
+    ]);
+  });
+});
+
 describe("a folder with mistakes", () => {
   it("names the file and the field", async () => {
     const root = await folder({
@@ -363,6 +509,36 @@ describe("a folder with mistakes", () => {
       "posts/a.mdx: points at photo:missing, which does not exist",
       "posts/a.mdx: points at post:b, which is a draft",
     ]);
+  });
+
+  it("rejects an entry that embeds itself", async () => {
+    const problems = await problemsOf(
+      await folder({ "posts/a.mdx": post() + `<Embed of="post:a" />\n` }),
+    );
+    expect(problems).toEqual(["posts/a.mdx: embeds itself"]);
+  });
+
+  it("rejects an embed in plain Markdown, where it would not be drawn", async () => {
+    const problems = await problemsOf(
+      await folder({
+        "posts/a.mdx": post(),
+        "notes/2026-01-01-0900.md": `---\ndate: 2026-01-01T09:00-05:00\n---\n\nSee <Embed of="post:a" />.\n`,
+      }),
+    );
+    expect(problems).toEqual([
+      "notes/2026-01-01-0900.md: <Embed> is only drawn in an .mdx file, and a note is a .md",
+    ]);
+  });
+
+  it("rejects a draft as a cover, though a series may list one", async () => {
+    const problems = await problemsOf(
+      await folder({
+        "posts/a.mdx": post(),
+        "posts/b.mdx": post("draft: true\n"),
+        "post-series/s.mdx": `---\ntitle: "T"\nposts: [post:a, post:b]\nrelated: [post:b]\n---\n`,
+      }),
+    );
+    expect(problems).toEqual(["post-series/s.mdx: points at post:b, which is a draft"]);
   });
 
   it("rejects two entries at one address", async () => {
@@ -475,6 +651,24 @@ describe("a folder with mistakes", () => {
     expect(problems.some((p) => p.startsWith("photos/no-alt.jpg: no alt text"))).toBe(true);
     expect(problems.some((p) => p.startsWith("photos/no-date.jpg: no date"))).toBe(true);
     expect(problems).toContain("photos/orphan.yml: there is no image named orphan");
+  });
+
+  it("reads a turned photograph's size as it is shown, and rejects one with no frame", async () => {
+    const root = await folder({
+      "photos/turned.yml": "alt: A.\ndate: 2026-01-01\n",
+      "photos/broken.yml": "alt: A.\ndate: 2026-01-01\n",
+    });
+    // Stored 300 wide and 200 tall, to be shown turned a quarter.
+    await writeFile(path.join(root, "photos/turned.jpg"), jpeg(0xc2, 300, 200, exifOrientation(6)));
+    await writeFile(path.join(root, "photos/broken.jpg"), "not an image");
+    expect(await problemsOf(root)).toEqual([
+      "photos/broken.jpg: could not read the image's size. Export it again as a JPEG",
+    ]);
+    await writeFile(path.join(root, "photos/broken.jpg"), jpeg(0xc0, 300, 200));
+    const q = createQueries(await loadContent(root));
+    expect(q.need("photo", "turned").data).toMatchObject({ width: 200, height: 300 });
+    expect(q.need("photo", "turned").facets.orientation).toBe("portrait");
+    expect(q.need("photo", "broken").data).toMatchObject({ width: 300, height: 200 });
   });
 
   it("checks a collection's rows against its columns", async () => {
