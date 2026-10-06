@@ -1,7 +1,7 @@
 "use client";
 
 import { animate } from "motion";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { clamp, lerpArray, reducedMotion, springs } from "@/lib/motion";
 import data from "./masthead-glyphs.json";
 
@@ -94,7 +94,10 @@ export function Masthead() {
   const button = useRef<HTMLButtonElement>(null);
   const replay = useRef<() => void>(() => {});
 
-  useEffect(() => {
+  // A layout effect, so its cleanup runs in the same commit that clears the
+  // refs. With a plain effect the cleanup comes later, and a frame or a
+  // spring update in between would reach for a letter that is gone.
+  useLayoutEffect(() => {
     if (reducedMotion()) return;
     const g = groups.current as SVGGElement[];
     const layer = layers.current as SVGPathElement[][];
