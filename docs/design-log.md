@@ -4,6 +4,28 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-07
+
+### Travels: a map and the flights counted
+Decided with Mal. Built at `/collections/travels` and `/collections/travels/log`. The engineering is in `docs/adr/0010-flight-map-and-flight-data.md`.
+- **A collection's page is its table, unless it has a view of its own. Then the table moves to `/log`.** Mal had imagined Collections as queryable tables and no longer does: "Collections should be anything that Projects doesn't fit in". I proposed the rule and Mal took it: the table stays the default (the life list and recommendations are unchanged), a collection may put something else in front, and its rows are then one level down. Travels is the first. Search is not part of this: it will read the content index, where a flight is an entry like any other, so it does not depend on what a collection's page looks like.
+- **The data is Mal's my.flightradar24.com export.** The repository is public, so only nine columns of it are committed, and no flight dated in the future (my choice: a booked flight says where Mal will be). Flight numbers, registrations, seat numbers and notes are not on the site.
+- **The map is deck.gl over MapLibre** (Mal's choice, from three I offered): flat, tilted and a globe, with a pill for each. The land is drawn from the site's own colors, `surface` on `bg` with `line` borders, in light and dark.
+- **The map breaks three rules, on purpose.** DESIGN.md has no gradients, no shadows and no glow. Mal asked for light trails, lighting and post-processing, so inside the map's box an arc carries a moving pulse, the tilted view's columns are lit, and a soft glow is laid over the frame. Kept restrained: the glow is faint, and on a light page the pulse is the arc at full strength rather than a flash of white. Nowhere else on the site may do this. **For Mal to review in the browser.**
+- **Arcs are `chart.1` (blue) and airports `chart.4` (clay)** (my choice): the two furthest apart of the six, so a pin is never lost on a line.
+- **Reduced motion:** the pulses and the glow are off and the arcs are plain lines. Moving between views is a cut.
+- **Six chart colors, `chart.1` to `chart.6`** (my choice, for review): blue, ochre, teal, clay, plum, green, with their own steps in dark mode. The system had no way to tell categories apart and a pie needs up to six. They are more saturated than anything else on the site because muted versions failed: below a chroma of about 0.1 a hue reads as gray, and sage beside clay cannot be told apart with red-green color blindness. The order is one of four (of 120 tried) in which every neighbour stays apart under the common forms of color blindness and holds 3:1 on the page in both modes. So the colors are used in order and never cycled, and a pie is cut in a fixed order: Economy is blue whatever else was flown.
+- **Bars and lines are `accent`,** one series, no legend. Text on a chart is `ink` or `ink-2`, never a chart color.
+- **A pie has its numbers beside it** in a table (name, count, share), so no slice is read by color alone, and a ranking is an ordered list. A line chart labels only its peak; every value is in a table for a screen reader and on the dot's tooltip.
+- **Pies show only what was recorded,** and say how many flights were not (69 of 123 have no seat type). A slice for "unknown" would be the biggest in the seat pie.
+- **Rankings read "By flights" or "By distance" on tabs** (Mal's request). Tabs are new: an accent underline on the chosen one, as the nav's active section has.
+- **Miles first, kilometres beside the total** (my choice: Mal's own example was in miles).
+- **Time in the air is one span broken into six units** (years to minutes), zeroes kept, as Mal listed them.
+- **Emissions are an estimate and say so** on the page: one passenger's share by distance and cabin, from the UK government's 2026 factors, without the extra warming of emissions at altitude (my choice of method; DESNZ publishes each gas separately, which is what Mal asked for).
+- **"Countries" and "Continent" count where a flight landed; an airport is counted on leaving and on arriving** (my reading of "visited" and "flown to").
+- **Not linked from anywhere yet.** `/collections` is not built, so the pages are reached by address and the sitemap.
+- **What would change it:** if the saturated chart colors sit badly with the sage, the pies could become ranked bars in `accent`, which need no palette. If the glow reads as decoration, it is one line to remove. If more collections get a view of their own, `/log` may want a name that fits them all.
+
 ## 2026-10-06
 
 ### Projects index: a tight gallery of tiles

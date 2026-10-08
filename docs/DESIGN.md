@@ -453,6 +453,9 @@ Collections operates as your personal encyclopedia and ongoing data hub. This is
 
 - **Collections index** (`/collections`): visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—making browsing feel like walking through a private museum.
 - **A collection page:** eyebrow, `h1`, standfirst, then two or three `stat` numbers over 1px `--ink` rules in columns 9–12. Filter pills and a sort label, then the data table. At the bottom, an "Other collections" row linking to the rest.
+- **A collection with a view of its own.** The table is the default. A collection may put something else on its page (a map, charts); its table then lives one level down, at `/collections/[name]/log`, and the two link to each other. Travels is the first.
+- **Travels** (`/collections/travels`): eyebrow, `h1`, standfirst, then the map across the content width at 2:1 with small pills under it for its three views (Flat, Tilted, Globe). Then, each under a section label: the numbers (`stat`, four to a row), time in the air (six to a row), emissions (with a line saying it is an estimate), four pies two to a row, the rankings two to a row with "By flights / By distance" tabs, and three line charts (flights per year across the width, per month and per weekday side by side). An arrow link to the log.
+- **The map** draws land in `--surface` on `--bg` with `--line` borders, routes in `chart.1` and airports in `chart.4`. It is the one place a moving light, lit shapes and a glow are allowed (design log, 2026-10-07). With reduced motion it is still.
 
 Each collection defines its own columns:
 
@@ -461,10 +464,20 @@ Each collection defines its own columns:
 | Life list | No. · Species (common + *scientific*) · Family · First seen · Where |
 | Recommendations | No. · Title · Kind (book, film, tool, place…) · Why (one line) · Added |
 | Music | No. · Title · Artist · Year (other people's music: these rows are recommendations. Mal's own tracks are at `/music`) |
-| Travels | No. · Place · Country · When · Notes |
+| Travels (at `/log`) | No. · Date · From · To · Airline · Aircraft · Miles · Time, newest first, with a small pill for each year |
 | Lego inventory | No. · Set name · Set number · Pieces · Year · Status |
 
 Adding to a collection means adding a row of data, never writing a page.
+
+### Charts
+
+Charts are drawn on the server as SVG and HTML (`src/components/charts/`).
+
+- **Pie:** 160px, slices 2px apart, cut clockwise from twelve o'clock in a fixed order, with a table beside it: a dot in the slice's color, its name in `ui`, its count and share in `meta`.
+- **Ranking:** an ordered list. Each row is a name in `ui` (a second name in `--ink-2`), an 8px bar in `--accent` with a rounded end, and its number in `meta`, between hairlines.
+- **Line:** a 2px `--accent` line with 8px dots ringed in `--bg`, hairline gridlines in `--line` on an axis that starts at nothing, labels in `meta` at 11px. Only the peak is labelled.
+- **Tabs:** `small`, the chosen one in `--ink` over a 2px `--accent` underline, the rest in `--ink-2`.
+- **Color:** categories take `chart.1` to `chart.6` in order, never cycled and never by rank. One series is `--accent`. Text is never a chart color.
 
 ### About
 
@@ -650,6 +663,7 @@ The design tokens live in `tokens/` as W3C DTCG JSON in four sets: `primitives` 
 |---|---|
 | `color.bg` `surface` `ink` `ink-2` `link` `accent` `line` | `--bg` `--surface` `--ink` `--ink-2` `--link` `--accent` `--line` |
 | `color.code.bg` / `color.code.fg` | `--code-bg` / `--code-fg` |
+| `color.chart.1` to `color.chart.6` | `--chart-1` to `--chart-6` (blue, ochre, teal, clay, plum, green: light `#2F6FA8` `#B98400` `#008F8C` `#C8562F` `#9A4F9F` `#3F8F4A`, dark `#4A8CCC` `#B3850A` `#12A39B` `#D2693F` `#A866B0` `#4F9A55`). Tailwind: `fill-chart-1`, `bg-chart-1`. |
 | `space.gutter.desktop` / `space.gutter.mobile` | `--gutter` (96px / 16px) |
 | `space.col-gap` | `--col-gap` |
 | `size.reading-measure` | `--measure` |
@@ -716,7 +730,15 @@ Design decisions are tracked in [design-log.md](design-log.md).
 - Writing: whether a note can carry an image or a link preview. The chosen stream layout is built at `/writing/notes` (`src/app/writing/notes/page.tsx`).
 - Home: show the latest notes and newsletter issues (decided 2026-10-03). How they are shown is not designed, and `src/app/page.tsx` does not show them yet.
 - The old mobile Nav proposal below (a "Menu" text button) predates the toolbar; redo it for the toolbar.
-- Specify the travels collection's map view, if it gets one.
+- **Travels** (`/collections/travels`, built 2026-10-07):
+  - **The map's look** (pulses, lit columns, glow) breaks the no-glow and no-shadow rules inside its box. Built for Mal to review; not yet confirmed.
+  - **The chart colors** are more saturated than the rest of the palette. Not yet confirmed by Mal.
+  - **The dark `--accent`** (3.28:1) makes a faint line and faint bars in dark mode. It waits on the provisional dark accent above.
+  - **Hovering the map** shows nothing. Decide whether an airport or a route names itself, and how.
+  - **Nothing links to the page** until `/collections` exists. Decide its tile there ("miles flown" is in the spec).
+  - **Mobile:** the map, the four-across numbers and the two-across charts have no narrow layout.
+  - **Search and the log:** when search exists, decide whether a flight's result opens the log filtered, and whether the log gets a search field of its own.
+  - Not checked in Safari or Firefox.
 - Check the licence of the SVG Repo mustache used in `docs/portrait.svg` (credit it, or redraw the shape, before launch).
 - **Mobile (draft proposal, not decided).** Nothing below is spec until approved.
   - One breakpoint: under 768px is mobile; 768px and up keeps the desktop layout (approved by Mal 2026-10-01: tablet uses the desktop layout for now).
