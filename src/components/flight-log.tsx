@@ -16,16 +16,17 @@ export type FlightRow = {
   time: string;
 };
 
-// The widths and the 24px gaps between them come to the content width, 1248.
+// The widths and the 24px gaps between them come to 1088, the room there
+// is at a 1280px window. In a wider one the table stretches them in proportion.
 const columns: Column<FlightRow>[] = [
-  { key: "no", label: "No.", width: 58, kind: "mono" },
-  { key: "date", label: "Date", width: 112, kind: "mono" },
-  { key: "from", label: "From", width: 196, kind: "ui" },
-  { key: "to", label: "To", width: 196, kind: "ui" },
-  { key: "airline", label: "Airline", width: 180, kind: "ui", muted: true },
-  { key: "aircraft", label: "Aircraft", width: 190, kind: "ui", muted: true },
-  { key: "distance", label: "Miles", width: 68, kind: "mono", muted: true },
-  { key: "time", label: "Time", width: 80, kind: "mono", muted: true },
+  { key: "no", label: "No.", width: 50, kind: "mono" },
+  { key: "date", label: "Date", width: 100, kind: "mono" },
+  { key: "from", label: "From", width: 170, kind: "ui" },
+  { key: "to", label: "To", width: 170, kind: "ui" },
+  { key: "airline", label: "Airline", width: 150, kind: "ui", muted: true },
+  { key: "aircraft", label: "Aircraft", width: 150, kind: "ui", muted: true },
+  { key: "distance", label: "Miles", width: 56, kind: "mono", muted: true },
+  { key: "time", label: "Time", width: 74, kind: "mono", muted: true },
 ];
 
 /**

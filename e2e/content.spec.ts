@@ -31,7 +31,11 @@ const notBuilt = [
   "/writing/notes/feed.xml",
 ];
 
+/** Under a prefix above, and built all the same. */
+const built = ["/collections/travels"];
+
 const isBuilt = (href: string) =>
+  built.some((page) => href === page || href.startsWith(`${page}/`) || href.startsWith(`${page}#`)) ||
   !notBuilt.some((prefix) =>
     prefix.endsWith("/")
       ? href.startsWith(prefix)

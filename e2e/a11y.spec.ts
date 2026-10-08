@@ -83,6 +83,8 @@ for (const path of [
   "/photography/2026-10-02-wren-at-the-window",
   "/music",
   "/music/ebb",
+  "/collections/travels",
+  "/collections/travels/log",
   "/components",
   "/no-such-page",
 ]) {
