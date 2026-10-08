@@ -21,9 +21,22 @@ export type Count = { label: string; count: number };
 /** One bar of a ranking, which can be read either way. */
 export type Ranked = { label: string; detail?: string; count: number; km: number };
 
-const cabinOrder = ["Economy", "Economy+", "Business", "First", "Private"];
-const seatOrder = ["Window", "Middle", "Aisle"];
-const reasonOrder = ["Leisure", "Business", "Crew", "Other"];
+/*
+ * The order each pie is cut in. A value keeps its place, and so its color,
+ * however many of the others have been flown.
+ */
+export const cabinOrder = ["Economy", "Economy+", "Business", "First", "Private"];
+export const seatOrder = ["Window", "Middle", "Aisle"];
+export const reasonOrder = ["Leisure", "Business", "Crew", "Other"];
+export const continentOrder = [
+  "North America",
+  "Europe",
+  "South America",
+  "Oceania",
+  "Asia",
+  "Africa",
+  "Antarctica",
+];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -55,16 +68,14 @@ export function estimatedMinutes(km: number) {
   return Math.round(30 + (km / 800) * 60);
 }
 
-/** How often each value comes up, in a set order, with those never seen left out. */
-function shares(values: (string | undefined)[], order?: string[]) {
+/** How often each value comes up, in its set order, with those never seen left out. */
+function shares(values: (string | undefined)[], order: string[]) {
   const counts = new Map<string, number>();
   for (const value of values) {
     if (value !== undefined) counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   const slices = [...counts].map(([label, count]) => ({ label, count }));
-  slices.sort((a, b) =>
-    order ? order.indexOf(a.label) - order.indexOf(b.label) : b.count - a.count || a.label.localeCompare(b.label),
-  );
+  slices.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
   return { slices, unrecorded: values.length - slices.reduce((sum, s) => sum + s.count, 0) };
 }
 
@@ -159,7 +170,7 @@ export function flightStats(flights: Flown[]) {
       seat: shares(all.map((f) => f.seat), seatOrder),
       reason: shares(all.map((f) => f.reason), reasonOrder),
       // Where each flight landed.
-      continent: shares(all.map((f) => f.to.continent)),
+      continent: shares(all.map((f) => f.to.continent), continentOrder),
     },
     rankings: {
       // An airport is visited when a flight leaves it and when one arrives.

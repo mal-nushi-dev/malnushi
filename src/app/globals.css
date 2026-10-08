@@ -17,6 +17,13 @@
   --line: #d5d7d2;
   --code-bg: #2e2e2e;
   --code-fg: #edeeeb;
+  /* color.chart.*: the slices of a chart, in this order, never cycled */
+  --chart-1: #2f6fa8;
+  --chart-2: #b98400;
+  --chart-3: #008f8c;
+  --chart-4: #c8562f;
+  --chart-5: #9a4f9f;
+  --chart-6: #3f8f4a;
 
   /* space.* */
   --gutter: 96px;
@@ -63,6 +70,12 @@
     --line: #485861;
     --code-bg: #2a2f35;
     --code-fg: #edeeeb;
+    --chart-1: #4a8ccc;
+    --chart-2: #b3850a;
+    --chart-3: #12a39b;
+    --chart-4: #d2693f;
+    --chart-5: #a866b0;
+    --chart-6: #4f9a55;
 
     /* shadow.nav is provisional: stronger, since shadows are weak on #2e2e2e */
     --shadow-nav: 0 1px 2px rgb(0 0 0 / 0.25), 0 4px 16px rgb(0 0 0 / 0.3);
@@ -121,6 +134,12 @@
   --color-line: var(--line);
   --color-code-bg: var(--code-bg);
   --color-code-fg: var(--code-fg);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
 
   --font-serif: var(--font-newsreader), Georgia, serif;
   --font-sans: var(--font-google-sans-flex), system-ui, sans-serif;

@@ -124,7 +124,7 @@ describe("the shares", () => {
     expect(stats.shares.reason.slices.map((s) => s.label)).toEqual(["Leisure", "Business"]);
   });
 
-  it("counts a continent each time a flight lands in it, largest first", () => {
+  it("counts a continent each time a flight lands in it", () => {
     expect(stats.shares.continent).toEqual({
       slices: [
         { label: "North America", count: 4 },

@@ -129,6 +129,12 @@ describe("colors", () => {
     line: "--line",
     "code.bg": "--code-bg",
     "code.fg": "--code-fg",
+    "chart.1": "--chart-1",
+    "chart.2": "--chart-2",
+    "chart.3": "--chart-3",
+    "chart.4": "--chart-4",
+    "chart.5": "--chart-5",
+    "chart.6": "--chart-6",
   };
   const hex = (name: string, mode: Json) =>
     (
@@ -199,6 +205,12 @@ describe("css variables", () => {
     "--line",
     "--code-bg",
     "--code-fg",
+    "--chart-1",
+    "--chart-2",
+    "--chart-3",
+    "--chart-4",
+    "--chart-5",
+    "--chart-6",
   ];
 
   it("has a token behind every :root variable", () => {

@@ -37,6 +37,32 @@
         "$type": "color",
         "$value": "{color.neutral.100}"
       }
+    },
+    "chart": {
+      "1": {
+        "$type": "color",
+        "$value": "{color.blue.600}"
+      },
+      "2": {
+        "$type": "color",
+        "$value": "{color.ochre.600}"
+      },
+      "3": {
+        "$type": "color",
+        "$value": "{color.teal.600}"
+      },
+      "4": {
+        "$type": "color",
+        "$value": "{color.clay.600}"
+      },
+      "5": {
+        "$type": "color",
+        "$value": "{color.plum.600}"
+      },
+      "6": {
+        "$type": "color",
+        "$value": "{color.green.600}"
+      }
     }
   }
 }
