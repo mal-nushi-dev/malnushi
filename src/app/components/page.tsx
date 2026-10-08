@@ -25,7 +25,11 @@ import { OtherCollections } from "@/components/other-collections";
 import { PullQuote } from "@/components/pull-quote";
 import { SectionLabel } from "@/components/section-label";
 import { SpecBlock } from "@/components/spec-block";
+import { BarList } from "@/components/charts/bar-list";
+import { LineChart } from "@/components/charts/line-chart";
+import { PieChart } from "@/components/charts/pie-chart";
 import { Stat, Stats } from "@/components/stat";
+import { Tabs } from "@/components/tabs";
 import { Tile, TileGrid, TileGridItem } from "@/components/tile";
 import { Toolbar } from "@/components/toolbar";
 
@@ -313,6 +317,90 @@ export default function ComponentsPage() {
                 { href: "#", name: "Lego", count: 41 },
               ]}
             />
+          </Specimen>
+        </Group>
+
+        <Group number="07" title="Charts">
+          <Specimen name="Pie Chart: six slices, in the palette's order">
+            <div className="max-w-130">
+              <PieChart
+                title="Continents"
+                unit="flights"
+                order={["North America", "Europe", "South America", "Oceania", "Asia", "Africa"]}
+                slices={[
+                  { label: "North America", count: 89 },
+                  { label: "Europe", count: 34 },
+                  { label: "South America", count: 12 },
+                  { label: "Oceania", count: 4 },
+                  { label: "Asia", count: 9 },
+                  { label: "Africa", count: 2 },
+                ]}
+                note="Where each flight landed."
+              />
+            </div>
+          </Specimen>
+          <Specimen name="Pie Chart: one slice">
+            <div className="max-w-130">
+              <PieChart
+                title="Reason"
+                unit="flights"
+                order={["Leisure", "Business", "Crew", "Other"]}
+                slices={[{ label: "Leisure", count: 104 }]}
+                note="19 flights have no reason recorded."
+              />
+            </div>
+          </Specimen>
+          <Specimen name="Tabs, with a Bar List in each panel">
+            <div className="max-w-130">
+              <Tabs
+                label="Rank airports by"
+                tabs={[
+                  {
+                    label: "By flights",
+                    panel: (
+                      <BarList
+                        label="Airports by flights"
+                        bars={[
+                          { label: "DTW", detail: "Detroit", value: 70, shown: "70" },
+                          { label: "CLT", detail: "Charlotte", value: 30, shown: "30" },
+                          { label: "VIE", detail: "Vienna", value: 16, shown: "16" },
+                        ]}
+                      />
+                    ),
+                  },
+                  {
+                    label: "By distance",
+                    panel: (
+                      <BarList
+                        label="Airports by distance"
+                        bars={[
+                          { label: "DTW", detail: "Detroit", value: 133364, shown: "133,364 km" },
+                          { label: "VIE", detail: "Vienna", value: 64650, shown: "64,650 km" },
+                          { label: "CLT", detail: "Charlotte", value: 29218, shown: "29,218 km" },
+                        ]}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            </div>
+          </Specimen>
+          <Specimen name="Line Chart">
+            <div className="max-w-130">
+              <LineChart
+                title="Flights per weekday"
+                unit="flights"
+                points={[
+                  { label: "Mon", count: 19 },
+                  { label: "Tue", count: 15 },
+                  { label: "Wed", count: 17 },
+                  { label: "Thu", count: 14 },
+                  { label: "Fri", count: 18 },
+                  { label: "Sat", count: 16 },
+                  { label: "Sun", count: 24 },
+                ]}
+              />
+            </div>
           </Specimen>
         </Group>
       </main>
