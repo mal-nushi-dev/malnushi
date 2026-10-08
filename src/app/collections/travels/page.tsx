@@ -4,6 +4,7 @@ import { count } from "@/components/charts/format";
 import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
 import { Eyebrow } from "@/components/eyebrow";
+import { FlightMap } from "@/components/flight-map";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
 import { Nav } from "@/components/nav";
@@ -82,6 +83,10 @@ export default async function TravelsPage() {
           <h1 className="type-h1">{collection.title}</h1>
           <p className="type-standfirst max-w-150 text-ink-2">{collection.summary}</p>
         </header>
+
+        <div className="page pt-(--space-2xl)">
+          <FlightMap airports={stats.map.airports} routes={stats.map.routes} />
+        </div>
 
         <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
           <SectionLabel>In numbers</SectionLabel>
