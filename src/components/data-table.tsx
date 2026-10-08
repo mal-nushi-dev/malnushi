@@ -40,10 +40,13 @@ export function DataTable<Row extends Record<string, unknown>>({
   caption,
   columns,
   rows,
+  rowId,
 }: {
   caption: string;
   columns: Column<Row>[];
   rows: Row[];
+  /** The field that is each row's `id`, so a link can point at the row. */
+  rowId?: keyof Row & string;
 }) {
   const last = columns.length - 1;
   return (
@@ -72,7 +75,11 @@ export function DataTable<Row extends Record<string, unknown>>({
       </thead>
       <tbody>
         {rows.map((row, r) => (
-          <tr key={r} className="border-b border-line">
+          <tr
+            key={r}
+            id={rowId ? String(row[rowId]) : undefined}
+            className="scroll-mt-40 border-b border-line target:bg-surface"
+          >
             {columns.map((c, i) => (
               <td
                 key={c.key}

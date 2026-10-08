@@ -2,10 +2,9 @@ import { axisTop, count } from "./format";
 
 export type Point = { label: string; count: number };
 
-const width = 520;
 const height = 220;
 // Room for the numbers up the side and the labels along the bottom.
-const plot = { left: 36, right: 12, top: 16, bottom: 32 };
+const plot = { left: 36, right: 16, top: 28, bottom: 32 };
 const steps = 4;
 
 /**
@@ -19,6 +18,7 @@ export function LineChart({
   points,
   unit,
   every = 1,
+  width = 520,
 }: {
   title: string;
   points: Point[];
@@ -26,6 +26,8 @@ export function LineChart({
   unit: string;
   /** Label every nth point along the bottom, for a long run of years. */
   every?: number;
+  /** The drawing's width in its own units: wider for a chart across the page. */
+  width?: number;
 }) {
   const top = axisTop(Math.max(...points.map((p) => p.count), 0), steps);
   const inner = { width: width - plot.left - plot.right, height: height - plot.top - plot.bottom };
