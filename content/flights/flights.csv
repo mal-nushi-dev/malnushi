@@ -1,0 +1,124 @@
+Date,From,To,Duration,Airline,Aircraft,Seat type,Flight class,Flight reason
+2005-12-01,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Vienna / Schwechat (VIE/LOWW),17:55:00, (/), (),0,1,0
+2005-12-02,Vienna / Schwechat (VIE/LOWW),Pristina / Pristina (PRN/BKPR),01:12:00, (/), (),0,1,0
+2006-01-05,Pristina / Pristina (PRN/BKPR),Vienna / Schwechat (VIE/LOWW),01:12:00, (/), (),0,1,0
+2006-01-06,Vienna / Schwechat (VIE/LOWW),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),10:05:00, (/), (),0,1,0
+2008-08-20,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Cancun / Cancun (CUN/MMUN),03:27:00, (/), (),0,1,0
+2008-08-25,Cancun / Cancun (CUN/MMUN),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),03:27:00, (/), (),0,1,0
+2009-08-20,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Cancun / Cancun (CUN/MMUN),03:27:00, (/), (),0,1,0
+2009-12-20,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Vienna / Schwechat (VIE/LOWW),10:05:00, (/), (),0,1,0
+2009-12-21,Vienna / Schwechat (VIE/LOWW),Pristina / Pristina (PRN/BKPR),01:12:00, (/), (),0,1,0
+2010-01-05,Pristina / Pristina (PRN/BKPR),Vienna / Schwechat (VIE/LOWW),01:12:00, (/), (),0,1,0
+2010-01-05,Vienna / Schwechat (VIE/LOWW),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),10:05:00, (/), (),0,1,0
+2014-04-01,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Orlando / Orlando (MCO/KMCO),02:20:00, (/), (),0,1,0
+2014-04-05,Orlando / Orlando (MCO/KMCO),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:20:00, (/), (),0,1,0
+2016-06-01,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Chicago / O'Hare (ORD/KORD),00:45:00, (/), (),0,1,0
+2016-06-02,Chicago / O'Hare (ORD/KORD),Zurich / Kloten (ZRH/LSZH),09:53:00, (/), (),2,1,1
+2016-06-02,Zurich / Kloten (ZRH/LSZH),Pristina / Pristina (PRN/BKPR),01:45:00, (/), (),0,1,0
+2016-06-17,Pristina / Pristina (PRN/BKPR),Vienna / Schwechat (VIE/LOWW),01:12:00, (/), (),0,1,0
+2016-06-18,Vienna / Schwechat (VIE/LOWW),Chicago / O'Hare (ORD/KORD),10:28:00, (/), (),0,1,0
+2017-04-01,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Orlando / Orlando (MCO/KMCO),02:20:00, (/), (),1,1,1
+2017-04-05,Orlando / Orlando (MCO/KMCO),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:20:00, (/), (),0,1,0
+2019-09-06,Boston / Logan (BOS/KBOS),London / Heathrow (LHR/EGLL),06:29:00,Delta Air Lines (DL/DAL),Boeing 767-400 (B764),0,1,1
+2019-09-06,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Boston / Logan (BOS/KBOS),01:58:00,Delta Air Lines (DL/DAL),Boeing 737-900 (B739),0,1,1
+2019-09-11,London / Heathrow (LHR/EGLL),Boston / Logan (BOS/KBOS),07:41:00,Delta Air Lines (DL/DAL),Boeing 767-300 (B763),0,1,1
+2019-08-25,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Tampa / Tampa (TPA/KTPA),02:23:00,Delta Air Lines (DL/DAL),Airbus A320 (A320),0,1,1
+2019-09-01,Tampa / Tampa (TPA/KTPA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:23:00,Delta Air Lines (DL/DAL),Boeing 737-900 (B739),0,1,1
+2019-09-11,Boston / Logan (BOS/KBOS),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:11:00,Delta Air Lines (DL/DAL),Boeing 737-900 (B739),0,1,1
+2020-10-02,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Fort Lauderdale / Hollywood (FLL/KFLL),02:42:00,Spirit Airlines (NK/NKS),Airbus A319 (A319),3,1,1
+2020-10-06,Fort Lauderdale / Hollywood (FLL/KFLL),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:42:00, (/), (),0,1,0
+2021-03-02,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Cancun / Cancun (CUN/MMUN),03:52:00,Delta Air Lines (DL/DAL),Boeing 757 (B757),3,1,1
+2021-03-05,Cancun / Cancun (CUN/MMUN),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),03:48:00,Delta Air Lines (DL/DAL),Boeing 757 (B757),3,1,1
+2021-06-03,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Miami / Miami International (MIA/KMIA),02:44:00,Delta Air Lines (DL/DAL),Boeing 737-900 (B739),3,1,1
+2021-06-08,Miami / Miami International (MIA/KMIA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:44:00,Delta Air Lines (DL/DAL),Airbus A321 (A321),3,1,1
+2021-07-29,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Chicago / O'Hare (ORD/KORD),01:18:00,United Airlines (UA/UAL),Bombardier CRJ-550 (CRJ7),1,1,1
+2021-07-29,Chicago / O'Hare (ORD/KORD),Vienna / Schwechat (VIE/LOWW),09:05:00,Austrian Airlines (OS/AUA),Boeing 777-200 (B772),3,1,1
+2021-07-30,Vienna / Schwechat (VIE/LOWW),Pristina / Pristina (PRN/BKPR),01:40:00,Austrian Airlines (OS/AUA),Airbus A321 (A321),1,1,1
+2021-08-22,Pristina / Pristina (PRN/BKPR),Vienna / Schwechat (VIE/LOWW),01:40:00,Austrian Airlines (OS/AUA),Airbus A321 (A321),0,1,1
+2021-08-22,Vienna / Schwechat (VIE/LOWW),Chicago / O'Hare (ORD/KORD),10:00:00,Austrian Airlines (OS/AUA),Boeing 777-200 (B772),2,3,1
+2021-08-22,Chicago / O'Hare (ORD/KORD),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:20:00,United Airlines (UA/UAL),Bombardier CRJ-700 (CRJ7),0,1,1
+2021-07-15,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Denver / Denver (DEN/KDEN),03:05:00,Spirit Airlines (NK/NKS),Airbus A321 (A321),3,1,1
+2021-07-19,Denver / Denver (DEN/KDEN),Las Vegas / McCarran (LAS/KLAS),01:58:00,Frontier Airlines (F9/FFT),Airbus A321-200 (A321),0,1,1
+2021-07-21,Las Vegas / McCarran (LAS/KLAS),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),04:00:00,Frontier Airlines (F9/FFT),Airbus A320neo (A20N),0,1,1
+2013-06-13,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Frankfurt am Main / Frankfurt (FRA/EDDF),08:05:00,Lufthansa (LH/DLH),Airbus A330-300 (A333),0,0,1
+2013-06-14,Frankfurt am Main / Frankfurt (FRA/EDDF),Munich / Franz Josef Strauss (MUC/EDDM),01:10:00,Lufthansa (LH/DLH),Airbus A321 (A321),0,0,1
+2013-06-14,Munich / Franz Josef Strauss (MUC/EDDM),Pristina / Pristina (PRN/BKPR),01:55:00,Adria Airways (JP/ADR),Airbus A319 (A319),0,1,1
+2013-08-13,Pristina / Pristina (PRN/BKPR),Frankfurt am Main / Frankfurt (FRA/EDDF),02:30:00,Adria Airways (JP/ADR),Airbus A319 (A319),0,1,1
+2013-08-13,Frankfurt am Main / Frankfurt (FRA/EDDF),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),09:15:00,Lufthansa (LH/DLH),Airbus A330-300 (A333),0,1,1
+2013-12-21,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Washington / Dulles (IAD/KIAD),01:33:00,United Airlines (UA/UAL),Bombardier CRJ-700 (CRJ7),0,1,1
+2013-12-21,Washington / Dulles (IAD/KIAD),Frankfurt am Main / Frankfurt (FRA/EDDF),07:45:00,Lufthansa (LH/DLH),Boeing 787 Dreamliner (B787),0,1,1
+2013-12-22,Frankfurt am Main / Frankfurt (FRA/EDDF),Pristina / Pristina (PRN/BKPR),02:15:00,Lufthansa (LH/DLH),Airbus A319 (A319),0,1,1
+2014-01-08,Pristina / Pristina (PRN/BKPR),Frankfurt am Main / Frankfurt (FRA/EDDF),02:30:00,Adria Airways (JP/ADR),Airbus A319 (A319),0,1,1
+2014-01-08,Frankfurt am Main / Frankfurt (FRA/EDDF),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),09:15:00,Lufthansa (LH/DLH),Airbus A330-300 (A333),0,1,1
+2017-08-13,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Atlanta / Hartsfield-Jackson (ATL/KATL),01:36:00,Delta Air Lines (DL/DAL),Airbus A321 (A321),0,1,1
+2017-08-13,Atlanta / Hartsfield-Jackson (ATL/KATL),Higuey / Punta Cana (PUJ/MDPC),03:29:00,Delta Air Lines (DL/DAL),Airbus A321 (A321),0,1,1
+2017-08-20,Higuey / Punta Cana (PUJ/MDPC),Atlanta / Hartsfield-Jackson (ATL/KATL),03:43:00,Delta Air Lines (DL/DAL),Boeing 757-300 (B753),0,1,1
+2017-08-20,Atlanta / Hartsfield-Jackson (ATL/KATL),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:59:00,Delta Air Lines (DL/DAL),Airbus A321-200 (A321),0,1,1
+2022-01-14,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),New York / La Guardia (LGA/KLGA),01:46:00,Spirit Airlines (NK/NKS),Airbus A320neo (A20N),1,1,1
+2022-01-17,New York / La Guardia (LGA/KLGA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:05:00,Spirit Airlines (NK/NKS),Airbus A320neo (A20N),0,1,1
+2022-05-04,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Newark / Liberty International (EWR/KEWR),16:14:00,Republic Airways (/RPA),Embraer ERJ-170 (E170),1,1,1
+2022-05-04,Newark / Liberty International (EWR/KEWR),Rome / Leonardo da Vinci-Fiumicino (FCO/LIRF),08:05:00,United Airlines (UA/UAL),Boeing 777-300ER (B77W),0,1,1
+2022-05-09,Rome / Ciampino (CIA/LIRA),Berlin / Brandenburg (BER/EDDB),02:10:00,Ryanair (FR/RYR),Boeing 737-800 (B738),2,1,1
+2022-05-29,Glasgow / Glasgow (GLA/EGPF),Dublin / Dublin (DUB/EIDW),01:00:00,Ryanair (FR/RYR),Boeing 737 MAX 8 (B38M),3,1,1
+2022-05-23,Paris / Charles de Gaulle (CDG/LFPG),Glasgow / Glasgow (GLA/EGPF),01:50:00,Easyjet (U2/EZY),Airbus A320 (A320),2,1,1
+2022-05-15,Berlin / Brandenburg (BER/EDDB),Amsterdam / Schiphol (AMS/EHAM),01:30:00,Easyjet (U2/EZY),Airbus A319 (A319),2,1,1
+2022-06-04,Dublin / Dublin (DUB/EIDW),Chicago / O'Hare (ORD/KORD),08:35:00,United Airlines (UA/UAL),Boeing 757-200 (B752),1,1,1
+2022-06-04,Chicago / O'Hare (ORD/KORD),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:25:00,United Airlines (UA/UAL), (),1,1,1
+2022-06-23,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),New York / John F Kennedy (JFK/KJFK),01:50:00,JetBlue Airways (B6/JBU),Airbus A320-200 (A320),0,1,1
+2022-06-27,New York / John F Kennedy (JFK/KJFK),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:00:00,JetBlue Airways (B6/JBU),Airbus A320-200 (A320),1,1,1
+2022-12-24,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Washington / Dulles (IAD/KIAD),01:25:00,United Airlines (UA/UAL),Boeing 737-800 (B738),3,1,1
+2022-12-24,Washington / Dulles (IAD/KIAD),Vienna / Schwechat (VIE/LOWW),08:40:00,Austrian Airlines (OS/AUA),Boeing 767-300 (B763),0,1,1
+2022-12-25,Vienna / Schwechat (VIE/LOWW),Pristina / Pristina (PRN/BKPR),01:35:00,Austrian Airlines (OS/AUA),Airbus A321 (A321),0,1,1
+2023-01-09,Pristina / Pristina (PRN/BKPR),Zurich / Kloten (ZRH/LSZH),02:10:00,Edelweiss Air (8R/EDW),Airbus A320 (A320),1,1,1
+2023-01-09,Zurich / Kloten (ZRH/LSZH),Chicago / O'Hare (ORD/KORD),10:05:00,Swiss International Airlines (LX/SWR),Airbus A330-300 (A333),3,1,1
+2023-01-09,Chicago / O'Hare (ORD/KORD),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:29:00,United Airlines (UA/UAL),Airbus A320 (A320),1,1,1
+2023-06-19,Washington / Dulles (IAD/KIAD),London / Heathrow (LHR/EGLL),07:30:00,Virgin Atlantic (VS/VIR),Airbus A330-300 (A333),3,1,1
+2023-06-20,London / Heathrow (LHR/EGLL),Nice / Nice Cote D'Azur (NCE/LFMN),02:00:00,Air France (AF/AFR),Airbus A319 (A319),3,1,1
+2023-06-26,Nice / Nice Cote D'Azur (NCE/LFMN),Paris / Charles de Gaulle (CDG/LFPG),01:40:00,Air France (AF/AFR),Airbus A320 (A320),3,1,1
+2023-06-26,Paris / Charles de Gaulle (CDG/LFPG),Washington / Dulles (IAD/KIAD),08:25:00,Air France (AF/AFR),Boeing 777-300 (B773),3,1,1
+2023-08-27,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),San Francisco / San Francisco International (SFO/KSFO),06:00:00,Frontier Airlines (F9/FFT),Airbus A320neo (A20N),0,1,1
+2023-06-26,Washington / Washington National (DCA/KDCA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:44:00,American Eagle Airlines (MQ/EGF),Embraer 175 (E75L),1,1,1
+2023-06-17,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Washington / Washington National (DCA/KDCA),01:38:00,American Airlines (AA/AAL),Embraer 175 (E75S),0,1,1
+2023-09-16,San Francisco / San Francisco International (SFO/KSFO),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),04:39:00,Frontier Airlines (F9/FFT),Airbus A321neo (A21N),3,1,1
+2023-11-17,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Newark / Liberty International (EWR/KEWR),01:48:00,Spirit Airlines (NK/NKS),Airbus A320 (A320),0,1,1
+2023-11-19,Newark / Liberty International (EWR/KEWR),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:00:00,Spirit Airlines (NK/NKS),Airbus A321 (A321),0,1,1
+2023-12-14,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Washington / Washington National (DCA/KDCA),01:37:00,American Airlines (AA/AAL),Bombardier CRJ-700 (CRJ7),1,1,1
+2023-12-18,Washington / Washington National (DCA/KDCA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:49:00,American Airlines (AA/AAL),Bombardier CRJ-700 (CRJ7),3,1,1
+2024-02-15,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Washington / Dulles (IAD/KIAD),01:25:00,Delta Air Lines (DL/DAL),Boeing 717-200 (B712),3,1,1
+2024-02-20,Washington / Dulles (IAD/KIAD),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:38:00,Delta Air Lines (DL/DAL),Boeing 717-200 (B712),1,1,1
+2024-03-15,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Frankfurt am Main / Frankfurt (FRA/EDDF),06:40:00,Lufthansa (LH/DLH),Boeing 787-9 (B789),1,1,1
+2024-03-16,Frankfurt am Main / Frankfurt (FRA/EDDF),Leipzig Halle / Schkeuditz (LEJ/EDDP),01:00:00,Lufthansa (LH/DLH),Bombardier CRJ-900 (CRJ9),3,1,1
+2024-03-24,Leipzig Halle / Schkeuditz (LEJ/EDDP),Frankfurt am Main / Frankfurt (FRA/EDDF),01:00:00,Lufthansa (LH/DLH),Airbus A319 (A319),1,1,1
+2024-03-24,Frankfurt am Main / Frankfurt (FRA/EDDF),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),09:10:00,Lufthansa (LH/DLH),Boeing 787-9 (B789),1,1,1
+2024-06-12,Charlotte / Douglas (CLT/KCLT),New York / La Guardia (LGA/KLGA),01:52:00,Spirit Airlines (NK/NKS),Airbus A321 (A321),2,1,1
+2024-06-22,New York / La Guardia (LGA/KLGA),Charlotte / Douglas (CLT/KCLT),02:03:00,Spirit Airlines (NK/NKS),Airbus A321 (A321),0,1,1
+2024-06-12,New York / La Guardia (LGA/KLGA),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:03:00,Spirit Airlines (NK/NKS),Airbus A320neo (A20N),3,1,1
+2024-06-22,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),New York / La Guardia (LGA/KLGA),01:46:00,Spirit Airlines (NK/NKS), (),0,1,1
+2024-07-01,Charlotte / Douglas (CLT/KCLT),Denver / Denver (DEN/KDEN),03:35:00,American Airlines (AA/AAL),Airbus A321-200 (A321),0,1,1
+2024-07-08,Denver / Denver (DEN/KDEN),Charlotte / Douglas (CLT/KCLT),03:25:00,American Airlines (AA/AAL),Airbus A321-200 (A321),0,1,1
+2024-07-25,Charlotte / Douglas (CLT/KCLT),Newark / Liberty International (EWR/KEWR),01:49:00,American Airlines (AA/AAL),Boeing 737-800 (B738),3,1,1
+2024-07-28,Newark / Liberty International (EWR/KEWR),Charlotte / Douglas (CLT/KCLT),02:04:00,American Airlines (AA/AAL),Boeing 737-800 (B738),0,1,1
+2024-08-24,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:48:00,American Airlines (AA/AAL),Boeing 737-800 (B738),3,1,1
+2024-09-10,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:53:00,American Airlines (AA/AAL),Airbus A321-200 (A321),1,3,1
+2024-09-20,Charlotte / Douglas (CLT/KCLT),New York / La Guardia (LGA/KLGA),01:55:00,Delta Air Lines (DL/DAL),Bombardier CRJ-900 (CRJ9),1,3,1
+2024-09-22,New York / La Guardia (LGA/KLGA),Charlotte / Douglas (CLT/KCLT),02:08:00,Delta Air Lines (DL/DAL),Bombardier CRJ-900 (CRJ9),1,3,1
+2024-11-27,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:48:00,Delta Air Lines (DL/DAL), (),0,1,1
+2024-12-08,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:50:00,Delta Air Lines (DL/DAL), (),0,1,1
+2025-04-08,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),02:47:00,American Airlines (AA/AAL),Boeing 737-800 (B738),0,1,1
+2025-04-15,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:56:00,American Airlines (AA/AAL),Boeing 737-800 (B738),0,1,1
+2025-08-01,Charlotte / Douglas (CLT/KCLT),Newark / Liberty International (EWR/KEWR),01:56:00,United Airlines (UA/UAL),Boeing 737 MAX 8 (B38M),2,1,1
+2025-08-04,New York / La Guardia (LGA/KLGA),Charlotte / Douglas (CLT/KCLT),02:26:00,Delta Air Lines (DL/DAL),Bombardier CRJ-900 (CRJ9),0,1,1
+2025-10-15,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:53:00,American Airlines (AA/AAL),Boeing 737-800 (B738),3,1,1
+2025-10-21,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:55:00,American Airlines (AA/AAL),Boeing 737-800 (B738),3,1,1
+2025-11-26,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:56:00, (/), (),0,1,1
+2025-11-30,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:52:00,Spirit Airlines (NK/NKS), (),0,1,1
+2026-04-24,Charlotte / Douglas (CLT/KCLT),Cancun / Cancun (CUN/MMUN),03:15:00,American Airlines (AA/AAL),Airbus A321-200 (A321),0,1,1
+2026-04-27,Cancun / Cancun (CUN/MMUN),Charlotte / Douglas (CLT/KCLT),03:06:00, (/), (),3,1,1
+2026-06-06,Charlotte / Douglas (CLT/KCLT),New York / La Guardia (LGA/KLGA),01:57:00,Delta Air Lines (DL/DAL),Embraer ERJ-170 (E170),1,1,1
+2026-06-07,New York / John F Kennedy (JFK/KJFK),Charlotte / Douglas (CLT/KCLT),02:31:00,Delta Air Lines (DL/DAL),Bombardier CRJ-900 (CRJ9),0,1,1
+2026-06-19,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:45:00,Delta Air Lines (DL/DAL), (),0,1,1
+2026-06-30,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:49:00,Delta Air Lines (DL/DAL),Boeing 717-200 (B712),3,1,1
+2026-08-12,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:45:00,American Airlines (AA/AAL),Airbus A319 (A319),3,1,1
+2026-08-16,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:54:00,American Airlines (AA/AAL),Airbus A319 (A319),3,1,1
+2026-09-04,Charlotte / Douglas (CLT/KCLT),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:47:00,American Airlines (AA/AAL),Airbus A319neo (A19N),0,1,1
+2026-09-09,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Charlotte / Douglas (CLT/KCLT),01:50:00,American Airlines (AA/AAL),Airbus A319neo (A19N),0,1,1

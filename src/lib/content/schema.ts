@@ -262,6 +262,76 @@ export const recommendationData = z.strictObject({
   draft,
 });
 
+/** Where an airport is, as scripts/flights.mjs writes it to flights/airports.json. */
+export const airportPlace = z.strictObject({
+  lat: z.number().min(-90).max(90),
+  lon: z.number().min(-180).max(180),
+  /** ISO 3166-1 alpha-2. */
+  countryCode: z.string().length(2),
+  country: z.string().min(1),
+  continent: z.enum([
+    "Africa",
+    "Antarctica",
+    "Asia",
+    "Europe",
+    "North America",
+    "Oceania",
+    "South America",
+  ]),
+});
+
+export const airportsFile = z.record(z.string().regex(/^[A-Z0-9]{4}$/), airportPlace);
+
+/** How my.flightradar24.com numbers its choices. 0 is "not recorded". */
+export const seats = { 1: "Window", 2: "Middle", 3: "Aisle" } as const;
+export const cabins = {
+  1: "Economy",
+  2: "Business",
+  3: "First",
+  4: "Economy+",
+  5: "Private",
+} as const;
+export const reasons = { 1: "Leisure", 2: "Business", 3: "Crew", 4: "Other" } as const;
+
+const code = (max: number) =>
+  z.string().regex(new RegExp(`^[0-${max}]$`), `use a number from 0 to ${max}`);
+
+/** One row of flights/flights.csv, as the export writes it. */
+export const flightRow = z.strictObject({
+  Date: day,
+  From: z.string().regex(/\([A-Z0-9]*\/[A-Z0-9]{4}\)\s*$/, 'use "City / Airport (IATA/ICAO)"'),
+  To: z.string().regex(/\([A-Z0-9]*\/[A-Z0-9]{4}\)\s*$/, 'use "City / Airport (IATA/ICAO)"'),
+  Duration: z.string().regex(/^\d{2}:[0-5]\d:[0-5]\d$/, "use HH:MM:SS"),
+  Airline: z.string(),
+  Aircraft: z.string(),
+  "Seat type": code(3),
+  "Flight class": code(5),
+  "Flight reason": code(4),
+});
+
+export type Airport = z.infer<typeof airportPlace> & {
+  /** Three letters, when it has them. */
+  iata?: string;
+  icao: string;
+  city: string;
+  name: string;
+};
+
+/** One flight taken. Distance is worked out from the two airports. */
+export type FlightData = {
+  from: Airport;
+  to: Airport;
+  /** Along the great circle. */
+  km: number;
+  /** In the air, gate to gate as the diary has it. 0 when it has none. */
+  minutes: number;
+  airline?: string;
+  aircraft?: string;
+  seat?: (typeof seats)[keyof typeof seats];
+  cabin?: (typeof cabins)[keyof typeof cabins];
+  reason?: (typeof reasons)[keyof typeof reasons];
+};
+
 const cell = z.union([z.string(), z.number()]);
 
 /**
@@ -296,7 +366,7 @@ export const collectionFile = z
       )
       .default([]),
     /** The kind whose entries are the rows, instead of `items`. */
-    from: z.enum(["sighting", "recommendation"]).optional(),
+    from: z.enum(["sighting", "recommendation", "flight"]).optional(),
     /** With `from`: one row for each value of this field, the earliest. */
     unique: z.string().optional(),
     draft,
@@ -391,6 +461,7 @@ export type TrackEntry = Of<"track", TrackData>;
 export type AlbumEntry = Of<"album", AlbumData>;
 export type SightingEntry = Of<"sighting", SightingData>;
 export type RecommendationEntry = Of<"recommendation", RecommendationData>;
+export type FlightEntry = Of<"flight", FlightData>;
 export type ProjectEntry = Of<"project", ProjectData>;
 export type CollectionEntry = Of<"collection", CollectionData>;
 export type ItemEntry = Of<"item", ItemData>;
@@ -405,6 +476,7 @@ export type Entry =
   | AlbumEntry
   | SightingEntry
   | RecommendationEntry
+  | FlightEntry
   | ProjectEntry
   | CollectionEntry
   | ItemEntry;

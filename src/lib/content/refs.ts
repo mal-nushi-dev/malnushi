@@ -15,6 +15,7 @@ export const kinds = [
   "album",
   "sighting",
   "recommendation",
+  "flight",
   "collection",
   "item",
 ] as const;
@@ -34,12 +35,19 @@ export const refPattern = new RegExp(
  * Kinds without a page of their own. Their address is somewhere on another
  * page, so two of them never compete for one.
  */
-export const pageless: readonly Kind[] = ["post-series", "sighting", "recommendation", "item"];
+export const pageless: readonly Kind[] = [
+  "post-series",
+  "sighting",
+  "recommendation",
+  "flight",
+  "item",
+];
 
 /** The collection whose page an observation is read on. */
 export const homes = {
   sighting: "life-list",
   recommendation: "recommendations",
+  flight: "travels",
 } as const satisfies Partial<Record<Kind, string>>;
 
 export function toRef(kind: Kind, id: string) {
@@ -53,8 +61,8 @@ export function parseRef(ref: string): { kind: Kind; id: string } | null {
 }
 
 /**
- * Where an entry lives. A collection row, a sighting or a recommendation has
- * no page: it is an anchor on its collection's page.
+ * Where an entry lives. A collection row, a sighting, a recommendation or a
+ * flight has no page: it is an anchor on its collection's table.
  */
 export function urlFor(kind: Kind, id: string) {
   switch (kind) {
@@ -76,6 +84,9 @@ export function urlFor(kind: Kind, id: string) {
     case "sighting":
     case "recommendation":
       return `/collections/${homes[kind]}#${id}`;
+    case "flight":
+      // The travels page is a map, so its table is one level down.
+      return `/collections/${homes[kind]}/log#${id}`;
     case "collection":
       return `/collections/${id}`;
     case "item": {

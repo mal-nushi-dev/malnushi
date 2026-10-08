@@ -124,7 +124,24 @@ export const valid = {
 export type Written = keyof typeof valid;
 export const written = Object.keys(valid) as Written[];
 
-/** The kinds that are not a file with frontmatter: a photograph and two collections. */
+/** Two flights, out and back, as scripts/flights.mjs writes them. */
+export const flights = {
+  csv: [
+    "Date,From,To,Duration,Airline,Aircraft,Seat type,Flight class,Flight reason",
+    "2026-01-10,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Vienna / Schwechat (VIE/LOWW),08:40:00,Delta Air Lines (DL/DAL),Airbus A330-300 (A333),1,1,1",
+    "2026-01-20,Vienna / Schwechat (VIE/LOWW),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),10:05:00, (/), (),0,0,0",
+    "",
+  ].join("\n"),
+  airports: {
+    KDTW: { lat: 42.2138, lon: -83.3538, countryCode: "US", country: "United States", continent: "North America" },
+    LOWW: { lat: 48.1103, lon: 16.5697, countryCode: "AT", country: "Austria", continent: "Europe" },
+  },
+};
+
+/**
+ * The kinds that are not a file with frontmatter: a photograph, two flights
+ * and the collections.
+ */
 const support: Files = {
   "photos/2026-01-01-pic.jpg": jpeg(0xc2, 300, 200),
   "photos/2026-01-01-pic.yml": stringify({ alt: "A picture.", date: "2026-01-01" }),
@@ -133,6 +150,13 @@ const support: Files = {
     from: "sighting",
     unique: "species",
     columns: [{ key: "species", label: "Species" }],
+  }),
+  "flights/flights.csv": flights.csv,
+  "flights/airports.json": JSON.stringify(flights.airports),
+  "collections/travels.yml": stringify({
+    title: "Travels",
+    from: "flight",
+    columns: [{ key: "from", label: "From" }],
   }),
   "collections/shelf.yml": stringify({
     title: "Shelf",

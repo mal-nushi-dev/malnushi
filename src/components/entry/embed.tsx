@@ -68,6 +68,7 @@ export async function Embed({
     case "item":
     case "sighting":
     case "recommendation":
+    case "flight":
       return (
         <div className="border-y border-line py-(--space-md)">
           <ItemSummary

@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "test:visual": "VISUAL=1 playwright test",
     "test:visual:update": "VISUAL=1 playwright test --update-snapshots",
-    "analyze": "next experimental-analyze"
+    "analyze": "next experimental-analyze",
+    "flights": "node scripts/flights.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

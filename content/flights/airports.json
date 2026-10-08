@@ -1,0 +1,240 @@
+{
+  "BKPR": {
+    "lat": 42.5728,
+    "lon": 21.0358,
+    "countryCode": "XK",
+    "country": "Kosovo",
+    "continent": "Europe"
+  },
+  "EDDB": {
+    "lat": 52.3617,
+    "lon": 13.5023,
+    "countryCode": "DE",
+    "country": "Germany",
+    "continent": "Europe"
+  },
+  "EDDF": {
+    "lat": 50.0267,
+    "lon": 8.5584,
+    "countryCode": "DE",
+    "country": "Germany",
+    "continent": "Europe"
+  },
+  "EDDM": {
+    "lat": 48.3538,
+    "lon": 11.7861,
+    "countryCode": "DE",
+    "country": "Germany",
+    "continent": "Europe"
+  },
+  "EDDP": {
+    "lat": 51.4207,
+    "lon": 12.2327,
+    "countryCode": "DE",
+    "country": "Germany",
+    "continent": "Europe"
+  },
+  "EGLL": {
+    "lat": 51.4707,
+    "lon": -0.4599,
+    "countryCode": "GB",
+    "country": "United Kingdom",
+    "continent": "Europe"
+  },
+  "EGPF": {
+    "lat": 55.8719,
+    "lon": -4.4331,
+    "countryCode": "GB",
+    "country": "United Kingdom",
+    "continent": "Europe"
+  },
+  "EHAM": {
+    "lat": 52.3086,
+    "lon": 4.7639,
+    "countryCode": "NL",
+    "country": "Netherlands",
+    "continent": "Europe"
+  },
+  "EIDW": {
+    "lat": 53.4287,
+    "lon": -6.2621,
+    "countryCode": "IE",
+    "country": "Ireland",
+    "continent": "Europe"
+  },
+  "KATL": {
+    "lat": 33.6367,
+    "lon": -84.4281,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KBOS": {
+    "lat": 42.362,
+    "lon": -71.0079,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KCLT": {
+    "lat": 35.214,
+    "lon": -80.9431,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KDCA": {
+    "lat": 38.8521,
+    "lon": -77.0377,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KDEN": {
+    "lat": 39.86,
+    "lon": -104.6738,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KDTW": {
+    "lat": 42.2138,
+    "lon": -83.3538,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KEWR": {
+    "lat": 40.6894,
+    "lon": -74.1705,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KFLL": {
+    "lat": 26.0726,
+    "lon": -80.1527,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KIAD": {
+    "lat": 38.9445,
+    "lon": -77.4558,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KJFK": {
+    "lat": 40.6394,
+    "lon": -73.7793,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KLAS": {
+    "lat": 36.0834,
+    "lon": -115.1518,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KLGA": {
+    "lat": 40.7772,
+    "lon": -73.8726,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KMCO": {
+    "lat": 28.4294,
+    "lon": -81.309,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KMIA": {
+    "lat": 25.796,
+    "lon": -80.2898,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KORD": {
+    "lat": 41.9786,
+    "lon": -87.9048,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KSFO": {
+    "lat": 37.6198,
+    "lon": -122.3748,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "KTPA": {
+    "lat": 27.9755,
+    "lon": -82.5332,
+    "countryCode": "US",
+    "country": "United States",
+    "continent": "North America"
+  },
+  "LFMN": {
+    "lat": 43.6584,
+    "lon": 7.2159,
+    "countryCode": "FR",
+    "country": "France",
+    "continent": "Europe"
+  },
+  "LFPG": {
+    "lat": 49.009,
+    "lon": 2.5541,
+    "countryCode": "FR",
+    "country": "France",
+    "continent": "Europe"
+  },
+  "LIRA": {
+    "lat": 41.7988,
+    "lon": 12.5953,
+    "countryCode": "IT",
+    "country": "Italy",
+    "continent": "Europe"
+  },
+  "LIRF": {
+    "lat": 41.8045,
+    "lon": 12.252,
+    "countryCode": "IT",
+    "country": "Italy",
+    "continent": "Europe"
+  },
+  "LOWW": {
+    "lat": 48.1103,
+    "lon": 16.5697,
+    "countryCode": "AT",
+    "country": "Austria",
+    "continent": "Europe"
+  },
+  "LSZH": {
+    "lat": 47.4581,
+    "lon": 8.5481,
+    "countryCode": "CH",
+    "country": "Switzerland",
+    "continent": "Europe"
+  },
+  "MDPC": {
+    "lat": 18.5671,
+    "lon": -68.3646,
+    "countryCode": "DO",
+    "country": "Dominican Republic",
+    "continent": "North America"
+  },
+  "MMUN": {
+    "lat": 21.0408,
+    "lon": -86.8735,
+    "countryCode": "MX",
+    "country": "Mexico",
+    "continent": "North America"
+  }
+}

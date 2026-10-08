@@ -1,0 +1,7 @@
+Date,From,To,Duration,Airline,Aircraft,Seat type,Flight class,Flight reason
+2024-03-01,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),Vienna / Schwechat (VIE/LOWW),08:40:00,Delta Air Lines (DL/DAL),Airbus A330-300 (A333),1,1,1
+2024-03-02,Vienna / Schwechat (VIE/LOWW),Pristina / Pristina (PRN/BKPR),01:12:00,Austrian Airlines (OS/AUA),Airbus A320 (A320),3,1,1
+2024-03-20,Pristina / Pristina (PRN/BKPR),Vienna / Schwechat (VIE/LOWW),01:12:00,Austrian Airlines (OS/AUA),Airbus A320 (A320),0,1,0
+2024-03-20,Vienna / Schwechat (VIE/LOWW),Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),10:05:00, (/), (),2,3,2
+2025-06-10,Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),"Chicago / O'Hare (ORD/KORD)",01:20:00,American Airlines (AA/AAL),Embraer 175 (E75L),1,4,1
+2025-06-12,"Chicago / O'Hare (ORD/KORD)",Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW),01:15:00,American Airlines (AA/AAL),Embraer 175 (E75L),3,1,1

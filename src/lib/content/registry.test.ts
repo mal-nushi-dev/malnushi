@@ -18,10 +18,10 @@ describe("the registry", () => {
     for (const kind of declared) expect(kinds).toContain(kind);
   });
 
-  it("leaves only photographs, collections and their rows to the loader's own code", () => {
+  it("leaves only photographs, flights, collections and their rows to the loader's own code", () => {
     const declared = definitions.map((d) => d.kind);
-    expect(kinds.filter((k) => !declared.includes(k))).toEqual(["photo", "collection", "item"]);
-    for (const folder of ["photos", "collections"]) {
+    expect(kinds.filter((k) => !declared.includes(k))).toEqual(["photo", "flight", "collection", "item"]);
+    for (const folder of ["photos", "flights", "collections"]) {
       expect(definitions.map((d) => d.folder)).not.toContain(folder);
     }
   });
@@ -44,6 +44,8 @@ describe("the registry", () => {
     for (const kind of ["sighting", "recommendation"] as const) {
       expect(urlFor(kind, "an-id")).toMatch(/^\/collections\/[a-z-]+#an-id$/);
     }
+    // A flight is a row of the table under the travels page.
+    expect(urlFor("flight", "an-id")).toBe("/collections/travels/log#an-id");
   });
 });
 

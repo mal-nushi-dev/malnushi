@@ -38,6 +38,7 @@ const kindLabels: Record<Kind, string> = {
   album: "Album",
   sighting: "Sighting",
   recommendation: "Recommendation",
+  flight: "Flight",
   collection: "Collection",
   item: "Collection",
 };

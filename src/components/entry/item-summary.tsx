@@ -1,6 +1,7 @@
 import {
   fieldOf,
   type CollectionEntry,
+  type FlightEntry,
   type ItemEntry,
   type RecommendationEntry,
   type SightingEntry,
@@ -9,14 +10,15 @@ import {
 /**
  * One row of a collection, away from its table: a label, the name (with the
  * scientific name beside a species) and the collection's summary fields. The
- * row is a sighting, a recommendation or an item written in the collection.
+ * row is a sighting, a recommendation, a flight or an item written in the
+ * collection.
  */
 export function ItemSummary({
   item,
   collection,
   label,
 }: {
-  item: ItemEntry | SightingEntry | RecommendationEntry;
+  item: ItemEntry | SightingEntry | RecommendationEntry | FlightEntry;
   collection: CollectionEntry;
   /** Defaults to the collection's name. */
   label?: string;

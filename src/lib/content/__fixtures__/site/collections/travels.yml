@@ -1,0 +1,9 @@
+title: Travels
+itemName: flight
+from: flight
+summary: [from, to, date]
+columns:
+  - { key: from, label: From }
+  - { key: to, label: To }
+  - { key: airline, label: Airline, optional: true }
+  - { key: km, label: Distance }

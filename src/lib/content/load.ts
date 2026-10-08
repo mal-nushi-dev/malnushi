@@ -3,15 +3,23 @@ import path from "node:path";
 import exifr from "exifr";
 import { parse as parseYaml } from "yaml";
 import type { z } from "zod";
+import { greatCircleKm } from "@/lib/flights/distance";
+import { parseTable } from "./csv";
 import { fieldOf, isBefore, orientationOf } from "./format";
 import { jpegSize } from "./image-size";
 import { definitions, edges, type Described } from "./kinds";
 import { idPattern, pageless, refsInBody, toRef, urlFor, type Kind } from "./refs";
 import {
+  airportsFile,
+  cabins,
   cellValue,
   collectionFile,
+  flightRow,
   photoData,
   photoOverrides,
+  reasons,
+  seats,
+  type Airport,
   type Entry,
   type Facet,
   type Rel,
@@ -363,6 +371,109 @@ export async function loadContent(
         );
       }
     }
+  }
+
+  // Flights: one row each in flights.csv, as scripts/flights.mjs writes it
+  // from a my.flightradar24.com export, with airports.json saying where each
+  // airport is.
+  const flightFiles = await filesIn(root, "flights");
+  for (const name of flightFiles) {
+    if (name !== "flights.csv" && name !== "airports.json") {
+      problems.push(`flights/${name}: expected flights.csv and airports.json only`);
+    }
+  }
+  if (flightFiles.includes("flights.csv")) {
+    const source = "flights/flights.csv";
+    let places: Record<string, Omit<Airport, "iata" | "icao" | "city" | "name">> | null = {};
+    try {
+      places = check(
+        airportsFile,
+        JSON.parse(await readFile(path.join(root, "flights/airports.json"), "utf8")),
+        "flights/airports.json",
+      );
+    } catch (error) {
+      problems.push(`flights/airports.json: ${(error as Error).message}`);
+      places = null;
+    }
+    const table = parseTable(await readFile(path.join(root, source), "utf8"));
+    const unplaced = new Set<string>();
+    /** "Detroit / Detroit Metropolitan Wayne Co (DTW/KDTW)". */
+    const airportOf = (written: string): Airport | null => {
+      const [, label, iata, icao] = /^(.*)\(([A-Z0-9]*)\/([A-Z0-9]{4})\)\s*$/.exec(written)!;
+      const [city, ...rest] = label.split(" / ");
+      const place = places?.[icao];
+      if (!place) {
+        unplaced.add(icao);
+        return null;
+      }
+      return {
+        ...place,
+        icao,
+        ...(iata ? { iata } : {}),
+        city: city.trim(),
+        name: rest.join(" / ").trim() || city.trim(),
+      };
+    };
+    /** "Delta Air Lines (DL/DAL)" is "Delta Air Lines"; " (/)" is nothing. */
+    const named = (written: string) => written.replace(/\s*\([^)]*\)\s*$/, "").trim() || undefined;
+    const taken = new Set<string>();
+    for (const { line, width, cells } of table.rows) {
+      const where = `${source}: line ${line}`;
+      if (width !== table.header.length) {
+        problems.push(`${where}: has ${width} fields, and the header has ${table.header.length}`);
+        continue;
+      }
+      const row = check(flightRow, cells, where);
+      if (!row || !places) continue;
+      const from = airportOf(row.From);
+      const to = airportOf(row.To);
+      if (!from || !to) continue;
+      const stem = `${row.Date}-${from.iata ?? from.icao}-${to.iata ?? to.icao}`.toLowerCase();
+      // Out and back on one day is two flights; the same leg twice is rare, and numbered.
+      let id = stem;
+      for (let n = 2; taken.has(id); n++) id = `${stem}-${n}`;
+      taken.add(id);
+      const [hours, minutes] = row.Duration.split(":").map(Number);
+      const data = {
+        from,
+        to,
+        km: greatCircleKm(from, to),
+        minutes: hours * 60 + minutes,
+        airline: named(row.Airline),
+        aircraft: named(row.Aircraft),
+        seat: seats[Number(row["Seat type"]) as keyof typeof seats],
+        cabin: cabins[Number(row["Flight class"]) as keyof typeof cabins],
+        reason: reasons[Number(row["Flight reason"]) as keyof typeof reasons],
+      };
+      add("flight", id, source, {
+        date: row.Date,
+        title: `${from.city} to ${to.city}`,
+        tags: [],
+        facets: {
+          from: from.iata ?? from.icao,
+          to: to.iata ?? to.icao,
+          place: to.city,
+          country: to.country,
+          airline: data.airline,
+          aircraft: data.aircraft,
+          class: data.cabin,
+          seat: data.seat,
+          reason: data.reason,
+          km: Math.round(data.km),
+        },
+        draft: false,
+        edges: [],
+        body: "",
+        data: defined(data),
+      });
+    }
+    if (unplaced.size > 0) {
+      problems.push(
+        `flights/airports.json: has no ${[...unplaced].sort().join(", ")}. Run \`npm run flights\` again: see scripts/flights.mjs`,
+      );
+    }
+  } else if (flightFiles.includes("airports.json")) {
+    problems.push("flights/airports.json: there is no flights.csv beside it");
   }
 
   // Collections: a table whose rows are written in the file, or a question
