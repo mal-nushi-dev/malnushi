@@ -9,7 +9,7 @@ import {
 } from "@deck.gl/core";
 import { ArcLayer, ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
-import { Map as MapLibre, type StyleSpecification } from "maplibre-gl";
+import { Map as MapLibre, setWorkerUrl, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { FilterPill } from "@/components/filter-pill";
@@ -23,6 +23,13 @@ import { FlightTrailExtension, type TrailProps } from "./trail-extension";
  * a canvas of its own above it and follows that camera, flat or on a globe.
  * See docs/adr/0010-flight-map-and-flight-data.md.
  */
+
+/*
+ * MapLibre looks for its worker beside its own file, which a bundler has
+ * moved into a chunk. This has the bundler ship the worker as a file of its
+ * own and tells MapLibre where that is.
+ */
+setWorkerUrl(new URL("maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url).href);
 
 export type MapAirport = { code: string; city: string; lat: number; lon: number; visits: number };
 export type MapRoute = { from: number; to: number; count: number };
