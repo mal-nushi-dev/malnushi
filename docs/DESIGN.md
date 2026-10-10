@@ -312,6 +312,14 @@ Desktop (1440px): a 1px `--line` hairline on top, then one row with the `small` 
 
 A `label` in `--ink-2` over a 1px `--ink` rule, 16px apart. The label sits above the rule, so the rule separates the label from the list below it.
 
+### Stat and stat card
+
+A **stat** is a number and what it counts: `stat` in `--ink`, then its `label` in `--ink-2`, and optionally its parts (`StatPart`: a `ui` value and a `label`, in a row that wraps). A plain stat sits under a 1px `--ink` rule. A **stat card** is the same content on a `surface` plate: 3:2, `radius.image` corners, `space.lg` padding, for a number that earns a picture.
+
+- **One anatomy.** Stat and stat card share one body, so the number, label and parts are set the same in both. They differ only in what is drawn around it.
+- **The backdrop is decoration.** A card's picture fills the plate behind the text and is hidden from assistive technology. The number and its label are the card's whole content, and they are on the page with no script.
+- **Not a generic card.** There is no card primitive. Corners, ratio and fill are tokens and classes; the only component is the stat card, because it carries structure and a rule about what is read out. The travels scenes are the one backdrop so far.
+
 ### Links
 
 Inline links are `--link` with a 1px underline; on hover the text and underline turn `--ink`. Arrow links ("View source →") have no underline until hover. Keyboard focus shows the 2px `--ink` ring used by the nav, on `:focus-visible` only, so it never appears on mouse hover or click.
@@ -454,7 +462,10 @@ Collections operates as your personal encyclopedia and ongoing data hub. This is
 - **Collections index** (`/collections`): visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—making browsing feel like walking through a private museum.
 - **A collection page:** eyebrow, `h1`, standfirst, then two or three `stat` numbers over 1px `--ink` rules in columns 9–12. Filter pills and a sort label, then the data table. At the bottom, an "Other collections" row linking to the rest.
 - **A collection with a view of its own.** The table is the default. A collection may put something else on its page (a map, charts); its table then lives one level down, at `/collections/[name]/log`, and the two link to each other. Travels is the first.
-- **Travels** (`/collections/travels`): eyebrow, `h1`, standfirst, then the map across the content width at 2:1 with small pills under it for its three views (Flat, Tilted, Globe). Then, each under a section label: the numbers (`stat`, four to a row), time in the air (six to a row), emissions (with a line saying it is an estimate), four pies two to a row, the rankings two to a row with "By flights / By distance" tabs, and three line charts (flights per year across the width, per month and per weekday side by side). An arrow link to the log.
+- **Travels** (`/collections/travels`): eyebrow, `h1`, standfirst, then the map across the content width at 2:1 with small pills under it for its three views (Flat, Tilted, Globe). Then, each under a section label: the numbers as four cards two to a row (below), time in the air (six to a row), emissions (with a line saying it is an estimate), four pies two to a row, the rankings two to a row with "By flights / By distance" tabs, each heading giving how many different ones there are, and three line charts (flights per year across the width, per month and per weekday side by side). An arrow link to the log.
+- **The travels cards** are stat cards (see "Stat and stat card"), two to a row. Under "Flights" its parts sit side by side. Behind the text a small 3D scene in the site's colors: matte lit spheres, the Sun in `chart.2`. The cards and the map are the only places with shading. The bodies are not to scale; the marker's place on its line is. The route round the Earth is one closed loop on a shell just above the surface, and does not count the laps.
+- **The Earth.** One module, `src/components/flight-scenes/earth.ts`, owns the Earth on every card: its colors (`line` ocean, `ink-2` land), the real 23.5° tilt, and a spin of 3,600× real time (15° a second, west to east). A scene sets only its radius and position; arcs and the plane are sized from the Earth's radius, so changing the Earth changes all four cards (design log, 2026-10-10).
+- **Scene lines.** Every line in a scene is one of two roles, defined once in `src/components/flight-scenes/scene-kit.ts` (`lineStyles`): the way **flown**, solid `chart.1`, and the way **remaining**, dashed `ink-2`, drawn under it. The plane's wake and the Earth card's circuits are made from the flown line (fading, or with a glow and a heavier tail), so changing it changes all of them. The glow on the Earth card is kept for now, as the one exception to "no glow" on the cards (design log, 2026-10-10).
 - **The map** draws land in `--surface` on `--bg` with `--line` borders, routes in `chart.1` and airports in `chart.4`. It is the one place a moving light, lit shapes and a glow are allowed (design log, 2026-10-07). With reduced motion it is still.
 
 Each collection defines its own columns:
@@ -750,3 +761,4 @@ Design decisions are tracked in [design-log.md](design-log.md).
   - DataTable (approved by Mal 2026-10-01): stacked label/value rows, one block per row, hairline between rows. No horizontal scroll.
   - Toolbar (approved by Mal 2026-10-01): pills scroll sideways inside the toolbar only (the one allowed horizontal scroll); sort label drops below. CollectionLink and OtherCollections stack.
   - CodeBlock: scrolls inside the block, padding 32 → 16.
+- **Travels, the glow.** The Earth card's circuits have a soft glow and a lit head; the other cards' lines do not. Mal means to revise the lines. Decide whether glow belongs on every flown line, or on none, and set it in `lineStyles` so it applies everywhere.

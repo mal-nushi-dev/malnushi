@@ -5,6 +5,7 @@ import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
 import { Eyebrow } from "@/components/eyebrow";
 import { FlightMap } from "@/components/flight-map";
+import { FlightScenes } from "@/components/flight-scenes";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
 import { Nav } from "@/components/nav";
@@ -47,10 +48,22 @@ function bars(rows: Ranked[], by: "count" | "km") {
   }));
 }
 
+/** A ranking's name, and how many different ones there are: the bars show only the top of it. */
+function RankingTitle({ title, total }: { title: string; total: number }) {
+  return (
+    <h3 className="flex items-baseline justify-between type-label text-ink-2">
+      {title}
+      <span className="tabular-nums text-ink">
+        {count(total)} <span className="sr-only">in all</span>
+      </span>
+    </h3>
+  );
+}
+
 function Ranking({ title, rows }: { title: string; rows: Ranked[] }) {
   return (
     <section className="flex flex-col gap-(--space-md)">
-      <h3 className="type-label text-ink-2">{title}</h3>
+      <RankingTitle title={title} total={rows.length} />
       <Tabs
         label={`Rank ${title.toLowerCase()} by`}
         tabs={[
@@ -90,16 +103,17 @@ export default async function TravelsPage() {
 
         <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
           <SectionLabel>In numbers</SectionLabel>
-          <div className="grid grid-cols-4 gap-x-(--col-gap) gap-y-(--space-xl)">
-            <Stat value={count(stats.flights)} label="Flights" />
-            <Stat value={count(stats.domestic)} label="Domestic" />
-            <Stat value={count(stats.international)} label="International" />
-            <Stat value={count(stats.countries)} label="Countries" />
-            <Stat value={miles(stats.km)} label={`Miles flown · ${count(stats.km)} km`} />
-            <Stat value={times(stats.toMoon)} label="Of the way to the Moon" />
-            <Stat value={times(stats.aroundEarth)} label="Around the Earth" />
-            <Stat value={times(stats.toSun)} label="Of the way to the Sun" />
-          </div>
+          <FlightScenes
+            flights={{
+              total: count(stats.flights),
+              domestic: count(stats.domestic),
+              international: count(stats.international),
+            }}
+            distance={{ miles: miles(stats.km), km: count(stats.km) }}
+            moon={{ ratio: stats.toMoon, read: times(stats.toMoon) }}
+            earth={{ ratio: stats.aroundEarth, read: times(stats.aroundEarth) }}
+            sun={{ ratio: stats.toSun, read: times(stats.toSun) }}
+          />
         </section>
 
         <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
@@ -178,7 +192,7 @@ export default async function TravelsPage() {
             <Ranking title="Aircraft" rows={rankings.aircraft} />
             <Ranking title="Routes" rows={rankings.routes} />
             <section className="flex flex-col gap-(--space-md)">
-              <h3 className="type-label text-ink-2">Countries</h3>
+              <RankingTitle title="Countries" total={rankings.countries.length} />
               <BarList label="Countries by flights landed" bars={bars(rankings.countries, "count")} />
             </section>
           </div>

@@ -4,6 +4,38 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-10
+
+### The Earth is one module, turning at 3,600× real time
+Decided with Mal, after asking whether a change to the Earth would show everywhere it is used.
+- **One module.** The Earth's look (texture, colors, tilt), motion (spin) and the radius things sit on were split between `scene-kit.ts` and the four scenes. They are now all in `src/components/flight-scenes/earth.ts`; a scene asks for an Earth of a radius, calls `turn(seconds)` and positions things with `altitude(factor)`.
+- **Real tilt, real rate, named speed-up.** The tilt is the real 23.5°, leaning toward the light (which way is a choice). The real Earth turns 0.00417° a second, 0.03° over the intro, which looks frozen, so the scenes play it at 3,600× (`timeLapse`): one real hour a second, 15° a second, one turn in 24 seconds. West to east on every card; the Flights card used to turn the other way. One constant changes the speed everywhere.
+- **Faster than before.** The old rates were 0.04 to 0.07 rad/s; this is 0.26 rad/s, about five times quicker. If it distracts behind the numbers, lower `timeLapse`.
+- **Radius stays per card.** The Moon and Sun cards draw a small Earth on purpose, so the distances read true.
+
+### Stat cards are one component, and the scene lines one table
+Decided with Mal, reviewing the travels cards against the rest of the site.
+- **One anatomy.** The cards had their own copy of what `Stat` is (number, label, parts). Both now share one body; `StatCard` adds the plate and a backdrop. No generic card primitive: the brief avoids card walls, and corners, ratio and fill are tokens and classes, not components.
+- **Parts sit in a row** on the cards too (Flights: Domestic and International side by side, not stacked), so there is one layout for parts.
+- **Earth, plane and lines are not React components.** They are three.js objects drawn into a canvas that is hidden from assistive technology, with no layout and one size to vary. They live as functions in `scene-kit.ts`, importable and testable, instead of closures inside the mount function.
+- **One line vocabulary.** The scenes had five treatments where the spec has two. Now `flown` (`chart.1`, solid) and `remaining` (`ink-2`, dashed) are defined once and everything else is made from them. The plane's wake was `ink`; it is now the flown line, fading. Mal asked for one edit to apply everywhere, which is what the table is for.
+- **Glow stays, for now.** The Earth card's glow contradicts the "no glow" line in the entry below. Mal chose to keep it while the lines are revised; it is a documented exception and an open question in DESIGN.md.
+- **Cards name their scene** (`data-scene`), so cards can be reordered or added without touching the scene code. It had been matching by position.
+
+### Travels: the numbers as four cards with 3D scenes
+Decided with Mal. The engineering is in `docs/adr/0011-three-js-for-the-travel-scenes.md`.
+- **Why it changed.** The first build set seventeen `stat` numbers in rows. Mal liked the component and not the page; I thought it was the count: nothing was the headline, and every number carried its own `--ink` rule.
+- **Flights carries its parts.** "Domestic" and "International" sit under "Flights" as small values (`StatPart`), not as stats of their own. "Countries" is gone as a stat: each ranking's heading now shows how many different ones there are (34 airports, 12 countries), which the bars, showing only the top ten, did not say.
+- **Four cards, two to a row**, 3:2, `surface` with `radius.image` corners: flights (a plane over the Earth), miles and the way to the Moon, a loop round the Earth, the way to the Sun. Mal brought a concept image, photo-real and mostly dark, and asked for its 3D in the site's own design. So: matte spheres lit from one side, the Earth's land in `ink-2` on `line`, the Moon `ink-2`, the Sun `chart.2`, the path flown `chart.1` (as on the map) and what is left of it dashed `ink-2`. No textures, stars, glow or flares. Light and dark.
+- **Plane, not astronaut** (Mal agreed): the page is about flying.
+- **Not to scale, and it does not say so.** I first proposed strips at true scale. Mal's cards trade that for a picture per number. Each keeps the proportion true along its line (68% of the way to the Moon; a dot touching the Earth for the Sun). The sizes of the bodies are for show, except the Moon beside the Earth.
+- **A second exception to "no shadows".** Shaded spheres are shading, inside the cards only, like the map.
+- **Around the Earth is one closed route on a spherical shell.** Mal's spec: a smooth closed curve r(t) with |r(t)| = R, once round in longitude, meeting itself in position and tangent, its latitude varying smoothly with longitude "to create a flowing, field-line-like trajectory", the plane's nose on the unit tangent and its up on the radius, and the route never leaving the shell. Latitude is a sum of the first and third harmonics of longitude (0.34 sin(λ + 0.5) + 0.2 sin(3λ + 1.1), in radians), which closes by construction; the tangent is the exact derivative, not a difference of samples. It replaces two of mine: great-circle laps wound like thread, and an out-and-back version of them that closed. **It no longer shows the count:** the route goes round once, whatever the number above it says. (Superseded: see "One line for every whole time round", below.)
+- **The path is one closed curve** (superseded). A smooth closed curve on the sphere was built as `curve.ts`, with tests for closure and tangent continuity, and then replaced by one line per whole time round (below). `curve.ts` and its tests were removed on 2026-10-10 as unused. They were never committed, so they are not in the git history.
+- **One line for every whole time round.** The Earth card draws `floor(times round)` closed loops, so 6.5× is six lines and 7.5× is seven. Each is a circuit of the globe on a thin shell just above it, with a small rise and fall; they all pass through the starting point, each turned a little from the last, so they fan out like meridians and can be counted. The plane flies them one after another, nose on the path, coming back to the start at the end of each. Less than one time round still draws one line. Mal's request, 2026-10-10.
+- **Motion.** The Moon's marker travels out once, when the cards are first seen. The route round the Earth draws itself behind the plane on its first time round (26 seconds), and the plane keeps flying it. The Earths turn slowly and the first card's plane rides a little. With reduced motion everything is drawn once, finished.
+- **Not yet done:** time in the air and emissions are still rows of `stat`.
+
 ## 2026-10-07
 
 ### Travels: a map and the flights counted

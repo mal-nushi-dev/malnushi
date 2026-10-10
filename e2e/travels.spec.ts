@@ -63,6 +63,17 @@ test("the numbers are the content's", async ({ page }) => {
   await expect(main.getByText(`${number(stats.km)} km`)).toBeVisible();
 });
 
+test("the four cards each get a scene drawn behind their number", async ({ page }) => {
+  await page.goto("/collections/travels");
+  const scenes = page.locator("[data-flight-scenes] canvas[data-scene]");
+  await expect(scenes).toHaveCount(4);
+  await scenes.first().scrollIntoViewIfNeeded();
+  for (const scene of await scenes.all()) {
+    // A canvas nothing has drawn to is one color; a scene is many.
+    await expect.poll(async () => new Set(await scene.screenshot()).size).toBeGreaterThan(64);
+  }
+});
+
 test("a ranking reads by flights, and by distance on its other tab", async ({ page }) => {
   await page.goto("/collections/travels");
   const tabs = page.getByRole("tablist", { name: "Rank airports by" });
