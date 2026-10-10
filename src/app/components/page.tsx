@@ -28,7 +28,7 @@ import { SpecBlock } from "@/components/spec-block";
 import { BarList } from "@/components/charts/bar-list";
 import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
-import { Stat, Stats } from "@/components/stat";
+import { Stat, StatCard, StatPart, Stats } from "@/components/stat";
 import { Tabs } from "@/components/tabs";
 import { Tile, TileGrid, TileGridItem } from "@/components/tile";
 import { Toolbar } from "@/components/toolbar";
@@ -268,6 +268,27 @@ export default function ComponentsPage() {
             <Stats>
               <Stat value={214} label="Species seen" />
             </Stats>
+          </Specimen>
+          <Specimen name="Stat: with parts">
+            <Stats>
+              <Stat value={123} label="Flights">
+                <StatPart value={73} label="Domestic" />
+                <StatPart value={50} label="International" />
+              </Stat>
+            </Stats>
+          </Specimen>
+          <Specimen name="Stat Card (backdrop is decoration; the travels page draws a scene there)">
+            <div className="grid max-w-150 grid-cols-2 gap-(--col-gap)">
+              <StatCard
+                value={123}
+                label="Flights"
+                backdrop={<div className="bg-line" />}
+              >
+                <StatPart value={73} label="Domestic" />
+                <StatPart value={50} label="International" />
+              </StatCard>
+              <StatCard value="0.68×" label="Of the way to the Moon" />
+            </div>
           </Specimen>
           <Specimen name="Code Block">
             <CodeBlock code={code} />
