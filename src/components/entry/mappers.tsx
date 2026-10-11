@@ -1,11 +1,13 @@
 import type { IndexItem } from "@/components/index-list";
 import type { Issue } from "@/components/issue-stub";
 import type { NoteItem } from "@/components/note";
+import type { ShelfItem } from "@/components/shelf";
 import type { TileProps } from "@/components/tile";
 import {
   dayOf,
   noteDateLine,
   yearOf,
+  type CollectionEntry,
   type Entry,
   type Kind,
   type NoteEntry,
@@ -13,6 +15,7 @@ import {
   type PostEntry,
   type Queries,
 } from "@/lib/content";
+import { sentenceParts } from "@/lib/shelf";
 import { EntryBody } from "./body";
 
 /*
@@ -135,5 +138,30 @@ export function toTile(entry: Entry, q: Queries): Omit<TileProps, "children" | "
     label: tileLabel(entry, q),
     year: yearOf(entry.date),
     status: typeof status === "string" ? status : undefined,
+  };
+}
+
+/** The newest rows a spine shows. */
+const newestRows = 3;
+
+/**
+ * A collection as a spine on the shelf. A collection with nothing in it is
+ * not shown, so there is none to return.
+ */
+export function toSpine(collection: CollectionEntry, q: Queries): ShelfItem | undefined {
+  const rows = q.members(collection);
+  if (rows.length === 0) return undefined;
+  const newest = [...rows]
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date) || a.ref.localeCompare(b.ref))
+    .slice(0, newestRows);
+  return {
+    id: collection.id,
+    href: collection.url,
+    title: collection.title ?? collection.id,
+    category: collection.category,
+    description: collection.summary,
+    count: rows.length,
+    sentence: sentenceParts(collection.data.sentence, rows.length, collection.data.itemName),
+    newest: newest.map((row) => ({ id: row.ref, label: dayOf(row.date), text: titleOf(row) })),
   };
 }

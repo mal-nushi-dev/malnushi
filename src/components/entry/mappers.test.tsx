@@ -3,7 +3,9 @@ import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { loadContent } from "@/lib/content/load";
 import { createQueries, type Queries } from "@/lib/content/query";
-import { coverOf, disciplineOf, tileLabel, toTile } from "./mappers";
+import { folder, site } from "@/lib/content/testing";
+import { sentenceText } from "@/lib/shelf";
+import { coverOf, disciplineOf, tileLabel, toSpine, toTile } from "./mappers";
 
 /*
  * Entries as the projects gallery takes them, asked of the fixture site in
@@ -70,5 +72,36 @@ describe("toTile", () => {
     expect(tile.status).toBeUndefined();
     expect(tile.summary).toBeUndefined();
     expect(tile.href).toBe("/projects/marsh");
+  });
+});
+
+describe("toSpine", () => {
+  it("counts a collection's rows and puts its newest first, at most three", () => {
+    const list = q.need("collection", "life-list");
+    const spine = toSpine(list, q)!;
+    expect(spine.count).toBe(q.members(list).length);
+    expect(spine.href).toBe("/collections/life-list");
+    expect(spine.newest.length).toBeLessThanOrEqual(3);
+    const days = spine.newest.map((n) => n.label);
+    expect(days).toEqual([...days].sort().reverse());
+  });
+
+  it("reads a collection with no sentence as its count and its noun", () => {
+    const spine = toSpine(q.need("collection", "life-list"), q)!;
+    expect(sentenceText(spine.sentence)).toBe(
+      `${spine.count} bird${spine.count === 1 ? "" : "s"}.`,
+    );
+  });
+
+  it("leaves out a collection with nothing in it", async () => {
+    const empty = createQueries(
+      await loadContent(
+        await folder({
+          ...site(),
+          "collections/empty.yml": "title: Empty\ncolumns:\n  - { key: a, label: A }\n",
+        }),
+      ),
+    );
+    expect(toSpine(empty.need("collection", "empty"), empty)).toBeUndefined();
   });
 });

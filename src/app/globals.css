@@ -102,12 +102,17 @@
  * 90%, so the cover shows through. sage.700, not the nav's sage.600: at 90%
  * over a white image sage.600 leaves light text at 4.2:1; this keeps it at
  * 5:1 or better over any cover. Same in light and dark mode.
+ *
+ * An open spine on the Collections shelf is the same sage, solid, so it
+ * takes the same tokens. The hairline is a light 35% mix, as the nav's is.
  */
-[data-tile-plate] {
+[data-tile-plate],
+.spine:is(:hover, :focus-visible) {
   --bg: #4d5749;
   --ink: #fafafa;
   --ink-2: #edeeeb;
   --accent: #edeeeb;
+  --line: color-mix(in srgb, #edeeeb 35%, #4d5749);
 }
 
 /*
@@ -123,6 +128,14 @@
 
 /* A tile shows its plate when the pointer is on it or the keyboard is. */
 @custom-variant tile-open (.tile:is(:hover, :focus-visible) &);
+
+/*
+ * A spine is open when the pointer is on it or the keyboard is. `spine-on`
+ * is for what is inside the open spine; `spine-open` is for the item or
+ * group that holds it, which gives it room.
+ */
+@custom-variant spine-on (.spine:is(:hover, :focus-visible) &);
+@custom-variant spine-open (&:has(.spine:is(:hover, :focus-visible)));
 
 @theme inline {
   --color-bg: var(--bg);
