@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/collections mockup · round four, spines</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Google+Sans+Flex&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#edeeeb;--ink:#2e2e2e;--ink-2:#626964;--link:#485861;--accent:#626e5e;--line:#d5d7d2;
+ --sage7:#4d5749;--on-sage:#fafafa;--on-sage-2:#edeeeb;
+ --open:cubic-bezier(.34,1.25,.5,1);--close:cubic-bezier(.3,0,.3,1)}
+@media (prefers-color-scheme:dark){:root{--bg:#2e2e2e;--surface:#3d444c;--ink:#edeeeb;--ink-2:#a4ada6;--link:#d2dde4;--accent:#758072;--line:#485861}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Google Sans Flex",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1344px;margin:0 auto;padding:0 48px 128px}
+.nav{height:104px;display:flex;align-items:center;justify-content:center}
+.nav div{width:600px;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--ink-2)}
+.nav b{font:400 24px Newsreader,serif;color:var(--ink)}
+.chrome{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 48px;display:flex;gap:8px;align-items:center;font:12px "JetBrains Mono"}
+.chrome span{color:var(--ink-2);margin-right:8px}
+.chrome button{height:32px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--ink);font:13px "Google Sans Flex";cursor:pointer}
+.chrome button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chrome em{margin-left:auto;font-style:normal;color:var(--ink-2)}
+.label{font:12px/1.5 "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--ink-2)}
+.meta{font:13px/1.7 "JetBrains Mono",monospace;color:var(--ink-2)}
+header.page{padding-top:120px;display:flex;flex-direction:column;gap:24px}
+header h1{font:400 88px/1.02 Newsreader,serif;letter-spacing:-2.2px}
+header p.sf{font:400 24px/1.45 Newsreader,serif;color:var(--ink-2);max-width:600px}
+.dir{display:none}.dir.on{display:block}
+.note{margin-top:64px;max-width:680px;font:14px/1.6 "Google Sans Flex";color:var(--ink-2);border-top:1px solid var(--ink);padding-top:16px}
+.note b{font-weight:400;color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+
+/* the spine: a closed strip, an open sage panel */
+.shelf{display:flex;gap:4px;border-bottom:1px solid var(--ink)}
+.spine{position:relative;display:flex;overflow:hidden;border-radius:4px 4px 0 0;background:var(--surface);color:var(--ink);
+ transition:flex-grow .35s var(--close),flex-basis .35s var(--close),height .35s var(--close),background-color .3s}
+.spine .strip{flex:0 0 var(--strip,112px);padding:20px 0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-width:0}
+.spine .strip .meta{color:inherit;opacity:.8}
+.spine .nm{writing-mode:vertical-rl;font:400 36px/1 Newsreader,serif;letter-spacing:-.36px;white-space:nowrap}
+.spine .body{flex:0 0 340px;padding:20px 28px 20px 0;display:flex;flex-direction:column;justify-content:space-between;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.spine .body .s{font:300 34px/1.15 Newsreader,serif;letter-spacing:-.4px;color:var(--on-sage)}
+.spine .body .s b{font-weight:300}
+.spine .body .l{font:13px/1.5 "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--on-sage-2);margin-bottom:12px}
+.spine .body .meta{color:var(--on-sage-2)}
+.spine .body ul{list-style:none;padding:0;margin-top:20px;display:flex;flex-direction:column;gap:6px}
+.spine .body li{display:flex;gap:12px;border-top:1px solid color-mix(in srgb,var(--on-sage-2) 35%,transparent);padding-top:6px}
+.spine:is(:hover,:focus-visible){background:var(--sage7);color:var(--on-sage);transition:flex-grow .6s var(--open),flex-basis .6s var(--open),height .6s var(--open),background-color .3s}
+.spine:is(:hover,:focus-visible) .body{opacity:1;visibility:visible;transition:opacity .35s .15s,visibility 0s}
+.spine.soon .nm,.spine.soon .strip .meta{opacity:.5}
+
+/* 1 · Fill: one shelf, always the full width; the open spine takes what the others give up */
+.fill{height:520px}
+.fill .spine{flex:1 1 0;min-width:72px;--strip:72px}
+.fill .spine:is(:hover,:focus-visible){flex-grow:5.2}
+.fill .spine .strip{flex-basis:auto;width:100%;max-width:100%}
+.fill .spine:is(:hover,:focus-visible) .strip{flex:0 0 96px}
+.fill .spine .nm{font-size:32px}
+.fill .spine:is(:hover,:focus-visible) .nm{font-size:36px}
+
+/* 2 · Shelves: fixed-width spines, five to a shelf */
+.rowshelf{height:440px;margin-top:4px}
+.rowshelf .spine{flex:0 0 112px}
+.rowshelf .spine:is(:hover,:focus-visible){flex-basis:508px}
+
+/* 3 · Grouped: labelled shelves */
+.grp{margin-top:56px}
+.grp .label{padding-bottom:12px;border-bottom:1px solid var(--ink);margin-bottom:16px;display:flex;justify-content:space-between}
+.grp .shelf{height:420px}
+.grp .spine{flex:0 0 112px}
+.grp .spine:is(:hover,:focus-visible){flex-basis:508px}
+
+/* 4 · Uneven: heights follow how much is in each, on one shelf, standing on the line */
+.uneven{height:520px;align-items:flex-end}
+.uneven .spine{flex:1 1 0;min-width:72px;--strip:72px;height:var(--h)}
+.uneven .spine:is(:hover,:focus-visible){flex-grow:5.2;height:520px}
+.uneven .spine .strip{flex-basis:auto;width:100%;max-width:100%}
+.uneven .spine:is(:hover,:focus-visible) .strip{flex:0 0 96px}
+.uneven .spine .nm{font-size:32px}
+.uneven .spine:is(:hover,:focus-visible) .nm{font-size:36px}
+</style></head>
+<body>
+<div class="chrome"><span>/collections · round four</span>
+ <button data-d="fill" aria-pressed="true">1 · Fill</button>
+ <button data-d="shelves" aria-pressed="false">2 · Shelves</button>
+ <button data-d="grouped" aria-pressed="false">3 · Grouped</button>
+ <button data-d="uneven" aria-pressed="false">4 · Uneven</button>
+ <em>Travels is real. The other nine are sample collections and sample entries.</em></div>
+<div class="wrap">
+ <div class="nav"><div><span>Search</span><b>Mal Nushi</b><span>Menu</span></div></div>
+ <header class="page">
+  <p class="label">Collections</p>
+  <h1>Collections</h1>
+  <p class="sf">Lists I keep and numbers I keep counting. None of them is finished.</p>
+ </header>
+ <div style="height:64px"></div>
+ <section class="dir on" id="fill"><div class="shelf fill" data-mode="all"></div>
+  <p class="note"><b>One shelf, always the page's width.</b> At rest the ten spines share the width equally (121px each at 1440). The one you point at grows and the rest give up width, down to a 72px floor, so the shelf never changes size and never has an empty end. It scales to about fifteen collections before spines hit the floor. The cost: the closed spines are the narrowest of any variant, and the name drops to 32px.</p></section>
+ <section class="dir" id="shelves"><div data-mode="rows"></div>
+  <p class="note"><b>Two shelves of five.</b> Spines keep a fixed, comfortable width (112px) and wrap, so each opens at full size and nothing squeezes. Each shelf opens independently. Nothing moves on the other shelf. A long list is just more shelves, so it never runs out, but the page gets tall and the order is the only grouping.</p></section>
+ <section class="dir" id="grouped"><div data-mode="groups"></div>
+  <p class="note"><b>Shelves with section labels.</b> The same fixed spines, grouped by what kind of collection it is (<i>Places and nature</i>, <i>Taste</i>, <i>Things</i>), each shelf under a section label and its rule. Ten collections become three short lists, which is easier to scan and gives the page structure. It asks you to name the groups, and for a collection to belong to exactly one.</p></section>
+ <section class="dir" id="uneven"><div class="shelf uneven" data-mode="uneven"></div>
+  <p class="note"><b>Books of different heights.</b> Same fill behaviour as 1, but each spine's height follows the square root of how many entries it holds, standing on the shelf line, so the shelf has a skyline: the life list is tall, city guides and cameras short. The open spine rises to full height. It is the most personality and the least dashboard-like way to hint at size. The cost: height now means something, so it must stay subtle, and a collection with few entries looks minor.</p></section>
+</div>
+<script>
+// Sample collections. Travels is real; the rest are placeholders for layout.
+const C=[
+ {g:0,n:"Travels",c:123,s:"I have flown <b>161,324 miles</b>.",l:"Since 2005 · 12 countries",e:[["16×","Charlotte – Detroit"],["8×","Pristina – Vienna"],["6×","Charlotte – New York"]]},
+ {g:0,n:"City guides",c:9,s:"I have written guides to <b>9 cities</b>.",l:"Where I would take you",e:[["2026","Vienna"],["2025","Detroit"],["2024","Charlotte"]]},
+ {g:0,n:"Life list",c:214,s:"I have named <b>214 birds</b>.",l:"58 families · since 2019",e:[["09-27","Carolina Wren"],["09-21","Great Blue Heron"],["09-02","Tufted Titmouse"]]},
+ {g:0,n:"Plant tracker",c:37,s:"I am keeping <b>37 plants</b> alive.",l:"Indoors and the porch",e:[["09-30","Monstera"],["09-14","Pothos"],["08-22","Fiddle-leaf fig"]]},
+ {g:1,n:"Recommendations",c:128,s:"I keep <b>128 things</b> worth sending a friend to.",l:"Books, films, tools, places",e:[["09-20","Braiding Sweetgrass"],["09-11","Piranesi"],["08-30","Paterson"]]},
+ {g:1,n:"Reading list",c:86,s:"I have finished <b>86 books</b> since 2020.",l:"On the shelf and off it",e:[["09-24","Piranesi"],["09-01","The Overstory"],["08-12","Gilead"]]},
+ {g:1,n:"Records",c:52,s:"I own <b>52 records</b>, and play most of them.",l:"Vinyl only",e:[["09-18","Kind of Blue"],["08-29","Rumours"],["08-02","Blue"]]},
+ {g:1,n:"Recipes",c:31,s:"I cook from <b>31 recipes</b> I wrote down.",l:"Tested at least twice",e:[["09-26","Shakshuka"],["09-08","Focaccia"],["08-17","Dal"]]},
+ {g:2,n:"Lego inventory",c:41,soon:1,s:"I have <b>41 Lego sets</b>, not yet written down.",l:"Not started",e:[["—","No sets yet"]]},
+ {g:2,n:"Cameras",c:6,s:"I have used <b>6 cameras</b>.",l:"Film and digital",e:[["2026","Ricoh GR III"],["2022","Olympus OM-1"],["2019","Fujifilm X100"]]}
+];
+const G=["Places and nature","Taste","Things"];
+const spine=(o,i,extra='')=>`<a class="spine${o.soon?' soon':''}" href="#"${extra}>
+ <div class="strip"><span class="meta">${String(i+1).padStart(3,'0')}</span><span class="nm">${o.n}</span><span class="meta">${o.c}</span></div>
+ <div class="body"><div><p class="l">${o.l}</p><p class="s">${o.s}</p><ul>${o.e.map(x=>`<li class="meta"><span>${x[0]}</span><span>${x[1]}</span></li>`).join('')}</ul></div><span class="meta">Open ${o.n.toLowerCase()} →</span></div></a>`;
+const max=Math.max(...C.map(o=>o.c));
+document.querySelectorAll('[data-mode]').forEach(el=>{
+ const m=el.dataset.mode;
+ if(m==='all')el.innerHTML=C.map((o,i)=>spine(o,i)).join('');
+ if(m==='uneven')el.innerHTML=C.map((o,i)=>spine(o,i,` style="--h:${Math.round(200+320*Math.sqrt(o.c/max))}px"`)).join('');
+ if(m==='rows')el.innerHTML=[0,5].map(s=>`<div class="shelf rowshelf">${C.slice(s,s+5).map((o,i)=>spine(o,s+i)).join('')}</div>`).join('');
+ if(m==='groups')el.innerHTML=G.map((g,k)=>{const rows=C.map((o,i)=>[o,i]).filter(([o])=>o.g===k);
+  return `<div class="grp"><p class="label"><span>${g}</span><span>${rows.length}</span></p><div class="shelf">${rows.map(([o,i])=>spine(o,i)).join('')}</div></div>`}).join('');
+});
+const ids=['fill','shelves','grouped','uneven'];
+const show=d=>{document.querySelectorAll('.dir').forEach(s=>s.classList.toggle('on',s.id===d));
+ document.querySelectorAll('.chrome button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===d));
+ try{history.replaceState(null,'','#'+d)}catch(e){}};
+document.querySelectorAll('.chrome button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.d)));
+document.addEventListener('click',e=>{if(e.target.closest('a[href="#"]'))e.preventDefault()});
+show(ids.includes(location.hash.slice(1))?location.hash.slice(1):'fill');
+</script></body></html>

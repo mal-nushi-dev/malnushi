@@ -300,6 +300,19 @@ Decided with Mal 2026-10-06. A **tile** is one piece of work in a gallery: its c
 
 The component is `Tile`, with `TileGrid` and `TileGridItem`; `TileGallery` adds a row of filters over a grid. A tile knows nothing about content: its cover is whatever it is given.
 
+### Shelf and spine
+
+Decided with Mal 2026-10-10. The **shelf** is the Collections index: every collection is a **spine** standing on one line across the content width, with a 1px `--ink` rule under them as the shelf. Chosen from five rounds of mockups (`docs/mockups/collections*.html`) because it reads as a bookshelf and shows off the type.
+
+- **Closed.** 72 to 128px wide (`space.tile-gap` apart), `surface`, `radius.image` on the top corners. Top to bottom: its place on the shelf (`meta`, `001`), its name set upright (`index-title`, `writing-mode: vertical-rl`) and, at the foot, a **tick** over its count (`meta`). Closed spines share the width equally up to 128px, so a short shelf stands at the left and a full one fills the line.
+- **The tick** hints at size, quietly: a 2px rule, 10 to 46px long by the square root of the collection's share of the largest, so the shelf's outline stays flat. The count is always beside it.
+- **Open** (pointer or keyboard focus). The spine grows to at most 436px, taking width from the others, so the shelf never changes size, and turns `sage.700` as the tile plate does, on the nav's springs (600ms open, 350ms closed). The words fade in 150ms later over 350ms. It shows, in the light-on-sage tokens: the collection's `category` (`label`), its **sentence** (`quote`, the number loud in `--ink`, the rest `--ink-2`), its description (`ui`), its three newest rows (`meta`, a day and a name, between hairlines) and "Open …" (`meta`). With `prefers-reduced-motion` it opens at once.
+- **The sentence** is the collection's `sentence` field, in the first person, with `{count}` (the number of rows) and `{items}` (its `itemName`, plural unless there is one): "I have named 214 birds." The number and the noun after it are loud. Without one it reads "128 recommendations."
+- **Arrangement.** Two small pills above the shelf, "All together" (default) and "By category". By category sets the same spines on the same line in clusters, one for each `category` in use, alphabetical, with a `label` over a 1px `--ink` rule; collections with no category come last under "Other". The cluster that holds the open spine takes the room. The pills appear only when there is more than one group, and the choice is kept in the address (`?shelve=category`) as the Projects filters are.
+- **For screen readers** the spine is one link named by its title (a heading), read with its sentence, description and newest rows. The drawing is decoration. Without JavaScript the shelf is whole and all together.
+
+The components are `Spine` and `Shelf`; `UrlShelf` keeps the arrangement in the address.
+
 ### Next link (footer)
 
 At the bottom of every piece: a `label` ("Next essay", "Next series") over an `index-title` or larger serif title, linking to the next piece in the section. A 1px `--ink` rule sits on top, 16px above the label. On hover the title changes to `--link`.
@@ -459,7 +472,7 @@ The photographs lead. Text is reduced to a minimum.
 
 Collections operates as your personal encyclopedia and ongoing data hub. This is where your bird life list, plant tracker, flight stats, city guides, item inventories, and media recommendations live. Unlike projects, these are not finished deliverables, but living reference tables and personal dashboards that evolve over decades.
 
-- **Collections index** (`/collections`): visual index tiles—each displaying a quick preview or running tally, like species identified or miles flown—making browsing feel like walking through a private museum.
+- **Collections index** (`/collections`): a shelf of spines (see "Shelf and spine"), decided with Mal 2026-10-10. The `h1`, a standfirst, then one spine for each collection that has rows, alphabetical. There is no eyebrow: it would repeat the `h1`, as on the Writing index. A collection with no rows, or in draft, is not shown.
 - **A collection page:** eyebrow, `h1`, standfirst, then two or three `stat` numbers over 1px `--ink` rules in columns 9–12. Filter pills and a sort label, then the data table. At the bottom, an "Other collections" row linking to the rest.
 - **A collection with a view of its own.** The table is the default. A collection may put something else on its page (a map, charts); its table then lives one level down, at `/collections/[name]/log`, and the two link to each other. Travels is the first.
 - **Travels** (`/collections/travels`): eyebrow, `h1`, standfirst, then the map across the content width at 2:1 with small pills under it for its three views (Flat, Tilted, Globe). Then, each under a section label: the numbers as four cards two to a row (below), time in the air (six to a row), emissions (with a line saying it is an estimate), four pies two to a row, the rankings two to a row with "By flights / By distance" tabs, each heading giving how many different ones there are, and three line charts (flights per year across the width, per month and per weekday side by side). An arrow link to the log.
@@ -551,7 +564,7 @@ The **Atomic Content Model**: everything published is an **entry**: a file in `c
 
 **Category, tags and facets.** Every entry may have one `category`, the label its eyebrow or badge shows, and any number of `tags`, which readers see and search. Each kind also offers its descriptive fields (camera, place, species, medium) to search and filters under shared names. A category, tag or species is never an entry of its own.
 
-**Collections.** A collection's file gives its columns and either its rows (`items:`, for a plain table) or the kind whose entries are its rows (`from: sighting`, with `unique: species` to keep the first of each).
+**Collections.** A collection's file gives its columns and either its rows (`items:`, for a plain table) or the kind whose entries are its rows (`from: sighting`, with `unique: species` to keep the first of each). It may add a `category`, the one label the shelf groups by (groups are whatever values are in use), and a `sentence` for its spine, using `{count}` and `{items}`.
 
 **Views.** The same entry is drawn differently by context: its own page, a row in an index list, an item in a stream, an embed. Pages get entries from `src/lib/content` and never hold content themselves.
 
@@ -692,7 +705,7 @@ Other semantic tokens have no CSS variable yet:
 | Borders | `border.hairline` (1), `border.rule` (1), `border.accent-rule` (2) |
 | Shadow | `shadow.nav`, CSS `--shadow-nav` (values in Components → Nav). Code only: not in `tokens/` yet. |
 | Motion | `--ease-spring-open` and `--ease-spring-close`: the nav's opening and closing springs as CSS easings, for transitions CSS runs (600ms and 350ms). Code only: written from `cssSprings` in `src/lib/motion.ts`. |
-| Tile plate | `[data-tile-plate]` re-points `--bg` to `sage.700` and `--ink`, `--ink-2` and `--accent` to the light-on-sage values. Code only. |
+| Tile plate | `[data-tile-plate]` re-points `--bg` to `sage.700` and `--ink`, `--ink-2`, `--accent` and `--line` to the light-on-sage values. An open spine on the shelf (`.spine:is(:hover, :focus-visible)`) takes the same. Code only. |
 
 The files are `tokens/primitives.json`, `tokens/semantic.json`, `tokens/modes/light.json` and `tokens/modes/dark.json`. `src/app/globals.css` mirrors them: change the JSON first, then the CSS.
 
@@ -750,6 +763,13 @@ Design decisions are tracked in [design-log.md](design-log.md).
   - **Mobile:** the map, the four-across numbers and the two-across charts have no narrow layout.
   - **Search and the log:** when search exists, decide whether a flight's result opens the log filtered, and whether the log gets a search field of its own.
   - Not checked in Safari or Firefox.
+- **Collections index** (`/collections`, built 2026-10-11):
+  - **Touch.** There is no hover on a touch screen, so a spine would need a first tap to open and a second to follow. Not built: tablets use the desktop layout, and a link taps through today.
+  - **Dark surface contrast.** The closed spine's index and count are `--ink`, not `--ink-2`, because the provisional dark `--surface` leaves `--ink-2` at 4.27:1.
+  - **Pages behind the spines.** Only `/collections/travels` exists. The life list and recommendations spines lead to a 404 until the generic collection page is built.
+  - **Order and a draft.** The shelf is alphabetical, with no hand ordering. A collection with `draft: true` is left out of a build, and one with no published rows is left off the shelf without failing the build (a series with nothing published does fail it).
+  - **Travels' sentence** counts flights ("I have taken 123 flights."), not miles, because a collection's count is its rows. Showing miles needs a named, derived measure.
+  - **Mobile and Safari/Firefox** are not designed or checked. The shelf is 520px tall and horizontal.
 - Check the licence of the SVG Repo mustache used in `docs/portrait.svg` (credit it, or redraw the shape, before launch).
 - **Mobile (draft proposal, not decided).** Nothing below is spec until approved.
   - One breakpoint: under 768px is mobile; 768px and up keeps the desktop layout (approved by Mal 2026-10-01: tablet uses the desktop layout for now).

@@ -6,6 +6,28 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-10
 
+### Collections index: a shelf of spines
+Decided with Mal, from five rounds of mockups (`docs/mockups/collections*.html`). Built 2026-10-11 at `/collections`; see "Built" below.
+- **A shelf, not a gallery or a list.** Each collection is a spine standing on one shelf line across the content width, its name set vertically. The spine you point at or tab to pulls out on the nav's opening spring and turns `sage.700`, showing a sentence about the collection, its newest entries and an arrow link. The others give up width. Mal's words: "it feels like a bookshelf", and the sage with the typeface.
+- **Fill, not fixed width** (Mal's choice of five). The shelf is always the content width, so it never has an empty end and never changes size; spines share it equally and shrink to a 72px floor as one opens. It holds to about fifteen collections.
+- **A sentence each** ("I have flown 161,324 miles."), written per collection. Mal liked the personality it gives over bare numbers.
+- **Rejected:** a tally-plate tile grid (reads as a dashboard), drawn pictures per collection (reads as a data article), a ledger of newest rows ("too business-like"), one long sentence for the whole page (grows into an About page), spines on wrapped shelves (too tall, too much empty width), and spines of different heights by size (reads as a histogram).
+- **Grouping is a toggle,** "All together" or "By kind", in the address like the Projects filters. Grouped, the spines stay on one row in labelled clusters. Ungrouped is the default.
+- **Size is hinted, not drawn** (Mal: still influenced by the count, but subtle). A short tick above the count, 10 to 46px long by the square root of how many the collection holds, so the shelf's silhouette stays flat; the count in mono is always there. Mal chose it over a deeper tone and a 64px height range (2026-10-11).
+- **Settled 2026-10-11:** "All together" is the default; a collection with nothing to show is hidden, not dimmed; the header stays the house `h1` with an eyebrow (not centered `feature-display`); the drafted sentences are fine for now.
+- **Groups are derived, not listed.** A group is not an entry and there is no list of them in code: the shelf groups by each collection's `category` (the envelope's existing field, which Mal chose to keep rather than invent a second name), and the groups are whatever values are in use. Alphabetical for now, with collections that have no `category` last. A collection's one-line sentence is a `sentence` field with a `{count}` token, filled from its rows at build time.
+- **Built (2026-10-11), and what changed from the mockup:**
+  - **A closed spine stops at 128px.** The mockup filled the width, which was tested at ten collections only; with three, each spine would be 400px of empty surface. Closed spines now share the line up to 128px, so a short shelf stands at the left, as in the first spines mockup Mal liked, and a long one fills it.
+  - **The name is `index-title` (28px),** on the type scale, where the mockup's 32px was off it. The sentence is `quote` (36px).
+  - **No eyebrow** (my choice, for review): `COLLECTIONS` over "Collections" repeats itself, as it would on the Writing index.
+  - **The sentence takes `{count}` and `{items}`** (the collection's `itemName`, plural unless there is one), so "1 bird" and "128 recommendations" read right. The first draft had only `{count}`, which gave "1 birds".
+  - **Travels counts flights,** not miles, because the count is the rows. A named measure would bring miles back.
+  - **Index and count are `ink`,** not `ink-2`: the provisional dark `surface` fails AA for `ink-2` (4.27:1), which the new accessibility scan caught.
+  - **The open spine's tokens are the tile plate's,** one rule for both in `globals.css`, with a light hairline added.
+  - **Hidden, not failed:** a collection with no published rows is left off the shelf and the build does not fail.
+  - **Not done:** the touch behaviour, the generic page behind the life list and recommendations spines, mobile.
+- **What would change it:** if more than about fifteen collections exist, or if touch visitors cannot find the open state, the shelf wraps or becomes a list.
+
 ### The Earth is one module, turning at 3,600× real time
 Decided with Mal, after asking whether a change to the Earth would show everywhere it is used.
 - **One module.** The Earth's look (texture, colors, tilt), motion (spin) and the radius things sit on were split between `scene-kit.ts` and the four scenes. They are now all in `src/components/flight-scenes/earth.ts`; a scene asks for an Earth of a radius, calls `turn(seconds)` and positions things with `altitude(factor)`.

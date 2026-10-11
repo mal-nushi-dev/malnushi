@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/collections mockup · three directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Google+Sans+Flex&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#edeeeb;--ink:#2e2e2e;--ink-2:#626964;--link:#485861;--accent:#626e5e;--line:#d5d7d2;--r:4px;
+ --sage7:#4d5749;--on-sage:#fafafa;--on-sage-2:#edeeeb;--gap:4px;
+ --c1:#2f6fa8;--c2:#b98400;--c3:#008f8c;--c4:#c8562f;--c5:#9a4f9f;--c6:#3f8f4a;
+ --open:cubic-bezier(.34,1.25,.5,1);--close:cubic-bezier(.3,0,.3,1)}
+@media (prefers-color-scheme:dark){:root{--bg:#2e2e2e;--surface:#3d444c;--ink:#edeeeb;--ink-2:#a4ada6;--link:#d2dde4;--accent:#758072;--line:#485861;
+ --c1:#4a8ccc;--c2:#b3850a;--c3:#12a39b;--c4:#d2693f;--c5:#a866b0;--c6:#4f9a55}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Google Sans Flex",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1344px;margin:0 auto;padding:0 48px 128px}
+.nav{height:104px;display:flex;align-items:center;justify-content:center}
+.nav div{width:600px;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--ink-2)}
+.nav b{font:400 24px Newsreader,serif;color:var(--ink)}
+.chrome{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 48px;display:flex;gap:8px;align-items:center;font:12px "JetBrains Mono"}
+.chrome span{color:var(--ink-2);margin-right:8px}
+.chrome button{height:32px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--ink);font:13px "Google Sans Flex";cursor:pointer}
+.chrome button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chrome em{margin-left:auto;font-style:normal;color:var(--ink-2)}
+.label{font:12px/1.5 "Google Sans Flex";letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.meta{font:13px/1.7 "JetBrains Mono",monospace;color:var(--ink-2)}
+.serif{font-family:Newsreader,Georgia,serif}
+header.page{padding-top:120px;display:flex;flex-direction:column;gap:24px}
+header h1{font:400 88px/1.02 Newsreader,serif;letter-spacing:-2.2px}
+header p.sf{font:400 24px/1.45 Newsreader,serif;color:var(--ink-2);max-width:600px}
+.eyebrow{display:flex;gap:8px}.eyebrow i{font-style:normal;color:var(--accent)}
+.dir{display:none}.dir.on{display:block}
+.note{margin-top:64px;max-width:680px;font:14px/1.6 "Google Sans Flex";color:var(--ink-2);border-top:1px solid var(--ink);padding-top:16px}
+.note b{font-weight:400;color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+
+/* ---------- A. Tally plates: Projects' tile grid, but the cover is a number ---------- */
+.wall{--cell:calc((min(1248px,100vw - 96px) - 3*var(--gap))/4);display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:var(--cell);grid-auto-flow:dense;gap:var(--gap);margin-top:64px}
+.tile{position:relative;display:block;overflow:hidden;border-radius:var(--r);background:var(--surface)}
+.w2{grid-column:span 2}.h2{grid-row:span 2}
+.tile .body{position:absolute;inset:0;padding:24px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .top{display:flex;justify-content:space-between}
+.tile .num{font:400 56px/1 Newsreader,serif;letter-spacing:-.56px}
+.tile.h2 .num{font-size:120px;letter-spacing:-3.6px;font-weight:300}
+.tile .unit{margin-top:8px}
+.tile .latest{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.tile .latest span:first-child{font:400 15px "Google Sans Flex";color:var(--ink)}
+.plate{position:absolute;inset:0;background:color-mix(in srgb,var(--sage7) 94%,transparent);opacity:0;transform:scale(.86);transition:transform .35s var(--close),opacity .2s linear}
+.info{position:absolute;inset:0;padding:24px;display:flex;flex-direction:column;justify-content:space-between;color:var(--on-sage);opacity:0;transition:opacity .15s}
+.info .label,.info .meta{color:var(--on-sage-2)}
+.info h3{font:400 28px/1.2 Newsreader,serif}.tile.h2 .info h3,.tile.w2 .info h3{font-size:36px;font-weight:300;line-height:1.25}
+.info p{font:15px/1.5 "Google Sans Flex";color:var(--on-sage-2);margin-top:8px;max-width:420px}
+.tile:is(:hover,:focus-visible) .plate{opacity:1;transform:scale(1);transition:transform .6s var(--open),opacity .15s linear}
+.tile:is(:hover,:focus-visible) .info{opacity:1;transition:opacity .35s .15s}
+.tile.soon .body{opacity:.55}
+
+/* ---------- B. Catalogue: section index at display scale ---------- */
+.cat{margin-top:64px;border-top:1px solid var(--ink)}
+.row{display:grid;grid-template-columns:72px 1fr 340px;column-gap:24px;align-items:end;padding:40px 0;border-bottom:1px solid var(--line)}
+.row .idx{align-self:start;padding-top:20px}
+.row .name{font:400 120px/.95 "Google Sans Flex",sans-serif;letter-spacing:-3.6px;transition:color .2s}
+.row:hover .name,.row:focus-visible .name{color:var(--link)}
+.row .sub{margin-top:24px;display:flex;gap:32px;flex-wrap:wrap}
+.row .sub span{white-space:nowrap}
+.row .tally{text-align:right}
+.row .tally .num{font:400 56px/1 Newsreader,serif;letter-spacing:-.56px}
+.row .tally .label{margin-top:8px}
+.row .tally .d{margin-top:16px;font:15px/1.5 "Google Sans Flex";color:var(--ink-2);text-align:left}
+.row.soon{opacity:.55}
+
+/* ---------- C. Drawings: each collection drawn from its own data, captioned like an exhibit ---------- */
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:64px 24px;margin-top:64px}
+.ex{display:block}
+.ex .plate2{aspect-ratio:3/2;background:var(--surface);border-radius:var(--r);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .6s var(--open)}
+.ex:hover .plate2,.ex:focus-visible .plate2{transform:scale(1.015)}
+.ex svg{width:100%;height:100%;display:block}
+.cap{display:grid;grid-template-columns:48px 1fr auto;column-gap:16px;margin-top:16px;align-items:baseline}
+.cap h3{font:400 28px/1.2 Newsreader,serif}
+.cap .t{font:400 28px/1.2 Newsreader,serif;text-align:right}
+.cap p{grid-column:2/4;color:var(--ink-2);margin-top:4px;max-width:520px}
+.ex:hover h3{color:var(--link)}
+.ex.soon{opacity:.55}
+</style></head>
+<body>
+<div class="chrome"><span>/collections mockup</span>
+ <button data-d="A" aria-pressed="true">A · Tally plates</button>
+ <button data-d="B" aria-pressed="false">B · Catalogue</button>
+ <button data-d="C" aria-pressed="false">C · Drawings</button>
+ <em>Travels numbers are real. Life list, recommendations and Lego are sample numbers.</em></div>
+<div class="wrap">
+ <div class="nav"><div><span>Search</span><b>Mal Nushi</b><span>Menu</span></div></div>
+ <header class="page">
+  <p class="label eyebrow"><span>Collections</span></p>
+  <h1>Collections</h1>
+  <p class="sf">Lists I keep and numbers I keep counting. None of them is finished.</p>
+ </header>
+
+ <!-- A -->
+ <section class="dir on" id="A">
+  <div class="wall">
+   <a class="tile w2 h2" href="#"><div class="body">
+     <div class="top"><span class="label">Travels</span><span class="meta">2005 – 2026</span></div>
+     <div><div class="num">161,324</div><div class="label unit">Miles flown · 123 flights · 12 countries</div></div>
+     <div class="latest"><span>Latest flight</span><span class="meta">2026</span></div></div>
+     <div class="plate"></div><div class="info"><div class="top"><span class="label">Travels</span><span class="meta">Open →</span></div>
+     <div><h3>Every flight I have taken, drawn on a map and counted.</h3><p>A map, three views of it, then the flights as numbers, charts and a log.</p></div></div></a>
+   <a class="tile w2" href="#"><div class="body">
+     <div class="top"><span class="label">Life list</span><span class="meta">Since 2019</span></div>
+     <div><div class="num">214</div><div class="label unit">Species · 58 families</div></div>
+     <div class="latest"><span>Latest: Carolina Wren</span><span class="meta">2026-09-27</span></div></div>
+     <div class="plate"></div><div class="info"><div class="top"><span class="label">Life list</span><span class="meta">Open →</span></div>
+     <div><h3>Every bird species I have identified.</h3><p>In the order I first saw it.</p></div></div></a>
+   <a class="tile" href="#"><div class="body">
+     <div class="top"><span class="label">Recommendations</span></div>
+     <div><div class="num">128</div><div class="label unit">Books, films, tools, places</div></div>
+     <div class="latest"><span>Braiding Sweetgrass</span><span class="meta">09-20</span></div></div>
+     <div class="plate"></div><div class="info"><div class="top"><span class="label">Recs</span><span class="meta">Open →</span></div>
+     <div><h3>Things I would send a friend to.</h3></div></div></a>
+   <a class="tile soon" href="#"><div class="body">
+     <div class="top"><span class="label">Lego inventory</span></div>
+     <div><div class="num">41</div><div class="label unit">Sets</div></div>
+     <div class="latest"><span>Not started</span></div></div>
+     <div class="plate"></div><div class="info"><div class="top"><span class="label">Lego</span><span class="meta">Open →</span></div>
+     <div><h3>Sets on the shelf and in the box.</h3></div></div></a>
+  </div>
+  <p class="note"><b>Same grid, same plate, same hover as Projects.</b> The cover is replaced by a running tally in <b>stat</b>, the newest entry sits under a hairline. Size follows how much a collection has to show (travels is two across and two down). Hover brings the sage plate with the collection's own line. Reads as one family with /projects; the risk is that it looks like a dashboard of KPIs, not a museum.</p>
+ </section>
+
+ <!-- B -->
+ <section class="dir" id="B">
+  <div class="cat">
+   <a class="row" href="#"><span class="meta idx">001</span>
+    <div><div class="name">Travels</div><div class="sub meta"><span>Latest flight · 2026</span><span>34 airports</span><span>12 countries</span><span>2005 – 2026</span></div></div>
+    <div class="tally"><div class="num">161,324</div><div class="label">Miles · 123 flights</div></div></a>
+   <a class="row" href="#"><span class="meta idx">002</span>
+    <div><div class="name">Life list</div><div class="sub meta"><span>Latest · Carolina Wren</span><span>58 families</span><span>Since 2019</span></div></div>
+    <div class="tally"><div class="num">214</div><div class="label">Species</div></div></a>
+   <a class="row" href="#"><span class="meta idx">003</span>
+    <div><div class="name">Recommendations</div><div class="sub meta"><span>Latest · Braiding Sweetgrass</span><span>Books, films, tools, places</span></div></div>
+    <div class="tally"><div class="num">128</div><div class="label">Entries</div></div></a>
+   <a class="row soon" href="#"><span class="meta idx">004</span>
+    <div><div class="name">Lego inventory</div><div class="sub meta"><span>Not started</span></div></div>
+    <div class="tally"><div class="num">41</div><div class="label">Sets</div></div></a>
+  </div>
+  <p class="note"><b>A catalogue, not a gallery.</b> One row per collection, the name in <b>display-sans</b> (the spec reserves it for section indexes, which this is), the number to the right. Quietest, most typographic, and the most unlike /projects, which keeps the two sections distinct. It uses no images at all, so it never has a cover to find. Costs: a long page past five or six collections, and no picture per collection.</p>
+ </section>
+
+ <!-- C -->
+ <section class="dir" id="C">
+  <div class="gal">
+   <a class="ex" href="#"><div class="plate2">
+     <svg viewBox="0 0 600 400" aria-hidden="true">
+      <g fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity=".9">
+       <path d="M180 250 Q300 90 430 190"/><path d="M180 250 Q230 120 330 150"/><path d="M180 250 Q320 330 470 260"/>
+       <path d="M430 190 Q480 120 520 150"/><path d="M180 250 Q130 160 90 190"/><path d="M330 150 Q420 70 500 100"/>
+       <path d="M180 250 Q260 220 330 230"/><path d="M330 230 Q400 260 470 260"/></g>
+      <g fill="var(--c4)"><circle cx="180" cy="250" r="6"/><circle cx="430" cy="190" r="4"/><circle cx="330" cy="150" r="4"/><circle cx="470" cy="260" r="4"/><circle cx="520" cy="150" r="3.5"/><circle cx="90" cy="190" r="3.5"/><circle cx="500" cy="100" r="3.5"/><circle cx="330" cy="230" r="3.5"/></g>
+     </svg></div>
+    <div class="cap"><span class="meta">001</span><h3>Travels</h3><span class="t">161,324 mi</span><p>Every flight I have taken, drawn on a map and counted. 123 flights, 12 countries.</p></div></a>
+   <a class="ex" href="#"><div class="plate2">
+     <svg viewBox="0 0 600 400" aria-hidden="true" id="dots"></svg></div>
+    <div class="cap"><span class="meta">002</span><h3>Life list</h3><span class="t">214 species</span><p>One dot a species, grouped by family. The newest is sage.</p></div></a>
+   <a class="ex" href="#"><div class="plate2">
+     <svg viewBox="0 0 600 400" aria-hidden="true" id="spines"></svg></div>
+    <div class="cap"><span class="meta">003</span><h3>Recommendations</h3><span class="t">128</span><p>One spine each, colored by kind: books, films, tools, places.</p></div></a>
+   <a class="ex soon" href="#"><div class="plate2">
+     <svg viewBox="0 0 600 400" aria-hidden="true" id="studs"></svg></div>
+    <div class="cap"><span class="meta">004</span><h3>Lego inventory</h3><span class="t">41 sets</span><p>Not started. Studs, one for each set.</p></div></a>
+  </div>
+  <p class="note"><b>Each collection drawn from its own data</b>, captioned underneath like an exhibit (mono index, serif name, tally right). It is the "private museum" read literally, and it extends the travels stat cards (a surface plate, a picture behind a number). Most work: every new collection needs a drawing, so adding one is no longer just a row of data. The drawings here are rough and use chart colors, which the spec allows on charts but not elsewhere yet.</p>
+ </section>
+</div>
+<script>
+// Direction switch (mockup chrome only).
+const show=d=>{document.querySelectorAll('.dir').forEach(s=>s.classList.toggle('on',s.id===d));
+ document.querySelectorAll('.chrome button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===d));
+ try{history.replaceState(null,'','#'+d)}catch(e){}};
+document.querySelectorAll('.chrome button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.d)));
+document.addEventListener('click',e=>{if(e.target.closest('a[href="#"]'))e.preventDefault()});
+show(['A','B','C'].includes(location.hash.slice(1))?location.hash.slice(1):'A');
+// C drawings: life-list dots, recommendation spines, Lego studs.
+const NS='http://www.w3.org/2000/svg',mk=(p,t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+{const s=document.getElementById('dots'),fam=[18,14,12,11,10,9,9,8,8,7,7,6,6,6,5,5,5,4,4,4,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1];
+ let x=36,y=44,n=0;const total=214;
+ fam.forEach((c,i)=>{const w=Math.min(c,6)*16+Math.ceil(c/6>1?0:0);
+  const cols=Math.min(6,c);if(x+cols*16>580){x=36;y+=16*7}
+  for(let k=0;k<c&&n<total;k++,n++){const last=n===total-1;mk(s,'circle',{cx:x+(k%6)*16,cy:y+Math.floor(k/6)*16,r:last?5:4,fill:last?'var(--accent)':'var(--ink-2)',opacity:last?1:.75})}
+  x+=cols*16+20});}
+{const s=document.getElementById('spines'),cols=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'];let x=34,r=7;
+ const rnd=()=>(r=(r*9301+49297)%233280)/233280;
+ for(let row=0;row<3;row++){x=34;for(let i=0;i<22&&x<566;i++){const h=64+rnd()*44,w=10+rnd()*10;
+  mk(s,'rect',{x,y:96+row*100+(112-h),width:w,height:h,rx:1.5,fill:cols[Math.floor(rnd()*4)],opacity:.85});x+=w+3}
+  mk(s,'line',{x1:30,x2:570,y1:96+row*100+112,y2:96+row*100+112,stroke:'var(--line)','stroke-width':1.5})}}
+{const s=document.getElementById('studs');for(let i=0;i<41;i++){const c=i%9,r=Math.floor(i/9);
+  mk(s,'circle',{cx:90+c*52,cy:100+r*52,r:15,fill:'none',stroke:'var(--ink-2)','stroke-width':1.5});}}
+</script></body></html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/collections mockup · round two</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Google+Sans+Flex&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#edeeeb;--ink:#2e2e2e;--ink-2:#626964;--link:#485861;--accent:#626e5e;--line:#d5d7d2;
+ --open:cubic-bezier(.34,1.25,.5,1);--close:cubic-bezier(.3,0,.3,1)}
+@media (prefers-color-scheme:dark){:root{--bg:#2e2e2e;--surface:#3d444c;--ink:#edeeeb;--ink-2:#a4ada6;--link:#d2dde4;--accent:#758072;--line:#485861}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Google Sans Flex",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1344px;margin:0 auto;padding:0 48px 128px}
+.nav{height:104px;display:flex;align-items:center;justify-content:center}
+.nav div{width:600px;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--ink-2)}
+.nav b{font:400 24px Newsreader,serif;color:var(--ink)}
+.chrome{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 48px;display:flex;gap:8px;align-items:center;font:12px "JetBrains Mono"}
+.chrome span{color:var(--ink-2);margin-right:8px}
+.chrome button{height:32px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--ink);font:13px "Google Sans Flex";cursor:pointer}
+.chrome button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chrome em{margin-left:auto;font-style:normal;color:var(--ink-2)}
+.label{font:12px/1.5 "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--ink-2)}
+.meta{font:13px/1.7 "JetBrains Mono",monospace;color:var(--ink-2)}
+.sci{font:italic 400 15px Newsreader,serif;color:var(--ink-2)}
+header.page{padding-top:120px;display:flex;flex-direction:column;gap:24px}
+header h1{font:400 88px/1.02 Newsreader,serif;letter-spacing:-2.2px}
+header p.sf{font:400 24px/1.45 Newsreader,serif;color:var(--ink-2);max-width:600px}
+.dir{display:none}.dir.on{display:block}
+.note{margin-top:64px;max-width:680px;font:14px/1.6 "Google Sans Flex";color:var(--ink-2);border-top:1px solid var(--ink);padding-top:16px}
+.note b{font-weight:400;color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.arrow{font:15px "Google Sans Flex";color:var(--ink)}.arrow:hover{text-decoration:underline}
+
+/* ---------- D. Contents: a book's table of contents, rows that open ---------- */
+.toc{margin-top:64px;border-top:1px solid var(--ink)}
+.item{display:block;border-bottom:1px solid var(--line)}
+.item .head{display:grid;grid-template-columns:72px auto 1fr auto;column-gap:16px;align-items:baseline;padding:22px 0}
+.item .name{font:400 36px/1.2 Newsreader,serif;letter-spacing:-.36px;transition:color .2s}
+.item:hover .name,.item:focus-visible .name{color:var(--link)}
+.item .lead{border-bottom:1px dotted var(--ink-2);transform:translateY(-7px);opacity:.6}
+.item .tally{font:400 36px/1.2 Newsreader,serif;font-variant-numeric:tabular-nums}
+.item .tally small{font:12px "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--ink-2);margin-left:8px}
+.item .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--close)}
+.item:is(:hover,:focus-visible) .more{grid-template-rows:1fr;transition:grid-template-rows .6s var(--open)}
+.item .more>div{overflow:hidden;padding-left:88px}
+.item .more ul{list-style:none;padding:0 0 28px;display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:48px;row-gap:6px}
+.item .more li{display:flex;gap:12px;align-items:baseline}
+.item.soon{opacity:.5}
+.item .desc{grid-column:2/-1;color:var(--ink-2);margin-top:2px}
+
+/* ---------- E. Ledger: the newest entries are the preview ---------- */
+.led{display:grid;grid-template-columns:1fr 1fr;gap:96px 24px;margin-top:64px}
+.led section{display:flex;flex-direction:column}
+.led .h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--ink);padding-bottom:12px}
+.led h2{font:400 28px/1.2 Newsreader,serif}
+.led h2 a:hover{color:var(--link)}
+.led .t{font:13px "JetBrains Mono";color:var(--ink-2)}
+.led table{width:100%;border-collapse:collapse}
+.led td{padding:18px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+.led td:first-child{width:96px}
+.led td:last-child{text-align:right;color:var(--ink-2)}
+.led .foot{padding-top:16px;display:flex;justify-content:space-between}
+.led section.soon{opacity:.5}
+
+/* ---------- G. Sentence: the index is one sentence, at display scale ---------- */
+.sent{margin-top:96px;font:300 52px/1.28 Newsreader,serif;letter-spacing:-.8px;max-width:1100px}
+.sent a{color:var(--link);border-bottom:1px solid currentColor;transition:color .2s}
+.sent a:hover{color:var(--ink)}
+.sent .it{font-style:italic;color:var(--ink-2);font-weight:300}
+.after{margin-top:96px}
+.after .rows{border-top:1px solid var(--ink)}
+.after .r{display:grid;grid-template-columns:72px 1fr auto auto;column-gap:24px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.after .r .n{font:400 28px/1.2 Newsreader,serif}
+.after .r:hover .n{color:var(--link)}
+</style></head>
+<body>
+<div class="chrome"><span>/collections · round two</span>
+ <button data-d="D" aria-pressed="true">D · Contents</button>
+ <button data-d="E" aria-pressed="false">E · Ledger</button>
+ <button data-d="G" aria-pressed="false">G · Sentence</button>
+ <em>Travels numbers are real. Birds, recommendations and Lego are sample.</em></div>
+<div class="wrap">
+ <div class="nav"><div><span>Search</span><b>Mal Nushi</b><span>Menu</span></div></div>
+ <header class="page">
+  <p class="label">Collections</p>
+  <h1>Collections</h1>
+  <p class="sf">Lists I keep and numbers I keep counting. None of them is finished.</p>
+ </header>
+
+ <!-- D -->
+ <section class="dir on" id="D">
+  <div class="toc">
+   <a class="item" href="#"><div class="head"><span class="meta">001</span><span class="name">Travels</span><span class="lead"></span><span class="tally">161,324<small>miles</small></span></div>
+    <div class="more"><div><ul>
+     <li><span class="meta">16×</span><span>CLT – DTW</span></li><li><span class="meta">8×</span><span>PRN – VIE</span></li><li><span class="meta">6×</span><span>CLT – LGA</span></li>
+     <li class="meta" style="grid-column:1/-1;padding-top:6px">123 flights · 34 airports · 12 countries · since 2005</li></ul></div></div></a>
+   <a class="item" href="#"><div class="head"><span class="meta">002</span><span class="name">Life list</span><span class="lead"></span><span class="tally">214<small>species</small></span></div>
+    <div class="more"><div><ul>
+     <li><span class="meta">09-27</span><span>Carolina Wren</span></li><li><span class="meta">09-21</span><span>Great Blue Heron</span></li><li><span class="meta">09-02</span><span>Tufted Titmouse</span></li>
+     <li class="meta" style="grid-column:1/-1;padding-top:6px">58 families · since 2019</li></ul></div></div></a>
+   <a class="item" href="#"><div class="head"><span class="meta">003</span><span class="name">Recommendations</span><span class="lead"></span><span class="tally">128<small>entries</small></span></div>
+    <div class="more"><div><ul>
+     <li><span class="meta">09-20</span><span>Braiding Sweetgrass</span></li><li><span class="meta">09-11</span><span>Piranesi</span></li><li><span class="meta">08-30</span><span>Paterson</span></li>
+     <li class="meta" style="grid-column:1/-1;padding-top:6px">Books, films, tools, places</li></ul></div></div></a>
+   <a class="item soon" href="#"><div class="head"><span class="meta">004</span><span class="name">Lego inventory</span><span class="lead"></span><span class="tally">41<small>sets</small></span></div>
+    <div class="more"><div><ul><li class="meta">Not started</li></ul></div></div></a>
+  </div>
+  <p class="note"><b>B, at book scale.</b> The names drop from 120px to <b>36px</b> (the <code>quote</code> size) and join their numbers with a dotted leader, as in a printed table of contents. Hover or focus opens the row on the nav's spring and shows what is newest in it, so the preview is real entries, not a figure. Still one column of text, but with a reason to move the pointer down it.</p>
+ </section>
+
+ <!-- E -->
+ <section class="dir" id="E">
+  <div class="led">
+   <section>
+    <div class="h"><h2><a href="#">Travels</a></h2><span class="t">123 flights</span></div>
+    <table><caption class="label" style="text-align:left;padding:16px 0 0">Most flown</caption><tbody>
+     <tr><td class="meta">16×</td><td>CLT – DTW</td><td>Charlotte – Detroit</td></tr>
+     <tr><td class="meta">8×</td><td>PRN – VIE</td><td>Pristina – Vienna</td></tr>
+     <tr><td class="meta">6×</td><td>CLT – LGA</td><td>Charlotte – New York</td></tr></tbody></table>
+    <div class="foot"><span class="meta">161,324 miles</span><a class="arrow" href="#">The map and the log →</a></div>
+   </section>
+   <section>
+    <div class="h"><h2><a href="#">Life list</a></h2><span class="t">214 species</span></div>
+    <table><caption class="label" style="text-align:left;padding:16px 0 0">Newest</caption><tbody>
+     <tr><td class="meta">09-27</td><td>Carolina Wren <span class="sci">Thryothorus ludovicianus</span></td><td>Charlotte</td></tr>
+     <tr><td class="meta">09-21</td><td>Great Blue Heron <span class="sci">Ardea herodias</span></td><td>Marsh</td></tr>
+     <tr><td class="meta">09-02</td><td>Tufted Titmouse <span class="sci">Baeolophus bicolor</span></td><td>Backyard</td></tr></tbody></table>
+    <div class="foot"><span class="meta">58 families</span><a class="arrow" href="#">All 214 →</a></div>
+   </section>
+   <section>
+    <div class="h"><h2><a href="#">Recommendations</a></h2><span class="t">128 entries</span></div>
+    <table><caption class="label" style="text-align:left;padding:16px 0 0">Newest</caption><tbody>
+     <tr><td class="meta">09-20</td><td>Braiding Sweetgrass</td><td>Book</td></tr>
+     <tr><td class="meta">09-11</td><td>Piranesi</td><td>Book</td></tr>
+     <tr><td class="meta">08-30</td><td>Paterson</td><td>Film</td></tr></tbody></table>
+    <div class="foot"><span class="meta">Books, films, tools, places</span><a class="arrow" href="#">All 128 →</a></div>
+   </section>
+   <section class="soon">
+    <div class="h"><h2><a href="#">Lego inventory</a></h2><span class="t">41 sets</span></div>
+    <table><caption class="label" style="text-align:left;padding:16px 0 0">Not started</caption><tbody>
+     <tr><td class="meta">—</td><td>No sets yet</td><td></td></tr></tbody></table>
+    <div class="foot"><span class="meta">&nbsp;</span><span></span></div>
+   </section>
+  </div>
+  <p class="note"><b>The preview is the content.</b> Each collection is a short table of its own newest rows (the data-table style the collection pages already use) under a section label. It has no tiles and no big numbers, so it cannot read as a dashboard; it reads as the contents page of a journal. The cost is height: four blocks fill two screens, and the order is fixed by me.</p>
+ </section>
+
+ <!-- G -->
+ <section class="dir" id="G">
+  <p class="sent">Since 2005 I have <a href="#">flown 161,324 miles</a> in 123 flights to 12 countries. Since 2019 I have <a href="#">identified 214 birds</a> in 58 families, and I keep <a href="#">128 recommendations</a> for friends, plus <a href="#" class="it">41 Lego sets</a> I have not yet written down.</p>
+  <div class="after">
+   <p class="label" style="padding-bottom:16px;border-bottom:1px solid var(--ink)">All collections</p>
+   <div class="rows">
+    <a class="r" href="#"><span class="meta">001</span><span class="n">Travels</span><span class="meta">123 flights</span><span class="meta">2005 – 2026</span></a>
+    <a class="r" href="#"><span class="meta">002</span><span class="n">Life list</span><span class="meta">214 species</span><span class="meta">Since 2019</span></a>
+    <a class="r" href="#"><span class="meta">003</span><span class="n">Recommendations</span><span class="meta">128 entries</span><span class="meta">Updated 09-20</span></a>
+    <a class="r" style="opacity:.5" href="#"><span class="meta">004</span><span class="n">Lego inventory</span><span class="meta">Not started</span><span class="meta"></span></a>
+   </div>
+  </div>
+  <p class="note"><b>Type as image.</b> The page leads with one sentence in light Newsreader at 52px, the numbers inside it as links. No boxes, no figures set apart: the numbers are only as loud as the sentence they sit in. The plain list under it is the scannable version. The sentence is built from the data (it would be generated, not written), and it grows a clause with each collection, so past six or seven it needs a rule for which fit.</p>
+ </section>
+</div>
+<script>
+const show=d=>{document.querySelectorAll('.dir').forEach(s=>s.classList.toggle('on',s.id===d));
+ document.querySelectorAll('.chrome button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===d));
+ try{history.replaceState(null,'','#'+d)}catch(e){}};
+document.querySelectorAll('.chrome button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.d)));
+document.addEventListener('click',e=>{if(e.target.closest('a[href="#"]'))e.preventDefault()});
+show(['D','E','G'].includes(location.hash.slice(1))?location.hash.slice(1):'D');
+</script></body></html>

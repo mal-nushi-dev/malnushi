@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/collections mockup · round three</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Google+Sans+Flex&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--surface:#edeeeb;--ink:#2e2e2e;--ink-2:#626964;--link:#485861;--accent:#626e5e;--line:#d5d7d2;
+ --sage7:#4d5749;--on-sage:#fafafa;--on-sage-2:#edeeeb;
+ --open:cubic-bezier(.34,1.25,.5,1);--close:cubic-bezier(.3,0,.3,1)}
+@media (prefers-color-scheme:dark){:root{--bg:#2e2e2e;--surface:#3d444c;--ink:#edeeeb;--ink-2:#a4ada6;--link:#d2dde4;--accent:#758072;--line:#485861}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Google Sans Flex",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1344px;margin:0 auto;padding:0 48px 128px}
+.nav{height:104px;display:flex;align-items:center;justify-content:center}
+.nav div{width:600px;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--ink-2)}
+.nav b{font:400 24px Newsreader,serif;color:var(--ink)}
+.chrome{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 48px;display:flex;gap:8px;align-items:center;font:12px "JetBrains Mono"}
+.chrome span{color:var(--ink-2);margin-right:8px}
+.chrome button{height:32px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--ink);font:13px "Google Sans Flex";cursor:pointer}
+.chrome button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chrome em{margin-left:auto;font-style:normal;color:var(--ink-2)}
+.label{font:12px/1.5 "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--ink-2)}
+.meta{font:13px/1.7 "JetBrains Mono",monospace;color:var(--ink-2)}
+.sci{font:italic 400 15px Newsreader,serif;color:var(--ink-2)}
+header.page{padding-top:120px;display:flex;flex-direction:column;gap:24px}
+header h1{font:400 88px/1.02 Newsreader,serif;letter-spacing:-2.2px}
+header p.sf{font:400 24px/1.45 Newsreader,serif;color:var(--ink-2);max-width:600px}
+.dir{display:none}.dir.on{display:block}
+.note{margin-top:64px;max-width:680px;font:14px/1.6 "Google Sans Flex";color:var(--ink-2);border-top:1px solid var(--ink);padding-top:16px}
+.note b{font-weight:400;color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.rows{margin-top:64px;border-top:1px solid var(--ink)}
+.soon{opacity:.5}
+
+/* ---------- H. Index: a back-of-the-book index, always open ---------- */
+.ix{display:grid;grid-template-columns:360px 1fr 1fr;column-gap:24px;padding:28px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ix .n{font:400 36px/1.2 Newsreader,serif;letter-spacing:-.36px;transition:color .2s}
+.ix:hover .n,.ix:focus-visible .n{color:var(--link)}
+.ix .n small{display:block;font:13px "JetBrains Mono";letter-spacing:0;color:var(--ink-2);margin-top:4px}
+.ix p{font:400 17px/1.7 Newsreader,serif;color:var(--ink)}
+.ix p i{color:var(--ink-2)}
+.ix p span{font:13px "JetBrains Mono";color:var(--ink-2)}
+.ix p b{font-weight:400;font:12px "Google Sans Flex";letter-spacing:1.44px;text-transform:uppercase;color:var(--ink-2);margin-right:8px}
+
+/* ---------- I. Statements: one sentence per collection, each opens ---------- */
+.st{display:block;border-bottom:1px solid var(--line)}
+.st .h{display:grid;grid-template-columns:72px 1fr auto;column-gap:16px;align-items:baseline;padding:28px 0}
+.st .s{font:300 48px/1.15 Newsreader,serif;letter-spacing:-.6px;color:var(--ink-2);transition:color .2s}
+.st .s b{font-weight:300;color:var(--ink)}
+.st:hover .s b,.st:focus-visible .s b{color:var(--link)}
+.st .go{font:15px "Google Sans Flex";color:var(--ink-2);opacity:0;transition:opacity .2s}
+.st:is(:hover,:focus-visible) .go{opacity:1}
+.st .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--close)}
+.st:is(:hover,:focus-visible) .more{grid-template-rows:1fr;transition:grid-template-rows .6s var(--open)}
+.st .more>div{overflow:hidden;padding-left:88px}
+.st .more p{padding:0 0 28px;font:400 17px/1.6 Newsreader,serif;color:var(--ink-2)}
+.st .more p span{font:13px "JetBrains Mono"}
+
+/* ---------- K. Marginalia: the sentence, with the site's own margin asides ---------- */
+.mg{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;margin-top:96px}
+.sent{grid-column:1/10;font:300 52px/1.28 Newsreader,serif;letter-spacing:-.8px}
+.sent a{color:var(--link);border-bottom:1px solid currentColor;transition:color .2s}
+.sent a:hover,.sent a:focus-visible{color:var(--ink)}
+.margin{grid-column:10/13;position:relative;align-self:start;padding-top:16px;border-top:1px solid var(--ink);margin-top:16px;min-height:220px}
+.margin .hint,.margin .a{font:14px/1.6 "Google Sans Flex";color:var(--ink-2)}
+.margin .a{position:absolute;left:0;right:0;top:16px;opacity:0;transform:translateY(6px);transition:opacity .15s,transform .35s var(--close);pointer-events:none}
+.margin .a h3{font:400 28px/1.2 Newsreader,serif;color:var(--ink);margin-bottom:8px}
+.margin .a .meta{display:block;margin-top:12px}
+.margin .a .arrow{display:block;margin-top:12px;color:var(--ink);font-size:15px}
+.mg:has([data-k=t]:is(:hover,:focus-visible)) .a[data-k=t],
+.mg:has([data-k=l]:is(:hover,:focus-visible)) .a[data-k=l],
+.mg:has([data-k=r]:is(:hover,:focus-visible)) .a[data-k=r],
+.mg:has([data-k=g]:is(:hover,:focus-visible)) .a[data-k=g]{opacity:1;transform:none;transition:opacity .35s .15s,transform .6s var(--open)}
+.mg:has([data-k]:is(:hover,:focus-visible)) .hint{opacity:0}
+
+/* ---------- J. Spines: a shelf of collections; the one you point at opens ---------- */
+.shelf{display:flex;gap:4px;height:520px;margin-top:64px;padding-bottom:0;border-bottom:1px solid var(--ink)}
+.spine{position:relative;flex:0 0 128px;display:flex;overflow:hidden;border-radius:4px 4px 0 0;background:var(--surface);color:var(--ink);
+ transition:flex-basis .35s var(--close),background-color .3s}
+.spine:is(:hover,:focus-visible){flex-basis:560px;background:var(--sage7);color:var(--on-sage);transition:flex-basis .6s var(--open),background-color .3s}
+.spine .strip{flex:0 0 128px;padding:24px 0;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.spine .strip .meta{color:inherit;opacity:.8}
+.spine .nm{writing-mode:vertical-rl;font:400 40px/1 Newsreader,serif;letter-spacing:-.4px;white-space:nowrap}
+.spine .body{flex:0 0 432px;padding:24px 32px 24px 0;display:flex;flex-direction:column;justify-content:space-between;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.spine:is(:hover,:focus-visible) .body{opacity:1;visibility:visible;transition:opacity .35s .15s,visibility 0s}
+.spine .body .t{font:300 56px/1 Newsreader,serif;letter-spacing:-.56px}
+.spine .body .l{font:15px/1.5 "Google Sans Flex";color:var(--on-sage-2)}
+.spine .body .meta{color:var(--on-sage-2)}
+.spine .body ul{list-style:none;padding:0;margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.spine .body li{display:flex;gap:12px;border-top:1px solid color-mix(in srgb,var(--on-sage-2) 35%,transparent);padding-top:6px}
+.spine.soon{opacity:1}.spine.soon .nm,.spine.soon .strip .meta{opacity:.5}
+</style></head>
+<body>
+<div class="chrome"><span>/collections · round three</span>
+ <button data-d="H" aria-pressed="true">H · Index</button>
+ <button data-d="I" aria-pressed="false">I · Statements</button>
+ <button data-d="K" aria-pressed="false">K · Marginalia</button>
+ <button data-d="J" aria-pressed="false">J · Spines</button>
+ <em>Travels numbers are real. Birds, recommendations and Lego are sample.</em></div>
+<div class="wrap">
+ <div class="nav"><div><span>Search</span><b>Mal Nushi</b><span>Menu</span></div></div>
+ <header class="page">
+  <p class="label">Collections</p>
+  <h1>Collections</h1>
+  <p class="sf">Lists I keep and numbers I keep counting. None of them is finished.</p>
+ </header>
+
+ <!-- H -->
+ <section class="dir on" id="H">
+  <div class="rows">
+   <a class="ix" href="#"><div class="n">Travels<small>001 · 161,324 miles</small></div>
+    <p><b>Most flown</b>Charlotte–Detroit <span>16</span>, Pristina–Vienna <span>8</span>, Charlotte–New&nbsp;York <span>6</span>.</p>
+    <p><b>Also</b>123 flights to 12 countries, <i>since 2005</i>. Detroit <span>70</span>, Charlotte <span>30</span>, Vienna <span>16</span>.</p></a>
+   <a class="ix" href="#"><div class="n">Life list<small>002 · 214 species</small></div>
+    <p><b>Newest</b>Carolina Wren <span>09-27</span>, Great Blue Heron <span>09-21</span>, Tufted Titmouse <span>09-02</span>.</p>
+    <p><b>Also</b>58 families, <i>since 2019</i>. Wrens, herons, thrushes, woodpeckers.</p></a>
+   <a class="ix" href="#"><div class="n">Recommendations<small>003 · 128 entries</small></div>
+    <p><b>Newest</b>Braiding Sweetgrass <span>09-20</span>, Piranesi <span>09-11</span>, Paterson <span>08-30</span>.</p>
+    <p><b>Also</b>Books, films, tools, places: <i>things I would send a friend to</i>.</p></a>
+   <a class="ix soon" href="#"><div class="n">Lego inventory<small>004 · 41 sets</small></div>
+    <p><b>Not started</b>Nothing written down yet.</p><p></p></a>
+  </div>
+  <p class="note"><b>D without the hover.</b> The same names at 36px, but each collection always carries its newest and most-flown entries as run-in text, set the way an encyclopedia index is: serif prose, counts and dates in mono. Nothing hides, so touch screens and screen readers get everything, and the page is the longest of the four. Closest to a reference book.</p>
+ </section>
+
+ <!-- I -->
+ <section class="dir" id="I">
+  <div class="rows">
+   <a class="st" href="#"><div class="h"><span class="meta">001</span><span class="s">I have flown <b>161,324 miles</b>.</span><span class="go">Open →</span></div>
+    <div class="more"><div><p>123 flights to 12 countries since 2005. Most flown: Charlotte–Detroit <span>16×</span>, Pristina–Vienna <span>8×</span>.</p></div></div></a>
+   <a class="st" href="#"><div class="h"><span class="meta">002</span><span class="s">I have named <b>214 birds</b>.</span><span class="go">Open →</span></div>
+    <div class="more"><div><p>58 families since 2019. Newest: Carolina Wren <span>09-27</span>, Great Blue Heron <span>09-21</span>.</p></div></div></a>
+   <a class="st" href="#"><div class="h"><span class="meta">003</span><span class="s">I keep <b>128 things</b> worth sending a friend to.</span><span class="go">Open →</span></div>
+    <div class="more"><div><p>Books, films, tools, places. Newest: Braiding Sweetgrass <span>09-20</span>, Piranesi <span>09-11</span>.</p></div></div></a>
+   <a class="st soon" href="#"><div class="h"><span class="meta">004</span><span class="s">I have <b>41 Lego sets</b>, not yet written down.</span><span class="go">Open →</span></div>
+    <div class="more"><div><p>Not started.</p></div></div></a>
+  </div>
+  <p class="note"><b>D and G together.</b> One line each, in light Newsreader at 48px, with the lead-in quiet (<code>ink-2</code>) and the number loud (<code>ink</code>). It keeps G's voice without G's problem: a collection is one sentence, so the page scales to any count and no clause has to be dropped. Hover opens the row as in D. The copy is written per collection (a verb for each), which is a line of content in the collection's file.</p>
+ </section>
+
+ <!-- K -->
+ <section class="dir" id="K">
+  <div class="mg">
+   <p class="sent">Since 2005 I have <a href="#" data-k="t">flown 161,324 miles</a> in 123 flights to 12 countries. Since 2019 I have <a href="#" data-k="l">identified 214 birds</a> in 58 families, and I keep <a href="#" data-k="r">128 recommendations</a> for friends, plus <a href="#" data-k="g">41 Lego sets</a> I have not yet written down.</p>
+   <aside class="margin" aria-label="About the collections">
+    <p class="hint">Each number opens its collection. Point at one.</p>
+    <div class="a" data-k="t"><h3>Travels</h3><p>Every flight, on a map and counted. Charlotte to Detroit is the one I know best.</p><span class="meta">Most flown · CLT–DTW 16×</span><span class="arrow">Open Travels →</span></div>
+    <div class="a" data-k="l"><h3>Life list</h3><p>Every species I have identified, in the order I first saw it.</p><span class="meta">Newest · Carolina Wren, 09-27</span><span class="arrow">Open the life list →</span></div>
+    <div class="a" data-k="r"><h3>Recommendations</h3><p>Books, films, tools and places I would send a friend to.</p><span class="meta">Newest · Braiding Sweetgrass</span><span class="arrow">Open recommendations →</span></div>
+    <div class="a" data-k="g"><h3>Lego inventory</h3><p>Not started. Sets on the shelf and in the box.</p><span class="meta">Planned</span></div>
+   </aside>
+  </div>
+  <p class="note"><b>G with the site's own margin.</b> The sentence is unchanged, but pointing at (or tabbing to) a number brings that collection's note into the right margin, set as the site sets asides: sans, small, in the margin. The numbers stay as quiet as the sentence; the detail has somewhere to go. No list under it, so the page is only the sentence. Costs: it hides the list, so anyone who does not point sees one paragraph, and the aside needs a fallback on touch.</p>
+ </section>
+
+ <!-- J -->
+ <section class="dir" id="J">
+  <div class="shelf">
+   <a class="spine" href="#"><div class="strip"><span class="meta">001</span><span class="nm">Travels</span><span class="meta">123</span></div>
+    <div class="body"><div><div class="t">161,324</div><p class="l">Miles flown. 12 countries since 2005.</p>
+     <ul><li class="meta"><span>16×</span><span>Charlotte – Detroit</span></li><li class="meta"><span>8×</span><span>Pristina – Vienna</span></li><li class="meta"><span>6×</span><span>Charlotte – New York</span></li></ul></div>
+     <span class="meta">Open Travels →</span></div></a>
+   <a class="spine" href="#"><div class="strip"><span class="meta">002</span><span class="nm">Life list</span><span class="meta">214</span></div>
+    <div class="body"><div><div class="t">214</div><p class="l">Species, in 58 families, since 2019.</p>
+     <ul><li class="meta"><span>09-27</span><span>Carolina Wren</span></li><li class="meta"><span>09-21</span><span>Great Blue Heron</span></li><li class="meta"><span>09-02</span><span>Tufted Titmouse</span></li></ul></div>
+     <span class="meta">Open the life list →</span></div></a>
+   <a class="spine" href="#"><div class="strip"><span class="meta">003</span><span class="nm">Recommendations</span><span class="meta">128</span></div>
+    <div class="body"><div><div class="t">128</div><p class="l">Books, films, tools and places.</p>
+     <ul><li class="meta"><span>09-20</span><span>Braiding Sweetgrass</span></li><li class="meta"><span>09-11</span><span>Piranesi</span></li><li class="meta"><span>08-30</span><span>Paterson</span></li></ul></div>
+     <span class="meta">Open recommendations →</span></div></a>
+   <a class="spine soon" href="#"><div class="strip"><span class="meta">004</span><span class="nm">Lego inventory</span><span class="meta">41</span></div>
+    <div class="body"><div><div class="t">41</div><p class="l">Sets. Not started.</p></div><span class="meta">&nbsp;</span></div></a>
+  </div>
+  <p class="note"><b>The one that is not a list.</b> The collections stand like books on a shelf, each a spine with its name set vertically and its count at the foot. The one you point at (or tab to) pulls out on the nav's spring and turns sage, as the tile plate and the nav do, with its tally and newest entries. At rest it is almost all type and air; open, it is the most information on the page. New collections add a spine. Costs: vertical text is slower to read; on touch there is no hover, so a tap would open it first and a second tap follow the link; a long shelf (more than eight) wraps to a second shelf.</p>
+ </section>
+</div>
+<script>
+const ids=['H','I','K','J'];
+const show=d=>{document.querySelectorAll('.dir').forEach(s=>s.classList.toggle('on',s.id===d));
+ document.querySelectorAll('.chrome button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===d));
+ try{history.replaceState(null,'','#'+d)}catch(e){}};
+document.querySelectorAll('.chrome button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.d)));
+document.addEventListener('click',e=>{if(e.target.closest('a[href="#"]'))e.preventDefault()});
+show(ids.includes(location.hash.slice(1))?location.hash.slice(1):'H');
+</script></body></html>
