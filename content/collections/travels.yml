@@ -1,6 +1,8 @@
 title: Travels
 description: Every flight I have taken, drawn on a map and counted.
 itemName: flight
+category: Places and nature
+sentence: I have taken {count} {items}.
 # One row for each line of content/flights/flights.csv.
 from: flight
 summary: [from, to, date]

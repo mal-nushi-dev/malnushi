@@ -574,6 +574,7 @@ export async function loadContent(
       date: latest ?? "1970-01-01",
       title: collection.title,
       summary: collection.description,
+      category: collection.category,
       tags: [],
       facets: {},
       draft: collection.draft,

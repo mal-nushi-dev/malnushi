@@ -1,6 +1,8 @@
 title: Life list
 description: Every bird species I have identified, in the order I first saw it.
 itemName: bird
+category: Places and nature
+sentence: I have named {count} {items}.
 # One row a species: the first sighting of it in content/sightings/.
 from: sighting
 unique: species

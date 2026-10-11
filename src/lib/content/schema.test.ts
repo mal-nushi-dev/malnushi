@@ -277,8 +277,24 @@ describe("a collection's file", () => {
     [{ columns: [{ key: "a", label: "A" }], unique: "a" }, "unique"],
     [{ columns: [{ key: "a", label: "A" }], from: "post" }, "from"],
     [{ columns: [{ key: "a" }] }, "columns.0.label"],
+    [{ columns: [{ key: "a", label: "A" }], sentence: "I have none." }, "sentence"],
+    [{ columns: [{ key: "a", label: "A" }], sentence: "{count} {nope}" }, "sentence"],
+    [{ columns: [{ key: "a", label: "A" }], sentence: "{count} {items}." }, "itemName"],
   ])("with %o is reported at %s", async (extra, field) => {
     const problems = await problemsOf(await collection(extra));
     expect(problems.filter((p) => p.startsWith(`collections/extra.yml: ${field}: `))).toHaveLength(1);
+  });
+
+  it("keeps a category and a sentence on the entry", async () => {
+    const root = await collection({
+      columns: [{ key: "a", label: "A" }],
+      itemName: "thing",
+      category: "Things",
+      sentence: "I have {count} {items}.",
+    });
+    const q = createQueries(await loadContent(root));
+    const entry = q.need("collection", "extra");
+    expect(entry.category).toBe("Things");
+    expect(entry.data.sentence).toBe("I have {count} {items}.");
   });
 });

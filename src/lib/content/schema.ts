@@ -344,6 +344,16 @@ export const collectionFile = z
     description: z.string().optional(),
     /** What one row is called on the home page: "bird", "recommendation". */
     itemName: z.string().optional(),
+    /**
+     * The one label the Collections shelf groups by, as every kind's
+     * `category` is its main label. Groups are whatever values are in use.
+     */
+    category: z.string().min(1).optional(),
+    /**
+     * A sentence about the collection, in the first person. `{count}` is the
+     * number of rows and `{items}` is `itemName`, plural unless there is one.
+     */
+    sentence: z.string().min(1).optional(),
     /** The fields that sum a row up in one line elsewhere, in order. */
     summary: z.array(z.string()).default(["date"]),
     columns: z
@@ -370,6 +380,18 @@ export const collectionFile = z
     /** With `from`: one row for each value of this field, the earliest. */
     unique: z.string().optional(),
     draft,
+  })
+  .refine((c) => !c.sentence || /\{count\}/.test(c.sentence), {
+    path: ["sentence"],
+    message: "a sentence needs `{count}`, the number of rows",
+  })
+  .refine((c) => !c.sentence || !/\{(?!count\}|items\})/.test(c.sentence), {
+    path: ["sentence"],
+    message: "a sentence may only use `{count}` and `{items}`",
+  })
+  .refine((c) => !c.sentence?.includes("{items}") || c.itemName, {
+    path: ["itemName"],
+    message: "a sentence with `{items}` needs `itemName`",
   })
   .refine((c) => !c.from || c.items.length === 0, {
     path: ["items"],
