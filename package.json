@@ -15,7 +15,8 @@
     "test:visual": "VISUAL=1 playwright test",
     "test:visual:update": "VISUAL=1 playwright test --update-snapshots",
     "analyze": "next experimental-analyze",
-    "flights": "node scripts/flights.mjs"
+    "flights": "node scripts/flights.mjs",
+    "geo": "node scripts/geo.mjs"
   },
   "dependencies": {
     "@deck.gl/core": "^9.4.0",
