@@ -3,6 +3,8 @@ import path from "node:path";
 import exifr from "exifr";
 import { parse as parseYaml } from "yaml";
 import type { z } from "zod";
+import { policy as ebirdPolicy } from "@/lib/ebird/policy";
+import { readEbird } from "@/lib/ebird/read";
 import { greatCircleKm } from "@/lib/flights/distance";
 import { parseTable } from "./csv";
 import { fieldOf, isBefore, orientationOf } from "./format";
@@ -354,6 +356,64 @@ export async function loadContent(
     });
   }
 
+  // Sightings from eBird: one row each in ebird/MyEBirdData.csv, the export
+  // as it was downloaded. What a page may say of a row is decided in code,
+  // not here: see src/lib/ebird/read.ts and policy.ts.
+  const ebirdFiles = await filesIn(root, "ebird");
+  for (const name of ebirdFiles) {
+    if (name !== "MyEBirdData.csv") {
+      problems.push(`ebird/${name}: expected MyEBirdData.csv only`);
+    }
+  }
+  if (ebirdFiles.includes("MyEBirdData.csv")) {
+    const source = "ebird/MyEBirdData.csv";
+    const read = readEbird(await readFile(path.join(root, source), "utf8"), source, ebirdPolicy);
+    problems.push(...read.problems);
+    const taken = new Set<string>();
+    for (const s of read.sightings) {
+      const stem = `${s.date}-${s.species}`
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+      let id = stem;
+      for (let n = 2; taken.has(id); n++) id = `${stem}-${n}`;
+      taken.add(id);
+      const { species: name, ...rest } = s;
+      const data = {
+        species: name,
+        scientific: rest.scientific,
+        date: rest.date,
+        place: rest.place,
+        checklist: rest.checklist,
+        country: rest.country,
+        region: rest.region,
+        county: rest.county,
+        taxon: rest.taxon,
+        area: rest.area,
+        tags: [] as string[],
+        related: [] as string[],
+        draft: false,
+      };
+      add("sighting", id, source, {
+        date: s.date,
+        title: name,
+        tags: [],
+        facets: {
+          species: name,
+          scientific: s.scientific,
+          place: s.place,
+          region: s.region,
+          country: s.country,
+          county: s.county,
+        },
+        draft: false,
+        edges: [],
+        body: "",
+        data: defined(data),
+      });
+    }
+  }
+
   // One species keeps one name: a slip in a sighting would start a new row
   // in the life list.
   const species = new Map<string, Entry>();
@@ -365,6 +425,8 @@ export async function loadContent(
       continue;
     }
     for (const key of ["scientific", "family"] as const) {
+      // An eBird row has no family: only two that name one can disagree.
+      if (first.facets[key] === undefined || sighting.facets[key] === undefined) continue;
       if (first.facets[key] !== sighting.facets[key]) {
         problems.push(
           `${sighting.source}: ${key} is "${sighting.facets[key]}", but ${first.source} has "${first.facets[key]}" for ${sighting.data.species}`,

@@ -35,7 +35,7 @@ describe("refs", () => {
 
   it("anchors an observation to its collection's page", () => {
     expect(urlFor("sighting", "2026-09-23-carolina-wren")).toBe(
-      "/collections/life-list#2026-09-23-carolina-wren",
+      "/collections/life-list/log#2026-09-23-carolina-wren",
     );
     expect(urlFor("recommendation", "braiding-sweetgrass")).toBe(
       "/collections/recommendations#braiding-sweetgrass",

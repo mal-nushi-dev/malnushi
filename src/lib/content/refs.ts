@@ -81,11 +81,11 @@ export function urlFor(kind: Kind, id: string) {
     case "post-series":
       // No page yet: the loader points it at its first part.
       return "/writing";
-    case "sighting":
     case "recommendation":
       return `/collections/${homes[kind]}#${id}`;
+    case "sighting":
     case "flight":
-      // The travels page is a map, so its table is one level down.
+      // These collections' pages are a map and numbers, so the table is one level down.
       return `/collections/${homes[kind]}/log#${id}`;
     case "collection":
       return `/collections/${id}`;

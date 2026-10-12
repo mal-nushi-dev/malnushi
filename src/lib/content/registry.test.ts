@@ -40,12 +40,11 @@ describe("the registry", () => {
     }
     // Two entries of one kind never share an address.
     for (const kind of paged) expect(urlFor(kind, "a"), kind).not.toBe(urlFor(kind, "b"));
-    // An observation or a row is an anchor on a collection's page.
-    for (const kind of ["sighting", "recommendation"] as const) {
-      expect(urlFor(kind, "an-id")).toMatch(/^\/collections\/[a-z-]+#an-id$/);
-    }
-    // A flight is a row of the table under the travels page.
+    // A recommendation is an anchor on its collection's page.
+    expect(urlFor("recommendation", "an-id")).toMatch(/^\/collections\/[a-z-]+#an-id$/);
+    // A flight or a sighting is a row of the table under its collection's page.
     expect(urlFor("flight", "an-id")).toBe("/collections/travels/log#an-id");
+    expect(urlFor("sighting", "an-id")).toBe("/collections/life-list/log#an-id");
   });
 });
 

@@ -3,11 +3,12 @@ description: Every bird species I have identified, in the order I first saw it.
 itemName: bird
 category: Places and nature
 sentence: I have named {count} {items}.
-# One row a species: the first sighting of it in content/sightings/.
+# One row a species: the first sighting of it, from content/sightings/ and
+# the eBird export in content/ebird/.
 from: sighting
 unique: species
 summary: [date, place]
 columns:
   - { key: scientific, label: Species }
-  - { key: family, label: Family }
+  - { key: family, label: Family, optional: true }
   - { key: place, label: Where }

@@ -412,7 +412,24 @@ export type TrackData = z.infer<typeof trackData> & {
   audio?: string;
 };
 export type AlbumData = z.infer<typeof albumData>;
-export type SightingData = z.infer<typeof sightingData>;
+/**
+ * A sighting, from a file or from the eBird export. An eBird row is not
+ * written through `sightingData`, so it has what the export has: no family
+ * (that comes with the taxonomy, not read yet), and where and on which
+ * checklist (see src/lib/ebird/read.ts).
+ */
+export type SightingData = Omit<z.infer<typeof sightingData>, "family"> & {
+  family?: string;
+  checklist?: string;
+  country?: string;
+  region?: string;
+  county?: string;
+  taxon?: number;
+  /** Where, rounded as the policy says: a cell, or the exact point. */
+  area?:
+    | { kind: "exact"; lon: number; lat: number }
+    | { kind: "cell"; lon: number; lat: number; size: number };
+};
 export type RecommendationData = z.infer<typeof recommendationData>;
 export type ProjectData = z.infer<typeof projectData>;
 export type CollectionData = Omit<z.infer<typeof collectionFile>, "items"> & {
