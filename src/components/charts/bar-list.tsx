@@ -12,7 +12,16 @@ export type Bar = {
  * Every bar is measured against the longest. It is a list, so it reads in
  * order without the bars.
  */
-export function BarList({ label, bars }: { label: string; bars: Bar[] }) {
+export function BarList({
+  label,
+  bars,
+  wrap = false,
+}: {
+  label: string;
+  bars: Bar[];
+  /** Let a long name take a second line, instead of cutting it short. */
+  wrap?: boolean;
+}) {
   const longest = Math.max(...bars.map((bar) => bar.value), 0);
   return (
     <ol aria-label={label} className="flex flex-col">
@@ -21,7 +30,7 @@ export function BarList({ label, bars }: { label: string; bars: Bar[] }) {
           key={bar.label}
           className="grid grid-cols-[minmax(0,5fr)_minmax(0,6fr)_auto] items-center gap-(--space-sm) border-b border-line py-2.5"
         >
-          <span className="truncate type-ui text-ink">
+          <span className={wrap ? "type-ui text-ink" : "truncate type-ui text-ink"}>
             {bar.label}
             {bar.detail && <span className="text-ink-2"> {bar.detail}</span>}
           </span>

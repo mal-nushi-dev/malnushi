@@ -4,6 +4,28 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-11
+
+### Life list page: built, and what changed from the mockup
+Built 2026-10-11 from `docs/mockups/life-list.html`, at `/collections/life-list`, its table at `/collections/life-list/log`.
+- **Latest lifer is in the standfirst,** not a sixth card ("The latest is the Red-bellied Woodpecker, on 28 September."). The mockup's sixth card wrapped; this is my choice, for review.
+- **Five numbers, not six.** Species, checklists, countries and territories, states and provinces, years.
+- **Only regions with a species are listed,** with a line saying how many more there are. Regions whose membership is not defined yet count nothing and are never listed (`src/lib/ebird/regions.ts` says which).
+- **Territories are tagged in words** ("Dependency") beside the name, as the mockup did, and not set apart.
+- **"United States," not "United States of America"** (the one name changed from Natural Earth's; others will need the same if the short form is not what is said).
+- **Media is a photograph that points at a sighting** (`related: [sighting:…]`), newest first, up to three. A Macaulay Library number has nowhere to go yet: the export carries none.
+- **Not done:** the narrow-screen layout, cells on the map for places shown exactly, counties, the globe's look with real polygons beyond what the e2e test checks, and a way to tell a country that has no states in the geometry from one that has none seen.
+- **A flaw the build found:** the two placeholder sightings in `content/sightings/` are still on the life list's table (Great Blue Heron and a second Carolina Wren), so the table says 20 and the page says 19. The photographs point at them. Point the photographs at real sightings, then delete the placeholders.
+
+### Heat color for regions: gray, then a clear step, then a straight line to the deepest
+Decided with Mal, for the life list's map (`src/components/map/heat.ts`).
+- **0 is gray** (`--surface`). **One species is already a tint of the accent,** a clear step away from gray, not a near-gray (Mal: "the second one species is observed, the color goes from gray to something else"). From there the color deepens in a straight line to the most.
+- **The most is the current view's.** The world map scales to the busiest country, an opened country to its busiest state, and the legend says what it is. It grows as sightings are added.
+- **Species, not observations,** are counted (Mal's choice): ten sightings of one bird do not make a place look birdier.
+- **In the dark scheme "more" is lighter,** since a dark fill on a dark ground vanishes. The first version made the 1-species tint from the page background, which in dark mode was almost the lightness of the gray; it is now made from the gray, and a test holds the step above 25 lightness points in both schemes.
+- **Not decided:** whether the ramp wants its own sage tokens (it is made from `--accent`, `--surface` and `--ink` for now), and a non-color cue (a ranked list beside the map is planned).
+- **What would change it:** a country that dominates so far that every other looks pale (NC at 14, the rest at 1 or 2). Then a square-root toggle, which Mal has not asked for.
+
 ## 2026-10-10
 
 ### Collections index: a shelf of spines
