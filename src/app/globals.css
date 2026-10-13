@@ -288,3 +288,111 @@
     border-radius: var(--radius-img);
   }
 }
+
+/*
+ * Page transition (design log, 2026-10-13). The motion is not in this file:
+ * src/lib/page-transition.ts runs the nav's own springs and writes every frame
+ * to the root as `--vt-*`, and these rules only read them.
+ *
+ *  - The new page is clipped to a box that opens: from the pressed spine, or
+ *    from the nav plate's footprint. `--vt-clip-open` is set at the press, so
+ *    the first frame is already clipped.
+ *  - A plate (`vt-plate`) holds the same box, in sage for a spine or in the
+ *    page's color otherwise, above both pages, and fades out as the content
+ *    arrives. The spine itself is the plate's image, at its own size.
+ *  - Going back, the old page is clipped to the box that closes.
+ *  - The nav is a layer of its own and never moves.
+ */
+
+/* The nav is its own layer above both pages and never animates. */
+::view-transition-group(site-nav) {
+  z-index: 10;
+  animation: none;
+}
+::view-transition-old(site-nav) {
+  display: none;
+}
+::view-transition-new(site-nav) {
+  animation: none;
+}
+
+/* Plain stacking: the UA's plus-lighter blend would add two opaque pages. */
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: normal;
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/*
+ * Old and new are one pair under the name "page". The group would morph
+ * between the two pages' heights; the pages must hold their own size. The one
+ * that is not moving holds still, whole, beneath the one that is.
+ */
+::view-transition-group(page) {
+  animation: none;
+}
+::view-transition-old(*.page-open),
+::view-transition-new(*.page-close),
+::view-transition-old(*.page-hold),
+::view-transition-new(*.page-hold) {
+  animation: none;
+}
+::view-transition-new(*.page-open) {
+  animation: none;
+  clip-path: var(--vt-clip-open, none);
+  translate: 0 var(--vt-dy, 0px);
+}
+::view-transition-old(*.page-close) {
+  animation: none;
+  z-index: 2;
+  clip-path: var(--vt-clip-close, none);
+}
+
+/*
+ * The plate: the group is the box, drawn by the engine each frame. Its image
+ * (the pressed spine) is kept at its own size in the corner and fades with
+ * `--vt-ghost`; its fill fades with `--vt-fill`.
+ */
+::view-transition-group(vt-plate) {
+  animation: none;
+  z-index: 5;
+  transform: none;
+  left: var(--vt-pl, 0px);
+  top: var(--vt-pt, 0px);
+  width: var(--vt-pw, 0px);
+  height: var(--vt-ph, 0px);
+  overflow: hidden;
+  border-radius: var(--vt-prad, 0);
+  background-color: color-mix(
+    in srgb,
+    var(--vt-color, var(--bg)) calc(var(--vt-fill, 0) * 100%),
+    transparent
+  );
+}
+::view-transition-image-pair(vt-plate) {
+  animation: none;
+}
+::view-transition-old(vt-plate) {
+  animation: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--vt-gw, auto);
+  height: auto;
+  opacity: var(--vt-ghost, 0);
+}
+::view-transition-new(vt-plate) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

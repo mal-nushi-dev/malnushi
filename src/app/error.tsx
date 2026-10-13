@@ -28,7 +28,7 @@ export default function Error({
           >
             Try again <span aria-hidden>→</span>
           </button>
-          <ArrowLink href="/">Back to the home page</ArrowLink>
+          <ArrowLink back href="/">Back to the home page</ArrowLink>
         </>
       }
     >

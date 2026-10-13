@@ -517,3 +517,33 @@ Decided with Mal on 2026-10-13.
 - **Was** a sentence ("World: 0 gray · 1 to 18 species"), which named colors the reader could not see beside it. **Now** it is the mockup's legend: a gray swatch for none, a bar from one to the most, and the place before them.
 - **Same colors as the map:** the bar is drawn from the same `heatRamp`, read from the page's tokens and again when the scheme changes.
 - **For screen readers** the visual part is hidden and a sentence is said in its place, in the same live region: "World, by species: most is 18".
+
+
+### Page transition: the page opens out of the nav
+Decided with Mal on 2026-10-13.
+- **Why:** page changes were a hard cut and the nav was remounted with every page, so the one thing on the site that moves well had no part in moving between pages. Mal liked the nav's motion and the Collections components and asked for a transition that was unique to the site, built from the nav's expansion and collapse.
+- **Chosen from three:** the page opens out of the nav (this); the sage plate as a curtain over the page (bolder, but about 900ms and closer to the flash Mal disliked); and the page settling under a pinned nav (the quietest, the least ours).
+- **What it is:** the new page is revealed through a clip that starts as the plate and opens as the nav does: width first, then the drop, on the nav's springs. A link back up a level closes the old page into the plate on the close spring. Details are in DESIGN.md (Page transition).
+- **The nav moved into the root layout** so it persists and is a stable anchor. Its active row now comes from the path.
+- **Old CSS springs are reused,** not new ones: `--ease-spring-open` and `--ease-spring-close`. No new tokens.
+- **Not the nav's true springs:** a view transition runs on CSS easings, so an interrupted transition does not carry its velocity as the nav's motion values do.
+- **The drop is measured in viewport heights,** not the page's, or a long page would be fully open long before it was seen.
+
+
+### Page transition: out of the link that was pressed
+Decided with Mal on 2026-10-13.
+- **Why:** opening every page from the nav plate was the same move everywhere. Mal asked for the Collections page to expand from the item pressed on the shelf.
+- **What:** a link marked `data-vt-origin` is the clip's start, its box and corners, instead of the plate. Only the Collections spines are marked so far. The way back closes into the spine, or the page opens from it, since that is where it stood.
+- **Measured at the press,** so a spine that is open under the pointer starts the page from its open width.
+- **Correction to the entry above:** the browser's back button does not animate. React starts no view transition for a pop. The earlier note that it "opens like any forward navigation" was not tested and was wrong.
+
+
+### Page transition: the spine becomes the page, on the nav's own springs
+Decided with Mal on 2026-10-13.
+- **Why:** Mal did not buy the clipped reveal from a spine: it was not "fluid, natural, organic", and the nav is "lively". It was a window onto a page that did not move, on curves, with the overshoot clipped away off-screen.
+- **Three mocks were tried** (`docs/mockups/page-transitions.html`): A, the spine becomes a plate that carries its text and the page arrives late; B, the page lifts out of the spine as a scaled copy; C, the same mask as before on live springs. Mal chose **A from a spine**, found **B "too plain"**, and found **C better from the nav plate** than from a spine. Mal did not like A from the nav plate.
+- **So there are two, one engine:** from a spine, A (a sage plate that carries the spine's text); from anything else, C from the nav plate (a plate in the page's own color, so the box opens and the content arrives into it).
+- **The nav's own springs, with velocity, not CSS curves.** The engine runs three motion values on `springs` and writes them to the root every frame; the CSS only reads them. It also thins the bar with speed, as the nav does.
+- **Not at slow-motion speed:** Mal judged the mocks at normal speed. About 900ms end to end.
+- **Supersedes** the CSS-keyframe version of the transition in the two entries above. The tokens `--ease-spring-open` and `--ease-spring-close` are not used by it.
+

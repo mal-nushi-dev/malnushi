@@ -229,7 +229,7 @@ Decided with Mal 2026-10-02. The nav is a slim floating toolbar, not a bar with 
 
 **Expanded color (decided with Mal 2026-10-02).** While search or the menu is open, the plate is `color.sage.600` (`#626E5E`) in both light and dark mode, and everything on it (row, input, list) switches to light tokens: ink `#FAFAFA` (5.1:1), secondary text and links `#EDEEEB` (4.6:1), hairlines a 35% mix of `#EDEEEB` into sage, and the active underline `#EDEEEB` (sage on sage would vanish). Row text fades with the plate over 300ms. This is the one place a tinted surface is allowed; it is implemented as token overrides under `[data-nav-open]` in `globals.css`.
 
-The plate expands in place and floats over page content; it pushes nothing.
+The plate expands in place and floats over page content; it pushes nothing. The nav is rendered once, in the root layout, and takes its active row from the path (`sectionOf` in `src/lib/site.ts`). It is 104px tall in the page flow, so it needs no spacer.
 
 **Motion (decided with Mal 2026-10-03).** The plate opens in two phases, on springs, not easing curves:
 1. **Widen.** It grows from 600px to 840px about its center. Its corners ease from 14px to 20px, and the bar thins by up to 4px while the width is moving.
@@ -251,6 +251,19 @@ Engineering notes are in `docs/adr/0001-spring-animation-with-motion.md`.
 - **Escape**, the close button, or a press anywhere outside the nav returns to rest. The search text is kept when it closes, and cleared only by a refresh or a page change.
 
 The panel content has a fixed 840px width (narrower viewports clamp it to the viewport minus 32px), so it never reflows while the plate animates. The section list lives only in the menu, so it can grow into a hub. The search input is not wired to anything yet. Mobile is not designed yet.
+
+### Page transition
+
+**The spine becomes the page (decided with Mal 2026-10-13).** A change of page is the nav's own motion, run on the page, on the nav's own springs (width `260/21`, height `220/21`, close `320/34`) with their velocity, not as CSS curves.
+
+- **From a spine** (Collections shelf, a link marked `data-vt-origin`). The pressed spine, open as it is under the pointer, becomes a solid sage plate that carries its own text. It widens, then drops once the width has covered 80% of its travel, to the whole viewport, overshooting a little and thinning with speed, as the nav does. The page behind it is clipped to the same box. The plate lets go late: the container leads and the content waits (150ms), and the page settles the last 18px with a small spring as its content arrives. The sage dissolves into the page.
+- **From the nav plate** (any other link, including the menu). The same, with a plate in the page's own color and no spine. It starts as the nav plate's footprint (600 × 72px, 24px from the top, 14px corners).
+- **Back** (a link marked `back`, e.g. "All photographs" from a photograph). The reverse on the close spring: the page's content goes, the height closes first, the width at 80% of that, and the plate lets go as it lands on the spine or the nav plate. Coming back to the page a spine was pressed on, by a link, lands on that spine.
+- **The nav never moves.** It is its own layer above both pages and lives in the root layout, so it persists, and what is open in it closes with the page.
+- **What does not animate:** a filter changing the query string, Suspense reveals, a refresh, and the browser's back and forward buttons (React runs no view transition for a pop).
+- **Not supported** (older Safari and Firefox): an instant cut. **`prefers-reduced-motion`:** no transition.
+- **Tried and not taken** (mocks, `docs/mockups/page-transitions.html`): the page lifting out of the spine as a scaled copy ("too plain"); a plain clipped reveal from a spine (the live mask, which Mal liked only from the nav plate).
+- **Implementation:** `src/lib/page-transition.ts` (the springs, written to the root element as `--vt-*` every frame), `src/lib/page-origin.ts` (what a press sets up), `src/app/template.tsx` and the `vt-plate` and `page-*` rules at the end of `src/app/globals.css`. See ADR 0014.
 
 ### Eyebrow
 
@@ -726,6 +739,11 @@ Design decisions are tracked in [design-log.md](design-log.md).
 ---
 
 ## Open questions
+
+- **The browser's back and forward buttons do not animate:** React runs no view transition for a pop, so they are an instant cut. Decide whether that is acceptable or worth working around.
+- **Only the Collections spines are origins** (`data-vt-origin`). The tiles on Projects and Photography, and the index rows, still open from the nav plate in the page's color. Decide which of them should become a plate of their own.
+- **The page transition is about 900ms end to end** (the nav's open spring is 600ms, and the drop and the content follow). It is not interruptible mid-flight: a press during it ends it. Decide whether it should be shorter on links a visitor uses a lot (the menu).
+- **Focus after a page change** now stays in the persistent nav (it used to reset when the nav remounted). Decide whether it should move to the page's `main`.
 
 - Confirm the pairing reads well on real essays (test a full paragraph on the essay page at 100% zoom).
 - Confirm the provisional dark-mode accent, surface and code colors after contrast checks. Since `neutral.900` became `#2E2E2E`, the dark `code-bg` (`#2A2F35`) is 1.01:1 against the dark `bg`, so code blocks no longer stand out in dark mode.

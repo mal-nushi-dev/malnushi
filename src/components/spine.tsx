@@ -53,6 +53,7 @@ export function Spine({
   return (
     <Link
       href={href}
+      data-vt-origin=""
       className="spine relative flex size-full overflow-hidden rounded-t-(--radius-img) bg-surface text-ink transition-colors duration-300 hover:bg-bg focus-visible:z-10 focus-visible:bg-bg motion-reduce:transition-none"
     >
       <span className="sr-only">

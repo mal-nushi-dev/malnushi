@@ -21,14 +21,19 @@ export function InlineLink({
 /** Standalone action ("View source →"): no underline until hover. */
 export function ArrowLink({
   href,
+  back,
   children,
 }: {
   href: string;
+  /** Goes up a level: the page closes into the nav instead of opening. */
+  back?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
+      transitionTypes={back ? ["nav-back"] : undefined}
+      data-vt-back={back ? "" : undefined}
       className="type-ui text-link decoration-1 underline-offset-[0.15em] hover:text-ink hover:underline"
     >
       {children} <span aria-hidden>→</span>

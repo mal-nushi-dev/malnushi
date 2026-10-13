@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page transition mocks</title>
+<!--
+  Three ways a page could open out of what was pressed. Dark mode. Springs are
+  the nav's (src/lib/motion.ts): width 260/21, height 220/21, close 320/34, all
+  mass 1, integrated per frame with velocity, so they behave as the nav does.
+  Click a spine to open. Press Esc, the Back button or the page to close.
+-->
+<style>
+  :root {
+    --bg: #2b2b2b;
+    --surface: #41464c;
+    --sage: #4d5749;
+    --ink: #fafafa;
+    --ink-2: #c9cbc6;
+    --line: #5a5f55;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #1d1d1d; color: var(--ink);
+    font: 15px/1.4 "Google Sans Flex", system-ui, sans-serif;
+    padding: 24px 16px 48px;
+  }
+  .bar {
+    max-width: 1100px; margin: 0 auto 16px;
+    display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  }
+  .bar h1 { font: 500 15px system-ui; margin: 0 8px 0 0; color: var(--ink-2); }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button, .bar label, .bar .back {
+    font: inherit; color: var(--ink); background: #35383c; border: 1px solid #4a4f55;
+    border-radius: 999px; padding: 8px 14px; cursor: pointer;
+  }
+  .tabs button[aria-pressed="true"] { background: #ededeb; color: #1d1d1d; border-color: #ededeb; }
+  .bar label { display: flex; gap: 8px; align-items: center; }
+  .note { max-width: 1100px; margin: 0 auto 12px; color: var(--ink-2); font-size: 14px; min-height: 40px; }
+  .stage {
+    position: relative; max-width: 1100px; height: 640px; margin: 0 auto;
+    background: var(--bg); overflow: hidden; border-radius: 6px;
+    isolation: isolate;
+  }
+
+  /* The page being left: a nav row and a shelf of spines. */
+  .shelf { position: absolute; inset: 0; background: var(--bg); transform-origin: 50% 50%; }
+  .row {
+    position: absolute; left: 50%; top: 24px; width: min(600px, calc(100% - 32px)); height: 72px;
+    transform: translateX(-50%); display: flex; align-items: center; justify-content: center;
+    font: 400 24px Georgia, serif; z-index: 30; pointer-events: none;
+  }
+  .shelf h2 { position: absolute; left: 96px; top: 130px; margin: 0; font: 400 64px/1 Georgia, serif; }
+  .spines {
+    position: absolute; left: 96px; top: 250px; height: 340px; display: flex; gap: 6px;
+    align-items: stretch; border-bottom: 1px solid var(--ink-2);
+  }
+  .spine {
+    position: relative; width: 112px; flex: none; background: var(--surface);
+    border: 0; padding: 0; color: var(--ink); cursor: pointer;
+    border-radius: 4px 4px 0 0; overflow: hidden; text-align: left; font: inherit;
+    transition: width .6s cubic-bezier(.2,1.1,.3,1), background-color .3s;
+  }
+  .spine:hover, .spine:focus-visible { width: 330px; background: var(--sage); outline: 0; }
+  .spine .tab {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 112px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 18px 0;
+    font-size: 13px;
+  }
+  .spine .tab b { font: 400 26px Georgia, serif; writing-mode: vertical-rl; white-space: nowrap; }
+  .spine .panel {
+    position: absolute; left: 124px; top: 18px; width: 190px; font-size: 13px; color: var(--ink-2);
+    opacity: 0; transition: opacity .15s;
+  }
+  .spine:hover .panel { opacity: 1; transition: opacity .35s .15s; }
+
+  /* The page being opened. */
+  .dest { position: absolute; inset: 0; background: var(--bg); visibility: hidden; transform-origin: 0 0; }
+  .dest-inner { position: absolute; inset: 0; }
+  .dest .eyebrow { position: absolute; left: 96px; top: 140px; font-size: 12px; letter-spacing: .1em; color: var(--ink-2); }
+  .dest h2 { position: absolute; left: 96px; top: 168px; margin: 0; font: 400 96px/1 Georgia, serif; }
+  .dest p.lede { position: absolute; left: 96px; top: 290px; margin: 0; width: 520px; font: 400 20px/1.4 Georgia, serif; color: var(--ink-2); }
+  .stats { position: absolute; left: 96px; right: 96px; top: 400px; display: flex; gap: 24px; }
+  .stats div { flex: 1; border-top: 1px solid var(--ink-2); padding-top: 12px; font: 400 44px Georgia, serif; }
+  .stats small { display: block; font: 12px system-ui; letter-spacing: .08em; color: var(--ink-2); margin-top: 6px; }
+  .map { position: absolute; left: 96px; right: 96px; top: 520px; height: 200px; background: var(--surface); border-radius: 4px; }
+  .rowclone { z-index: 40; }
+
+  /* B and the nav-plate start both draw a solid plate. */
+  .plate { position: absolute; background: var(--sage); visibility: hidden; z-index: 20; overflow: hidden; }
+  .plate .ghost {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 112px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 18px 0; font-size: 13px;
+  }
+  .plate .ghost b { font: 400 26px Georgia, serif; writing-mode: vertical-rl; white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <h1>Page transition mocks</h1>
+    <div class="tabs" role="group" aria-label="Variant">
+      <button data-v="A" aria-pressed="true">A · Spine becomes the page</button>
+      <button data-v="B" aria-pressed="false">B · Page lifts out</button>
+      <button data-v="C" aria-pressed="false">C · Live mask</button>
+    </div>
+    <label><input type="checkbox" id="slow"> Slow ×4</label>
+    <label><input type="checkbox" id="fromNav"> Start from the nav plate</label>
+    <button class="back" id="back" hidden>← Back</button>
+  </div>
+  <div class="note" id="note"></div>
+
+  <div class="stage" id="stage">
+    <div class="shelf" id="shelf">
+      <div class="row">Mal Nushi</div>
+      <h2>Collections</h2>
+      <div class="spines" id="spines">
+        <button class="spine" data-name="Life list" data-n="001" data-c="20"><span class="tab"><span>001</span><b>Life list</b><span>20</span></span><span class="panel">Places and nature<br><br>I have named 20 birds.<br><br>Open life list →</span></button>
+        <button class="spine" data-name="Recommendations" data-n="002" data-c="1"><span class="tab"><span>002</span><b>Recommendations</b><span>1</span></span><span class="panel">Things worth your time.<br><br>Open →</span></button>
+        <button class="spine" data-name="Travels" data-n="003" data-c="9"><span class="tab"><span>003</span><b>Travels</b><span>9</span></span><span class="panel">Flights and places.<br><br>Open →</span></button>
+        <button class="spine" data-name="Playlists" data-n="004" data-c="4"><span class="tab"><span>004</span><b>Playlists</b><span>4</span></span><span class="panel">Music, in order.<br><br>Open →</span></button>
+      </div>
+    </div>
+    <div class="dest" id="dest">
+      <div class="dest-inner" id="inner">
+        <div class="eyebrow">COLLECTIONS <span style="color:#8a9a82">/</span> LIFE LIST</div>
+        <h2>Life list</h2>
+        <p class="lede">I have named <b>19 birds</b>, in 2 countries since 2025. The latest is the Red-bellied Woodpecker.</p>
+        <div class="stats">
+          <div>19<small>SPECIES</small></div><div>21<small>CHECKLISTS</small></div>
+          <div>2<small>COUNTRIES</small></div><div>5<small>STATES</small></div>
+        </div>
+        <div class="map"></div>
+      </div>
+    </div>
+    <div class="plate" id="plate"><div class="ghost" id="ghost"></div></div>
+    <div class="row rowclone" id="rowclone" style="visibility:hidden">Mal Nushi</div>
+  </div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const stage = $("#stage"), shelf = $("#shelf"), dest = $("#dest"), inner = $("#inner");
+  const plate = $("#plate"), ghost = $("#ghost");
+  const notes = {
+    A: "A solid sage plate takes the spine's box, with the spine's text still inside. It widens, then drops, on the nav's springs with velocity. The page's content arrives 150ms late and settles with a small spring; the sage dissolves into the page.",
+    B: "The whole page lifts out of the spine: scaled and moved from the spine's box up to full size, overshooting slightly and settling. The page being left steps back and dims.",
+    C: "The same mask reveal as now, but on live springs, with the page's content arriving late and settling. No surface of its own.",
+  };
+  let variant = "A", open = false, busy = false, token = 0, spineEl = null;
+  const slow = () => ($("#slow").checked ? 4 : 1);
+
+  /* A spring with velocity, stepped per frame at a fixed small dt. */
+  function spring(cfg, from, to, on, vel = 0) {
+    const { k, c, m = 1 } = cfg;
+    let x = from, v = vel, last = performance.now(), cancelled = false;
+    const p = new Promise((res) => {
+      const tick = (now) => {
+        if (cancelled) return res();
+        let dt = Math.min(0.032, (now - last) / 1000) / slow(); last = now;
+        while (dt > 0) {
+          const h = Math.min(dt, 1 / 240);
+          v += ((-k * (x - to) - c * v) / m) * h;
+          x += v * h; dt -= h;
+        }
+        on(x, v);
+        if (Math.abs(x - to) < 0.0005 && Math.abs(v) < 0.005) { on(to, 0); return res(); }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    p.stop = () => { cancelled = true; };
+    return p;
+  }
+  const S = {
+    width: { k: 260, c: 21 }, height: { k: 220, c: 21 }, close: { k: 320, c: 34 },
+    settle: { k: 170, c: 15 }, lift: { k: 260, c: 25 },
+  };
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms * slow()));
+
+  function boxOf(el) {
+    const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
+    return { l: r.left - s.left, t: r.top - s.top, r: r.right - s.left, b: r.bottom - s.top };
+  }
+  function origin() {
+    if ($("#fromNav").checked) {
+      const W = stage.clientWidth, w = Math.min(600, W - 32);
+      return { l: (W - w) / 2, t: 24, r: (W + w) / 2, b: 96, rad: 14, rb: 14 };
+    }
+    return { ...boxOf(spineEl), rad: 4, rb: 0 };
+  }
+
+  /* Mask: the dest page clipped to a box. */
+  function clipTo(b, rad, rb, W, H) {
+    dest.style.clipPath = `inset(${b.t}px ${W - b.r}px ${H - b.b}px ${b.l}px round ${Math.max(0, rad)}px ${Math.max(0, rad)}px ${Math.max(0, rb)}px ${Math.max(0, rb)}px)`;
+  }
+  function reset() {
+    dest.style.cssText = ""; inner.style.cssText = ""; plate.style.cssText = "";
+    shelf.style.cssText = ""; $("#rowclone").style.visibility = "hidden";
+  }
+
+  /* Open and close for A and C: a box that grows in the nav's two phases. */
+  async function growBox(dir, o, withPlate, my) {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    let p = dir ? 0 : 1, q = dir ? 0 : 1; // width phase, drop phase
+    let ct = 0; // content progress
+    const paint = (vx = 0) => {
+      const sq = Math.min(4, Math.abs(vx) * 0.004);
+      const b = {
+        l: lerp(o.l, 0, p), r: lerp(o.r, W, p),
+        t: lerp(o.t, 0, q) + sq / 2, b: lerp(o.b, H, q) - sq / 2,
+      };
+      const rad = lerp(o.rad, 0, Math.min(1, p)), rb = lerp(o.rb, 0, Math.min(1, q));
+      clipTo(b, rad, rb, W, H);
+      if (withPlate) {
+        Object.assign(plate.style, {
+          left: b.l + "px", top: b.t + "px", width: b.r - b.l + "px", height: b.b - b.t + "px",
+          borderRadius: `${Math.max(0, rad)}px ${Math.max(0, rad)}px ${Math.max(0, rb)}px ${Math.max(0, rb)}px`,
+        });
+      }
+    };
+    dest.style.visibility = "visible";
+    if (withPlate) {
+      ghost.innerHTML = spineEl && !$("#fromNav").checked ? spineEl.querySelector(".tab").innerHTML : "";
+      plate.style.visibility = "visible";
+    }
+    const content = (t, y) => {
+      inner.style.opacity = t; inner.style.transform = `translateY(${y}px)`;
+      if (withPlate) {
+        plate.style.backgroundColor = `rgba(77,87,73,${1 - Math.min(1, t * 1.3)})`;
+        ghost.style.opacity = Math.max(0, 1 - ct0 * 5);
+      }
+    };
+    let ct0 = dir ? 0 : 1;
+    paint();
+    if (dir) {
+      content(0, 18);
+      const a = spring(S.width, 0, 1, (x, v) => { p = x; paint(v); });
+      // The drop starts once the width has covered 80% of its travel.
+      const trigger = new Promise((res) => {
+        const id = setInterval(() => { if (p >= 0.8 || my !== token) { clearInterval(id); res(); } }, 8);
+      });
+      await trigger;
+      const b = spring(S.height, 0, 1, (x) => { q = x; paint(); });
+      await wait(150);
+      spring({ k: 120, c: 20 }, 0, 1, (x) => { ct0 = x; content(Math.min(1, x), 0); });
+      spring(S.settle, 18, 0, (y) => { inner.style.transform = `translateY(${y}px)`; });
+      await Promise.all([a, b]);
+    } else {
+      // Close: content out, then height first, width at 80% of its travel.
+      spring({ k: 320, c: 34 }, 1, 0, (x) => { ct0 = x; content(x, (1 - x) * 8); });
+      await wait(60);
+      const b = spring(S.close, 1, 0, (x, v) => { q = x; paint(v); });
+      const trigger = new Promise((res) => {
+        const id = setInterval(() => { if (q <= 0.2 || my !== token) { clearInterval(id); res(); } }, 8);
+      });
+      await trigger;
+      const a = spring(S.close, 1, 0, (x, v) => { p = x; paint(v); });
+      await Promise.all([a, b]);
+    }
+  }
+
+  /* B: the page, scaled and moved from the box up to full size. */
+  async function lift(dir, o, my) {
+    const W = stage.clientWidth;
+    const s0 = (o.r - o.l) / W;
+    dest.style.visibility = "visible";
+    dest.style.willChange = "transform, opacity";
+    const paint = (u) => {
+      const s = lerp(s0, 1, u);
+      const x = lerp(o.l, 0, u), y = lerp(o.t, 0, u);
+      dest.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+      dest.style.borderRadius = `${lerp(10, 0, Math.min(1, u)) / Math.max(s, 0.05)}px`;
+      dest.style.opacity = Math.min(1, u * 5);
+      shelf.style.transform = `scale(${lerp(1, 0.965, Math.min(1, u))})`;
+      shelf.style.filter = `brightness(${lerp(1, 0.55, Math.min(1, u))})`;
+    };
+    if (dir) { paint(0); await spring(S.lift, 0, 1, paint); }
+    else { await spring(S.close, 1, 0, paint); }
+  }
+
+  async function go() {
+    if (busy) return; busy = true;
+    const my = ++token;
+    const o = origin();
+    $("#back").hidden = false;
+    $("#rowclone").style.visibility = "visible";
+    if (variant === "B") await lift(true, o, my);
+    else await growBox(true, o, variant === "A", my);
+    if (my === token) { open = true; busy = false; dest.style.clipPath = ""; }
+  }
+  async function back() {
+    if (busy || !open) return; busy = true; open = false;
+    const my = ++token;
+    const o = origin();
+    if (variant === "B") await lift(false, o, my);
+    else await growBox(false, o, variant === "A", my);
+    reset(); dest.style.visibility = "hidden"; plate.style.visibility = "hidden";
+    $("#back").hidden = true; busy = false;
+  }
+
+  document.querySelectorAll(".spine").forEach((el) => el.addEventListener("click", () => { spineEl = el; go(); }));
+  dest.addEventListener("click", back);
+  $("#back").addEventListener("click", back);
+  addEventListener("keydown", (e) => e.key === "Escape" && back());
+  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+    if (busy) return;
+    if (open) { reset(); dest.style.visibility = "hidden"; open = false; $("#back").hidden = true; }
+    variant = b.dataset.v;
+    document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    $("#note").textContent = notes[variant];
+  }));
+  $("#note").textContent = notes.A;
+})();
+</script>
+</body>
+</html>

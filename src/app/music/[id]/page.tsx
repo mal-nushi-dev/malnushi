@@ -57,7 +57,7 @@ export default async function TrackPage({ params }: PageProps<"/music/[id]">) {
             </div>
           </div>
           <div>
-            <ArrowLink href="/music">All tracks</ArrowLink>
+            <ArrowLink back href="/music">All tracks</ArrowLink>
           </div>
         </article>
         {releases.length > 0 && (

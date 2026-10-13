@@ -30,6 +30,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <Nav />
+        {/* The page transition's plate when no spine is: see globals.css. */}
+        <div
+          id="vt-plate"
+          aria-hidden
+          className="pointer-events-none fixed top-0 left-0 size-px"
+        />
         {children}
       </body>
     </html>

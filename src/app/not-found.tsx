@@ -9,7 +9,7 @@ export default function NotFound() {
     <StatusPage
       label="404"
       title="That page isn’t here."
-      actions={<ArrowLink href="/">Back to the home page</ArrowLink>}
+      actions={<ArrowLink back href="/">Back to the home page</ArrowLink>}
     >
       It may not be written yet, or the link may be wrong. Most of this site is
       still being worked on.

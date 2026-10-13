@@ -60,7 +60,7 @@ export default async function PhotoPage({ params }: PageProps<"/photography/[id]
             </figcaption>
           </figure>
           <div>
-            <ArrowLink href="/photography">All photographs</ArrowLink>
+            <ArrowLink back href="/photography">All photographs</ArrowLink>
           </div>
         </article>
         {appearsIn.length > 0 && (
