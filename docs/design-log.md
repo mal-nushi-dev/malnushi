@@ -503,3 +503,11 @@ Decided with Mal on 2026-10-04.
 Decided with Mal on 2026-10-04.
 - **`/work/[slug]` becomes `/projects/[slug]`.** The section is called Projects in the nav and the page descriptions, so the URL, the eyebrow (`PROJECTS / CODE`) and the "More projects" list now use the same word. The home page links and the placeholder categories were updated to match.
 - **Photography routes are unchanged** (`/photography/[slug]`, eyebrow `PHOTOGRAPHY / SERIES 04`). Photography series are listed on the Projects index; whether their URLs should also move under `/projects/` is not decided.
+
+
+### The map's Globe view is removed
+Decided with Mal on 2026-10-13.
+- **Why:** on the life list the far side of the world showed through the ocean. deck.gl draws on a canvas of its own above MapLibre, so it does not know the globe is solid, and its regions were drawn through it. Mal then chose to drop the view from both maps rather than fix it: it is not needed.
+- **Now:** the travels map has Flat and Tilted. The life list map is flat only, so it has no view pills. The `globe` view and the projection switch are gone from `BaseMap`.
+- **Not removed:** the Earth in the travels page's "In numbers" scenes (three.js, ADR 0011). It is a separate illustration, not the map.
+

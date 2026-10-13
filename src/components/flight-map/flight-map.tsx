@@ -9,15 +9,15 @@ import {
 } from "@deck.gl/core";
 import { ArcLayer, ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { useCallback, useMemo } from "react";
-import { BaseMap, type BBox, type MapContext, type MapView } from "@/components/map/base-map";
+import { BaseMap, type BBox, type MapContext } from "@/components/map/base-map";
 import { glowPass } from "./glow-pass";
 import { FlightTrailExtension, type TrailProps } from "./trail-extension";
 
 /*
  * Every airport flown to and every route between them, drawn on the GPU.
  * The ground, the camera and the views are the site's base map
- * (components/map/base-map.tsx); this draws the flights on it, flat or on a
- * globe. See docs/adr/0010-flight-map-and-flight-data.md.
+ * (components/map/base-map.tsx); this draws the flights on it, flat or
+ * tilted. See docs/adr/0010-flight-map-and-flight-data.md.
  */
 
 export type MapAirport = { code: string; city: string; lat: number; lon: number; visits: number };
@@ -106,8 +106,7 @@ function layersFor(data: Buffers, context: MapContext): Layer[] {
       getTargetColor: arc,
       widthUnits: "pixels",
       widthMinPixels: 1,
-      // An arc is a ribbon with no back. On the globe deck.gl would cull it
-      // as facing away, and draw none of them.
+      // An arc is a ribbon with no back: deck.gl would cull it as facing away.
       parameters: { cullMode: "none" },
       extensions: [new FlightTrailExtension()],
       trailTime: time,
@@ -118,8 +117,7 @@ function layersFor(data: Buffers, context: MapContext): Layer[] {
       updateTriggers: { getHeight: raised },
       transitions: { getHeight: 600 },
     }),
-    // A column a visit where the map is tilted. On the globe deck.gl lays
-    // columns on their side, so the airports are dots there, as on the flat map.
+    // A column a visit where the map is tilted, dots as on the flat map otherwise.
     view === "tilted"
       ? new ColumnLayer({
           id: "airports-raised",
@@ -146,8 +144,6 @@ function layersFor(data: Buffers, context: MapContext): Layer[] {
   ];
 }
 
-const views: MapView[] = ["flat", "tilted", "globe"];
-
 export default function FlightMap(props: FlightMapProps) {
   // The flights are fixed when the page is built: these are made once, and
   // deck.gl sends them to the GPU once.
@@ -168,7 +164,6 @@ export default function FlightMap(props: FlightMapProps) {
     <BaseMap
       label={`Map of ${props.airports.length} airports and the ${props.routes.length} routes flown between them`}
       bounds={data.bounds}
-      views={views}
       animated
       effects={effects}
       layers={layers}

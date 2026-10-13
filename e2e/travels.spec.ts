@@ -12,7 +12,7 @@ import { expect, test } from "./fixtures";
 const flown = async () =>
   createQueries(await loadContent(path.join(process.cwd(), "content"))).list("flight");
 
-test("the map draws, and switches between flat, tilted and globe", async ({ page }) => {
+test("the map draws, and switches between flat and tilted", async ({ page }) => {
   const stats = flightStats(await flown());
   await page.goto("/collections/travels");
   await expect(page.getByRole("heading", { level: 1, name: "Travels" })).toBeVisible();
@@ -23,12 +23,12 @@ test("the map draws, and switches between flat, tilted and globe", async ({ page
   await expect(map.locator("canvas")).toHaveCount(2);
   const views = page.getByRole("group", { name: "Map view" });
   await expect(views.getByRole("button", { name: "Flat" })).toHaveAttribute("aria-pressed", "true");
-  for (const view of ["Tilted", "Globe", "Flat"]) {
+  for (const view of ["Tilted", "Flat"]) {
     await views.getByRole("button", { name: view }).click();
     await expect(views.getByRole("button", { name: view })).toHaveAttribute("aria-pressed", "true");
     await expect(views.getByRole("button", { pressed: true })).toHaveCount(1);
   }
-  // Any shader that failed to compile, on either projection, has logged an
+  // Any shader that failed to compile, has logged an
   // error by now, and the fixture fails the test for it.
   await page.waitForTimeout(500);
 });

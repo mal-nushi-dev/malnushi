@@ -32,3 +32,7 @@ ADR 0010 built the flights map as one component that owned everything: the MapLi
 
 - **MapLibre fill layers with feature-state for the regions.** Simpler for one page, but a second way to pick, highlight and tip, which is what this record is trying not to have.
 - **A fork of `FlightMap` for regions.** The cheapest way to start and the most expensive to keep.
+
+## Update, 2026-10-13
+
+The Globe view was removed from `BaseMap`: deck.gl cannot occlude the far side of a MapLibre globe. The views are Flat and Tilted. See the design log.

@@ -57,7 +57,7 @@ Components are grouped in sections 01–07. States (hover, focus) are CSS; varia
 - [x] Essay Header
 - [x] Tile Gallery (filter pills over a tile grid; `UrlTileGallery` keeps the selection in the address). Not on the preview page: see `/projects`.
 - [x] Flight Log (year pills over the flight table; `UrlFlightLog` keeps the year in the address). Not on the preview page: see `/collections/travels/log`.
-- [x] Flight Map (deck.gl over MapLibre; flat, tilted, globe). Not on the preview page: see `/collections/travels`.
+- [x] Flight Map (deck.gl over MapLibre; flat, tilted). Not on the preview page: see `/collections/travels`.
 - [x] Flight Scenes (four stat cards with three.js scenes behind them, on one shared context; scenes are drawn from `scene-kit.ts` and `earth.ts` and found by `data-scene`). Not on the preview page: see `/collections/travels`.
 
 ## 07 Charts

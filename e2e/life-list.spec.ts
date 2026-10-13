@@ -38,9 +38,7 @@ test("the map draws, and changes what it counts", async ({ page }) => {
   await count.getByRole("button", { name: "Checklists" }).click();
   await expect(count.getByRole("button", { name: "Checklists" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("status").filter({ hasText: "World:" })).toContainText("checklists");
-  const views = page.getByRole("group", { name: "Map view" });
-  await views.getByRole("button", { name: "Globe" }).click();
-  await expect(views.getByRole("button", { name: "Globe" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("group", { name: "Map view" })).toHaveCount(0);
   // The countries are on deck.gl's canvas: wait for a frame with ink on it.
   await expect
     .poll(async () => new Set(await map.screenshot()).size, { timeout: 20_000 })

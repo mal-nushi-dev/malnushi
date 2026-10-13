@@ -3,7 +3,7 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FilterPill } from "@/components/filter-pill";
-import { BaseMap, type BBox, type MapContext, type MapView } from "@/components/map/base-map";
+import { BaseMap, type BBox, type MapContext } from "@/components/map/base-map";
 import { heatRamp } from "@/components/map/heat";
 
 /*
@@ -33,8 +33,6 @@ const metrics = [
 type Metric = (typeof metrics)[number]["key"];
 
 const world: BBox = [-180, -58, 180, 80];
-const views: MapView[] = ["flat", "globe"];
-
 /**
  * The west, south, east and north to frame a set of regions in: the parts
  * big enough to matter. The United States has the Aleutians on the far side
@@ -119,7 +117,6 @@ export default function LifeMap({ countries, regions, total }: LifeMapProps) {
           getLineColor: context.color("--line"),
           lineWidthUnits: "pixels",
           getLineWidth: 0.75,
-          parameters: { cullMode: "none" },
           updateTriggers: { getFillColor: [ramp.key, peak, shown, valueOf] },
           onHover: (info) => {
             const f = info.object as Region | undefined;
@@ -149,12 +146,11 @@ export default function LifeMap({ countries, regions, total }: LifeMapProps) {
       bounds={bounds}
       padding={opened ? 32 : 8}
       maxFitZoom={6}
-      views={views}
+      views={["flat"]}
       land={false}
       layers={layers}
       controls={
         <>
-          <span aria-hidden className="mx-1 w-px self-stretch bg-line" />
           <div role="group" aria-label="Count" className="flex gap-2">
             {metrics.map((m) => (
               <FilterPill key={m.key} size="sm" active={m.key === metric} onClick={() => setMetric(m.key)}>

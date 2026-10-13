@@ -10,7 +10,7 @@ import { reducedMotion } from "@/lib/motion";
 
 /*
  * The map the site's pages share: MapLibre draws the ground and owns the
- * camera, flat, tilted or on a globe, and deck.gl draws a page's data on a
+ * camera, flat or tilted, and deck.gl draws a page's data on a
  * canvas of its own above it. A page supplies layers; this supplies
  * everything else: the colors of the day, the views, the hover tip, the
  * frame, the loop that moves things, and what happens without WebGL 2.
@@ -29,10 +29,9 @@ setWorkerUrl(new URL("maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url)
 export type BBox = [number, number, number, number];
 
 export const views = {
-  flat: { label: "Flat", projection: "mercator", pitch: 0, padding: 56, lower: 0 },
+  flat: { label: "Flat", pitch: 0, padding: 56, lower: 0 },
   // Tilted, what is far away rises up the screen: the frame is set lower to keep it in.
-  tilted: { label: "Tilted", projection: "mercator", pitch: 50, padding: 32, lower: 0.2 },
-  globe: { label: "Globe", projection: "globe", pitch: 0, padding: 8, lower: 0 },
+  tilted: { label: "Tilted", pitch: 50, padding: 32, lower: 0.2 },
 } as const;
 export type MapView = keyof typeof views;
 
@@ -144,7 +143,7 @@ export function BaseMap({
   bounds,
   padding = views.flat.padding,
   maxFitZoom,
-  views: available = ["flat", "tilted", "globe"],
+  views: available = ["flat", "tilted"],
   land = true,
   animated = false,
   effects,
@@ -301,7 +300,6 @@ export function BaseMap({
   const show = useCallback((next: MapView) => {
     setView(next);
     viewRef.current = next;
-    map.current?.setProjection({ type: views[next].projection });
     fit.current(1200);
     draw.current();
   }, []);
@@ -336,13 +334,15 @@ export function BaseMap({
       </div>
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2">
-          <div role="group" aria-label="Map view" className="flex gap-2">
-            {available.map((key) => (
-              <FilterPill key={key} size="sm" active={key === view} onClick={() => show(key)}>
-                {views[key].label}
-              </FilterPill>
-            ))}
-          </div>
+          {available.length > 1 && (
+            <div role="group" aria-label="Map view" className="flex gap-2">
+              {available.map((key) => (
+                <FilterPill key={key} size="sm" active={key === view} onClick={() => show(key)}>
+                  {views[key].label}
+                </FilterPill>
+              ))}
+            </div>
+          )}
           {controls}
         </div>
         {note}
