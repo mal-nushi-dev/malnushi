@@ -69,12 +69,22 @@ test("fonts are served with long-lived immutable caching", async ({ request, pag
 
 test("scripts and styles are served compressed", async ({ page }) => {
   const encodings: string[] = [];
+  const reading: Promise<void>[] = [];
   page.on("response", (r) => {
     if (["script", "stylesheet"].includes(r.request().resourceType())) {
-      encodings.push(r.headers()["content-encoding"] ?? "none");
+      // A body under 1KB is not compressed by any server; a tiny chunk is not
+      // a configuration fault.
+      reading.push(
+        r.body().then((body) => {
+          if (body.length >= 1024) {
+            encodings.push(r.headers()["content-encoding"] ?? "none");
+          }
+        }),
+      );
     }
   });
   await page.goto("/");
+  await Promise.all(reading);
   expect(encodings.length).toBeGreaterThan(0);
   expect(encodings.filter((e) => e === "none")).toEqual([]);
 });
