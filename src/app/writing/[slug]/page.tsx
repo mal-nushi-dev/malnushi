@@ -5,7 +5,6 @@ import { PhotoFigure } from "@/components/entry/photo-figure";
 import { EssayHeader } from "@/components/essay-header";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { NextLink } from "@/components/next-link";
 import { content, readingTime } from "@/lib/content";
 
@@ -38,7 +37,6 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
   const { older } = q.adjacent(post, (p) => p.data.type === post.data.type);
   return (
     <>
-      <Nav active="Writing" />
       <main className="pb-(--space-block)">
         <article className="page flex flex-col gap-(--space-block) pt-(--space-header-top)">
           <EssayHeader

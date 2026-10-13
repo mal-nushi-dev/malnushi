@@ -4,7 +4,6 @@ import { Eyebrow } from "@/components/eyebrow";
 import { FlightLog, UrlFlightLog, type FlightRow } from "@/components/flight-log";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { content, type Airport } from "@/lib/content";
 import { hoursAndMinutes, miles } from "@/lib/flights/format";
 
@@ -34,7 +33,6 @@ export default async function FlightLogPage() {
 
   return (
     <>
-      <Nav active="Collections" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Travels" category="Log" />

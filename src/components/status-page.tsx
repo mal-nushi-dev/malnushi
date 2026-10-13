@@ -1,5 +1,4 @@
 import { Footer } from "@/components/footer";
-import { Nav } from "@/components/nav";
 
 /** Full page for a state the visitor did not choose: not found, error. */
 export function StatusPage({
@@ -15,7 +14,6 @@ export function StatusPage({
 }) {
   return (
     <>
-      <Nav />
       <main className="page pt-(--space-header-top) pb-(--space-block)">
         <div className="flex max-w-175 flex-col gap-(--space-xl)">
           <p className="type-label text-ink-2">{label}</p>

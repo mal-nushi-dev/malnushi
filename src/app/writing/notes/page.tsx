@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { toNoteItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
-import { Nav } from "@/components/nav";
 import { NoteList } from "@/components/note";
 import { content } from "@/lib/content";
 
@@ -17,7 +16,6 @@ export default async function NotesPage() {
   const notes = q.list("note").map(toNoteItem);
   return (
     <>
-      <Nav active="Writing" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Writing" category="Notes" />

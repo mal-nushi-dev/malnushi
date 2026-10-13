@@ -3,7 +3,6 @@ import { toIndexItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { IndexList } from "@/components/index-list";
-import { Nav } from "@/components/nav";
 import { content } from "@/lib/content";
 
 // Every track (/music), newest first. The layout is provisional; see the
@@ -17,7 +16,6 @@ export default async function MusicPage() {
   const tracks = (await content()).list("track");
   return (
     <>
-      <Nav active="Projects" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Music" category="Tracks" />

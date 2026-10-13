@@ -21,6 +21,29 @@ export const sections = [
 
 export type Section = (typeof sections)[number]["label"];
 
+/**
+ * The menu section a path belongs to, for the nav's active row. Photography
+ * and music live under Projects. The home page, and anything unknown, has none.
+ */
+export function sectionOf(pathname: string | null): Section | undefined {
+  const first = pathname?.split("/")[1];
+  switch (first) {
+    case "writing":
+    case "components":
+      return "Writing";
+    case "projects":
+    case "photography":
+    case "music":
+      return "Projects";
+    case "collections":
+      return "Collections";
+    case "about":
+      return "About";
+    default:
+      return undefined;
+  }
+}
+
 export function cx(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }

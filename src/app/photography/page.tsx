@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { PhotoFigure } from "@/components/entry/photo-figure";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
-import { Nav } from "@/components/nav";
 import { content } from "@/lib/content";
 
 // The photo archive (/photography): every photograph, newest first, one at
@@ -16,7 +15,6 @@ export default async function PhotographyPage() {
   const photos = (await content()).list("photo");
   return (
     <>
-      <Nav active="Projects" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Photography" category="Archive" />

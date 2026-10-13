@@ -8,7 +8,6 @@ import { ImageSlot } from "@/components/image-placeholder";
 import { EarlierIssues, IssueStub } from "@/components/issue-stub";
 import { ArrowLink, InlineLink } from "@/components/links";
 import { Masthead } from "@/components/masthead";
-import { Nav } from "@/components/nav";
 import { SectionLabel } from "@/components/section-label";
 import { WireNotes } from "@/components/wire-notes";
 import { content } from "@/lib/content";
@@ -35,7 +34,6 @@ export default async function WritingPage() {
   const [lead, second, third] = articles;
   return (
     <>
-      <Nav active="Writing" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col items-center gap-(--space-lg) pt-(--space-2xl)">
           <div className="grid w-full grid-cols-12 gap-x-(--col-gap)">

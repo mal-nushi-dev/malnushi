@@ -2,8 +2,9 @@
 
 import { animate, motionValue } from "motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import { cx, sections, type Section } from "@/lib/site";
+import { cx, sectionOf, sections, type Section } from "@/lib/site";
 
 type Mode = "idle" | "search" | "menu";
 
@@ -175,8 +176,18 @@ const button =
  * progress 0 to 1, and `--h`, height in px), so no frame re-renders React.
  * See docs/adr/0001-spring-animation-with-motion.md.
  */
-export function Nav({ active }: { active?: Section }) {
+export function Nav({ active: override }: { active?: Section }) {
+  const pathname = usePathname();
+  const active = override ?? sectionOf(pathname);
   const [mode, setMode] = useState<Mode>("idle");
+  // The nav lives in the layout, so it survives a page change. Whatever is
+  // open closes with the page (the menu links and the wordmark already close
+  // it on press; this covers the back button and links in the page).
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (seenPath !== pathname) {
+    setSeenPath(pathname);
+    setMode("idle");
+  }
   const [scrolled, setScrolled] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const plate = useRef<HTMLDivElement>(null);
@@ -216,6 +227,11 @@ export function Nav({ active }: { active?: Section }) {
     return () =>
       document.removeEventListener("pointerdown", closeOnOutsidePress);
   }, [mode]);
+
+  // The search text is cleared when the page changes (DESIGN.md, Nav).
+  useEffect(() => {
+    if (input.current) input.current.value = "";
+  }, [pathname]);
 
   useEffect(() => {
     if (!search) return;
@@ -298,7 +314,7 @@ export function Nav({ active }: { active?: Section }) {
       <header
         ref={header}
         onKeyDown={(e) => e.key === "Escape" && go("idle")}
-        className="pointer-events-none sticky top-0 z-50 h-0 bg-transparent"
+        className="pointer-events-none sticky top-0 z-50 h-26 bg-transparent [view-transition-name:site-nav]"
       >
         <div
           data-nav-open={tinted ? "" : undefined}
@@ -344,6 +360,7 @@ export function Nav({ active }: { active?: Section }) {
                   <li key={s.href}>
                     <Link
                       href={s.href}
+                      transitionTypes={["nav-forward"]}
                       aria-current={s.label === active ? "page" : undefined}
                       onClick={() => go("idle")}
                       className="flex min-h-(--touch-target) items-center border-t border-line py-3 text-ink hover:text-link"
@@ -380,6 +397,7 @@ export function Nav({ active }: { active?: Section }) {
             <div className="flex min-w-0 flex-1 justify-center">
               <Link
                 href="/"
+                transitionTypes={["nav-forward"]}
                 onClick={() => go("idle")}
                 className="type-index-title whitespace-nowrap text-ink transition-colors duration-300 motion-reduce:transition-none"
               >
@@ -400,7 +418,6 @@ export function Nav({ active }: { active?: Section }) {
           </div>
         </div>
       </header>
-      <div aria-hidden className="h-26" />
     </>
   );
 }

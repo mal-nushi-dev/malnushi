@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { toSpine } from "@/components/entry/mappers";
 import { Footer } from "@/components/footer";
-import { Nav } from "@/components/nav";
 import { Shelf, UrlShelf, type ShelfItem } from "@/components/shelf";
 import { content } from "@/lib/content";
 
@@ -23,7 +22,6 @@ export default async function CollectionsPage() {
 
   return (
     <>
-      <Nav active="Collections" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <h1 className="type-h1">Collections</h1>

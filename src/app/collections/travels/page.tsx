@@ -8,7 +8,6 @@ import { FlightMap } from "@/components/flight-map";
 import { FlightScenes } from "@/components/flight-scenes";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
 import { Tabs } from "@/components/tabs";
@@ -89,7 +88,6 @@ export default async function TravelsPage() {
 
   return (
     <>
-      <Nav active="Collections" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Collections" category="Travels" />

@@ -7,7 +7,6 @@ import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { LifeMap } from "@/components/life-map";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { PhotoImage } from "@/components/entry/photo-figure";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
@@ -73,7 +72,6 @@ export default async function LifeListPage() {
 
   return (
     <>
-      <Nav active="Collections" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Collections" category="Life list" />

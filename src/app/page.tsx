@@ -4,7 +4,6 @@ import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { Portrait } from "@/components/portrait";
 import { SectionLabel } from "@/components/section-label";
 import { content, dayOf, type Kind } from "@/lib/content";
@@ -48,7 +47,6 @@ export default async function Home() {
   const [photo] = q.list("photo", { limit: 1 });
   return (
     <>
-      <Nav />
       <main>
         {/* Opening */}
         <section className="page pt-(--space-header-top)">

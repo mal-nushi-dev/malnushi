@@ -4,7 +4,6 @@ import { coverOf, disciplineOf, toTile } from "@/components/entry/mappers";
 import { TileCover } from "@/components/entry/tile-cover";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { tileSizeAt } from "@/components/tile";
 import { TileGallery, UrlTileGallery, type GalleryItem } from "@/components/tile-gallery";
 import { content } from "@/lib/content";
@@ -36,7 +35,6 @@ export default async function ProjectsPage() {
   });
   return (
     <>
-      <Nav active="Projects" />
       <main className="pb-(--space-block)">
         <h1 className="page pt-(--space-lg) pb-(--space-2xl) text-center type-feature-display">
           Projects

@@ -18,7 +18,6 @@ import { ImagePlaceholder, ImageSlot } from "@/components/image-placeholder";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink, InlineLink } from "@/components/links";
 import { MetaItem, MetaRow } from "@/components/meta-row";
-import { Nav } from "@/components/nav";
 import { NextLink } from "@/components/next-link";
 import { Note, NoteList, type NoteItem } from "@/components/note";
 import { OtherCollections } from "@/components/other-collections";
@@ -92,7 +91,6 @@ function Specimen({ name, children }: { name: string; children: React.ReactNode 
 export default function ComponentsPage() {
   return (
     <>
-      <Nav active="Writing" />
       <main>
         <Group number="01" title="Shell">
           <Specimen name="Next Link">

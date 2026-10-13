@@ -6,7 +6,6 @@ import { Footer } from "@/components/footer";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink } from "@/components/links";
 import { MetaItem, MetaRow } from "@/components/meta-row";
-import { Nav } from "@/components/nav";
 import { NextLink } from "@/components/next-link";
 import { content, dayOf, exifLine } from "@/lib/content";
 
@@ -40,7 +39,6 @@ export default async function PhotoPage({ params }: PageProps<"/photography/[id]
   const facts = [dayOf(photo.date), data.place, data.camera, data.lens, ...exifLine(data)];
   return (
     <>
-      <Nav active="Projects" />
       <main className="pb-(--space-block)">
         <article className="page flex flex-col gap-(--space-xl) pt-(--space-header-top)">
           <Eyebrow section="Photography" category={dayOf(photo.date)} />

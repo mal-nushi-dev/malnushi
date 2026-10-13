@@ -3,7 +3,6 @@ import { DataTable, type Column, type Species } from "@/components/data-table";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { content } from "@/lib/content";
 import { regionName } from "@/lib/ebird/places";
 
@@ -51,7 +50,6 @@ export default async function LifeListLogPage() {
 
   return (
     <>
-      <Nav active="Collections" />
       <main className="pb-(--space-block)">
         <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
           <Eyebrow section="Life list" category="Log" />

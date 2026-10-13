@@ -3,7 +3,6 @@ import { toNoteItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
-import { Nav } from "@/components/nav";
 import { Note } from "@/components/note";
 import { content, noteDateLine } from "@/lib/content";
 
@@ -29,7 +28,6 @@ export default async function NotePage({ params }: PageProps<"/writing/notes/[id
   const { day, time } = noteDateLine(note.date);
   return (
     <>
-      <Nav active="Writing" />
       <main className="pb-(--space-block)">
         <div className="page grid grid-cols-12 gap-x-(--col-gap) pt-(--space-header-top)">
           <div className="col-span-7 col-start-3 flex max-w-(--measure) flex-col gap-(--space-xl)">

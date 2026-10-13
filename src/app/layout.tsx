@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Nav } from "@/components/nav";
 import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import { mono, sans, serif } from "./fonts";
 import "./globals.css";
@@ -27,7 +28,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${serif.variable} ${sans.variable} ${mono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }

@@ -6,7 +6,6 @@ import { Footer } from "@/components/footer";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink } from "@/components/links";
 import { MetaItem, MetaRow } from "@/components/meta-row";
-import { Nav } from "@/components/nav";
 import { NextLink } from "@/components/next-link";
 import { content, trackLine } from "@/lib/content";
 
@@ -40,7 +39,6 @@ export default async function TrackPage({ params }: PageProps<"/music/[id]">) {
   const facts = [data.date, ...trackLine(data), data.composer?.join(", ")];
   return (
     <>
-      <Nav active="Projects" />
       <main className="pb-(--space-block)">
         <article className="page flex flex-col gap-(--space-xl) pt-(--space-header-top)">
           <Eyebrow section="Music" category="Track" />
