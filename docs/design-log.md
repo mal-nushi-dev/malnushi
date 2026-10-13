@@ -511,3 +511,9 @@ Decided with Mal on 2026-10-13.
 - **Now:** the travels map has Flat and Tilted. The life list map is flat only, so it has no view pills. The `globe` view and the projection switch are gone from `BaseMap`.
 - **Not removed:** the Earth in the travels page's "In numbers" scenes (three.js, ADR 0011). It is a separate illustration, not the map.
 
+
+### Life list legend is a swatch and a bar
+Decided with Mal on 2026-10-13.
+- **Was** a sentence ("World: 0 gray · 1 to 18 species"), which named colors the reader could not see beside it. **Now** it is the mockup's legend: a gray swatch for none, a bar from one to the most, and the place before them.
+- **Same colors as the map:** the bar is drawn from the same `heatRamp`, read from the page's tokens and again when the scheme changes.
+- **For screen readers** the visual part is hidden and a sentence is said in its place, in the same live region: "World, by species: most is 18".

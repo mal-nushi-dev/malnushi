@@ -80,7 +80,7 @@ export type BaseMapProps = {
 };
 
 /** A CSS color, as a canvas reads it, in deck.gl's 0 to 255. */
-function rgb(color: string, alpha = 255): Color {
+export function rgb(color: string, alpha = 255): Color {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 1;
   const context = canvas.getContext("2d", { willReadFrequently: true })!;

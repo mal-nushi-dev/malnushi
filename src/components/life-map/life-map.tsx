@@ -3,8 +3,8 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FilterPill } from "@/components/filter-pill";
-import { BaseMap, type BBox, type MapContext } from "@/components/map/base-map";
-import { heatRamp } from "@/components/map/heat";
+import { BaseMap, rgb as cssRgb, type BBox, type MapContext } from "@/components/map/base-map";
+import { heatRamp, type Ramp } from "@/components/map/heat";
 
 /*
  * The life list's map: every country, territory and dependency (and, once
@@ -64,6 +64,77 @@ export function boundsOf(features: Region[]): BBox {
   ];
 }
 
+/** The ramp from the page's own colors; `color` reads a CSS custom property as 0 to 255. */
+function rampFor(color: (token: string) => ArrayLike<number>, dark: boolean): Ramp {
+  const rgb = (token: string): [number, number, number] => {
+    const c = color(token);
+    return [c[0], c[1], c[2]];
+  };
+  return heatRamp(rgb("--surface"), rgb("--accent"), rgb("--ink"), [0x2e, 0x2e, 0x2e], dark);
+}
+
+/** The ramp for the legend, which is DOM and not deck.gl, read again when the scheme changes. */
+function useRamp(): Ramp | null {
+  const [ramp, setRamp] = useState<Ramp | null>(null);
+  useEffect(() => {
+    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const read = () => {
+      const style = getComputedStyle(document.documentElement);
+      setRamp(rampFor((token) => cssRgb(style.getPropertyValue(token).trim()), scheme.matches));
+    };
+    read();
+    scheme.addEventListener("change", read);
+    return () => scheme.removeEventListener("change", read);
+  }, []);
+  return ramp;
+}
+
+const css = (c: ArrayLike<number>) => `rgb(${c[0]} ${c[1]} ${c[2]})`;
+
+/**
+ * What the fills mean: gray for none, and a bar from one to the most. The
+ * sighted reader gets the colors; a screen reader gets the sentence, said
+ * again whenever the place or the count changes.
+ */
+function Legend({ place, unit, peak }: { place: string; unit: string; peak: number }) {
+  const ramp = useRamp();
+  return (
+    <div role="status" className="type-meta flex items-center gap-3 text-ink-2">
+      <span className="sr-only">
+        {place}, by {unit}: {peak === 0 ? "none seen" : `most is ${peak}`}
+      </span>
+      <span aria-hidden className="flex items-center gap-3">
+        <span>{place}</span>
+        {ramp && (
+          <>
+            <span
+              className="size-2.5 rounded-[2px] border border-line"
+              style={{ background: css(ramp.at(0, peak)) }}
+            />
+            <span>{peak === 0 ? "None seen" : "0"}</span>
+            {peak > 0 && (
+              <>
+                <span
+                  className="h-2.5 w-24 rounded-[2px] border border-line"
+                  style={{
+                    background:
+                      peak === 1
+                        ? css(ramp.at(1, peak))
+                        : `linear-gradient(90deg, ${css(ramp.at(1, peak))}, ${css(ramp.at(peak, peak))})`,
+                  }}
+                />
+                <span>
+                  {peak === 1 ? "1" : `1 to ${peak}`} {unit}
+                </span>
+              </>
+            )}
+          </>
+        )}
+      </span>
+    </div>
+  );
+}
+
 export default function LifeMap({ countries, regions, total }: LifeMapProps) {
   const [all, setAll] = useState<Region[]>([]);
   const [opened, setOpened] = useState<{ name: string; features: Region[] } | null>(null);
@@ -102,8 +173,7 @@ export default function LifeMap({ countries, regions, total }: LifeMapProps) {
 
   const layers = useCallback(
     (context: MapContext) => {
-      const rgb = (token: string) => context.color(token).slice(0, 3) as [number, number, number];
-      const ramp = heatRamp(rgb("--surface"), rgb("--accent"), rgb("--ink"), [0x2e, 0x2e, 0x2e], context.colors.dark);
+      const ramp = rampFor(context.color, context.colors.dark);
       return [
         new GeoJsonLayer<Region["properties"]>({
           id: "regions",
@@ -112,7 +182,7 @@ export default function LifeMap({ countries, regions, total }: LifeMapProps) {
           stroked: true,
           pickable: true,
           autoHighlight: true,
-          highlightColor: [...rgb("--ink"), 70],
+          highlightColor: [...context.color("--ink").slice(0, 3), 70] as [number, number, number, number],
           getFillColor: (f) => ramp.at(valueOf(f.properties.code), peak),
           getLineColor: context.color("--line"),
           lineWidthUnits: "pixels",
@@ -165,12 +235,7 @@ export default function LifeMap({ countries, regions, total }: LifeMapProps) {
           )}
         </>
       }
-      note={
-        <p className="type-meta text-ink-2" role="status">
-          {opened ? opened.name : "World"}:{" "}
-          {peak === 0 ? "none seen" : `0 gray · 1 to ${peak} ${unit}`}
-        </p>
-      }
+      note={<Legend place={opened ? opened.name : "World"} unit={unit} peak={peak} />}
     />
   );
 }
