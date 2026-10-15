@@ -263,7 +263,7 @@ export const recommendationData = z.strictObject({
 });
 
 /** Where an airport is, as scripts/flights.mjs writes it to flights/airports.json. */
-export const airportPlace = z.strictObject({
+const airportPlace = z.strictObject({
   lat: z.number().min(-90).max(90),
   lon: z.number().min(-180).max(180),
   /** ISO 3166-1 alpha-2. */

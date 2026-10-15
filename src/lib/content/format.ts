@@ -14,6 +14,15 @@ export function dayOf(date: string) {
   return date.slice(0, 10);
 }
 
+/** "2026-09-28" as "September 28", read as the day it is, in no time zone. */
+export function dayInWords(date: string) {
+  return new Date(`${dayOf(date)}T00:00:00Z`).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  });
+}
+
 /**
  * Whether `a` falls before `b`. Two moments are compared as instants. If
  * either is a bare day, the days are compared as they are written: a day

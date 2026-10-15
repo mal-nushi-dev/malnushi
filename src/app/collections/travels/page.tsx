@@ -21,7 +21,7 @@ import {
   top,
   type Ranked,
 } from "@/lib/flights/stats";
-import { count, counted } from "@/lib/format";
+import { count, counted, noun } from "@/lib/format";
 
 // The travels collection: a map of every flight, then the flights counted.
 // The first collection whose page is not its table; that is one level down,
@@ -95,17 +95,17 @@ export default async function TravelsPage() {
         <PageSection className="flex flex-col gap-(--space-xl)">
           <SectionLabel>Time in the air</SectionLabel>
           <div className="grid grid-cols-6 gap-x-(--col-gap)">
-            <Stat value={time.years} label={time.years === 1 ? "Year" : "Years"} />
-            <Stat value={time.months} label={time.months === 1 ? "Month" : "Months"} />
-            <Stat value={time.weeks} label={time.weeks === 1 ? "Week" : "Weeks"} />
-            <Stat value={time.days} label={time.days === 1 ? "Day" : "Days"} />
-            <Stat value={time.hours} label={time.hours === 1 ? "Hour" : "Hours"} />
-            <Stat value={time.minutes} label={time.minutes === 1 ? "Minute" : "Minutes"} />
+            <Stat value={time.years} label={noun(time.years, "Year", "Years")} />
+            <Stat value={time.months} label={noun(time.months, "Month", "Months")} />
+            <Stat value={time.weeks} label={noun(time.weeks, "Week", "Weeks")} />
+            <Stat value={time.days} label={noun(time.days, "Day", "Days")} />
+            <Stat value={time.hours} label={noun(time.hours, "Hour", "Hours")} />
+            <Stat value={time.minutes} label={noun(time.minutes, "Minute", "Minutes")} />
           </div>
           {stats.estimated > 0 && (
             <p className="type-small text-ink-2">
               {counted(stats.estimated, "flight has", "flights have")} no duration recorded, and{" "}
-              {stats.estimated === 1 ? "is" : "are"} estimated from distance.
+              {noun(stats.estimated, "is", "are")} estimated from distance.
             </p>
           )}
         </PageSection>

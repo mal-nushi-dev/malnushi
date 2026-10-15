@@ -16,7 +16,7 @@ export type Filter = {
   label: string;
 };
 
-export function filterKey(label: string) {
+function filterKey(label: string) {
   return label.trim().toLowerCase();
 }
 

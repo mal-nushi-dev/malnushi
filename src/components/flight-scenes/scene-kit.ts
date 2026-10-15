@@ -77,7 +77,7 @@ export type LineStyle = {
 
 const flown: LineStyle = { color: "path", width: 1.5, opacity: 1 };
 
-export const lineStyles = {
+const lineStyles = {
   /** The way covered. */
   flown,
   /** The way left, under the flown line. */

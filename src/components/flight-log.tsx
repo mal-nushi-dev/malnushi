@@ -3,6 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { DataTable, type Column } from "@/components/data-table";
 import { FilterPill } from "@/components/filter-pill";
+import { noun } from "@/lib/format";
 
 export type FlightRow = {
   id: string;
@@ -59,7 +60,7 @@ export function FlightLog({
         ))}
       </div>
       <p role="status" className="sr-only">
-        {shown.length} {shown.length === 1 ? "flight" : "flights"}
+        {shown.length} {noun(shown.length, "flight", "flights")}
       </p>
       <DataTable caption="Flights, newest first" columns={columns} rows={shown} rowId="id" />
     </div>

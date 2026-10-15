@@ -10,9 +10,14 @@ export function count(value: number) {
   return whole.format(value);
 }
 
+/** The word for `n` of something, without the number: "Year", "Years". */
+export function noun(n: number, one: string, many: string) {
+  return n === 1 ? one : many;
+}
+
 /** A number and its noun: "1 flight has", "123 flights have", "1,204 birds". */
 export function counted(n: number, one: string, many: string) {
-  return `${count(n)} ${n === 1 ? one : many}`;
+  return `${count(n)} ${noun(n, one, many)}`;
 }
 
 /** A position in a list, padded to a fixed width: `numbered(7, 3)` is "007". */

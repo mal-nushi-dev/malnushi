@@ -2,7 +2,7 @@
 import { cp, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { exifLine, isBefore, noteDateLine, readingTime, trackLine } from "./format";
+import { dayInWords, exifLine, isBefore, noteDateLine, readingTime, trackLine } from "./format";
 import { jpegSize } from "./image-size";
 import { loadContent } from "./load";
 import { createQueries } from "./query";
@@ -62,6 +62,11 @@ describe("format", () => {
   it("never reads faster than a minute", () => {
     expect(readingTime("three short words")).toBe(1);
     expect(readingTime("word ".repeat(690))).toBe(3);
+  });
+
+  it("writes a day in words, whatever the reader's time zone", () => {
+    expect(dayInWords("2026-09-28")).toBe("September 28");
+    expect(dayInWords("2026-09-28T23:30-04:00")).toBe("September 28");
   });
 });
 

@@ -39,7 +39,7 @@ const world: BBox = [-180, -58, 180, 80];
  * of the antimeridian and Hawaii in the Pacific, and framing those frames
  * the world.
  */
-export function boundsOf(features: Region[]): BBox {
+function boundsOf(features: Region[]): BBox {
   const polygons = features.flatMap((f) =>
     f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates,
   );

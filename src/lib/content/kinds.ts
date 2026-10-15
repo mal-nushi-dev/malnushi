@@ -68,10 +68,10 @@ export function edges(rel: Rel, ...to: (string | undefined)[]): Edge[] {
 }
 
 /** Slugs a post cannot take: they are routes under /writing. */
-export const reservedPostSlugs = ["the-kernel", "dev-journal", "notes"];
+const reservedPostSlugs = ["the-kernel", "dev-journal", "notes"];
 
 /** A release's format as it is shown. */
-export const albumFormats = {
+const albumFormats = {
   album: "Album",
   ep: "EP",
   single: "Single",

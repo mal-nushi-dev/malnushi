@@ -11,6 +11,7 @@ import {
   toggle,
   type Filter,
 } from "@/lib/filter";
+import { noun as nounFor } from "@/lib/format";
 
 /** A tile and the filters it answers to. `cover` is drawn as the tile's cover. */
 export type GalleryItem = Omit<TileProps, "children"> & {
@@ -67,7 +68,7 @@ export function TileGallery({
         </div>
       )}
       <p role="status" className="sr-only">
-        {shown.length} {shown.length === 1 ? noun.one : noun.many}
+        {shown.length} {nounFor(shown.length, noun.one, noun.many)}
       </p>
       <TileGrid>
         {shown.map((item) => (

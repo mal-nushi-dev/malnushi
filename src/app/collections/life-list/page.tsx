@@ -11,10 +11,10 @@ import { PageSection } from "@/components/page-section";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
 import { Tabs } from "@/components/tabs";
-import { content } from "@/lib/content";
+import { content, dayInWords, dayOf } from "@/lib/content";
 import { countryTable, regionName } from "@/lib/ebird/places";
 import { lifeStats, type Ranked } from "@/lib/ebird/stats";
-import { count, counted } from "@/lib/format";
+import { count, counted, noun } from "@/lib/format";
 import { cx } from "@/lib/site";
 
 // The life list's own page: the numbers and the map. Its table is one level
@@ -23,14 +23,6 @@ export const metadata: Metadata = {
   title: "Life list",
   description: "Every bird species I have identified, counted by where and when.",
 };
-
-/** "2026-09-28" as "28 September", read as the day it is, in no time zone. */
-const day = (iso: string) =>
-  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "long",
-    timeZone: "UTC",
-  });
 
 /** A territory is said to be one; a country is not. */
 const kindOf = (type: string) => (/^(Sovereign country|Country)$/.test(type) ? undefined : type);
@@ -86,7 +78,7 @@ export default async function LifeListPage() {
                 {totals.lastLifer && (
                   <>
                     {" "}
-                    The latest is the {totals.lastLifer.species}, on {day(totals.lastLifer.date)}.
+                    The latest is the {totals.lastLifer.species}, on {dayInWords(totals.lastLifer.date)}.
                   </>
                 )}
               </>
@@ -99,17 +91,17 @@ export default async function LifeListPage() {
             <PageSection className="flex flex-col gap-(--space-xl)">
               <SectionLabel>In numbers</SectionLabel>
               <div className="grid grid-cols-2 gap-x-(--col-gap) gap-y-(--space-lg) md:grid-cols-5">
-                <Stat value={count(totals.species)} label={totals.species === 1 ? "Species" : "Species"} />
-                <Stat value={count(totals.checklists)} label={totals.checklists === 1 ? "Checklist" : "Checklists"} />
+                <Stat value={count(totals.species)} label="Species" />
+                <Stat value={count(totals.checklists)} label={noun(totals.checklists, "Checklist", "Checklists")} />
                 <Stat
                   value={count(totals.countries)}
-                  label={totals.countries === 1 ? "Country or territory" : "Countries and territories"}
+                  label={noun(totals.countries, "Country or territory", "Countries and territories")}
                 />
                 <Stat
                   value={count(totals.regions)}
-                  label={totals.regions === 1 ? "State or province" : "States and provinces"}
+                  label={noun(totals.regions, "State or province", "States and provinces")}
                 />
-                <Stat value={count(totals.years)} label={totals.years === 1 ? "Year" : "Years"} />
+                <Stat value={count(totals.years)} label={noun(totals.years, "Year", "Years")} />
               </div>
             </PageSection>
 
@@ -242,7 +234,7 @@ export default async function LifeListPage() {
                             {photo.data.caption ?? photo.data.place}
                           </span>
                         )}
-                        <span className="type-meta text-ink-2">{photo.date.slice(0, 10)}</span>
+                        <span className="type-meta text-ink-2">{dayOf(photo.date)}</span>
                       </li>
                     ))}
                   </ul>

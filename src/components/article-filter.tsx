@@ -8,15 +8,15 @@ import { SectionLabel } from "@/components/section-label";
 const ALL = "All";
 
 /** "All", then each category in the order it first appears. */
-export function categoriesOf(items: IndexItem[]) {
+function categoriesOf(items: IndexItem[]) {
   return [ALL, ...new Set(items.map((i) => i.category))];
 }
 
-export function filterBy<T extends IndexItem>(items: T[], category: string) {
+function filterBy<T extends IndexItem>(items: T[], category: string) {
   return category === ALL ? items : items.filter((i) => i.category === category);
 }
 
-export function CategoryPills({
+function CategoryPills({
   categories,
   active,
   onChange,

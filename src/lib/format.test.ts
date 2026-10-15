@@ -1,10 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { count, counted, numbered } from "./format";
+import { count, counted, noun, numbered } from "./format";
 
 describe("count", () => {
   it("writes whole numbers with separators", () => {
     expect(count(161324.4)).toBe("161,324");
     expect(count(0)).toBe("0");
+  });
+});
+
+describe("noun", () => {
+  it("chooses the word by the number, without the number", () => {
+    expect(noun(1, "Year", "Years")).toBe("Year");
+    expect(noun(0, "Year", "Years")).toBe("Years");
   });
 });
 

@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
 import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
-import { content } from "@/lib/content";
+import { content, dayOf } from "@/lib/content";
 import { regionName } from "@/lib/ebird/places";
 import { numbered } from "@/lib/format";
 
@@ -42,7 +42,7 @@ export default async function LifeListLogPage() {
       // Numbered from the first species named.
       no: numbered(i + 1, 3),
       species: { common: s.data.species, scientific: s.data.scientific },
-      date: s.date.slice(0, 10),
+      date: dayOf(s.date),
       where: s.data.region?.includes("-")
         ? `${s.data.county ? `${s.data.county}, ` : ""}${regionName(s.data.region)}`
         : s.data.place,
