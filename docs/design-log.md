@@ -4,6 +4,15 @@ Decisions made while turning [DESIGN.md](DESIGN.md) into a design and then into 
 
 Format: newest first. Each entry has the decision, the reason, and what would change it. Unresolved questions live in DESIGN.md under "Open questions"; don't duplicate them here.
 
+## 2026-10-14
+
+### The page header is one component
+My choice, 2026-10-14, as the first step of a refactor; to be confirmed by Mal.
+- **Why:** eight pages wrote the same eyebrow, `h1` and standfirst by hand, with the same class strings, and chose a top spacing for each band below it page by page. A change to the header meant editing every page, and pages copied from each other drifted (see Open questions).
+- **What:** `PageHeader` and `PageSection` (`src/components/page-header.tsx`, `page-section.tsx`). The spacing between bands is now one of two named rhythms, `2xl` and `block`, not a class picked per page. Details are in DESIGN.md (Page header and page section).
+- **No visual change:** the pages render the same markup and classes as before.
+- **Left alone:** the 404 and error pages and the Writing index, which differ today; whether they should is an open question, not a refactor.
+
 ## 2026-10-11
 
 ### Life list page: built, and what changed from the mockup

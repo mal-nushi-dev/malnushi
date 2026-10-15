@@ -265,6 +265,17 @@ The panel content has a fixed 840px width (narrower viewports clamp it to the vi
 - **Tried and not taken** (mocks, `docs/mockups/page-transitions.html`): the page lifting out of the spine as a scaled copy ("too plain"); a plain clipped reveal from a spine (the live mask, which Mal liked only from the nav plate).
 - **Implementation:** `src/lib/page-transition.ts` (the springs, written to the root element as `--vt-*` every frame), `src/lib/page-origin.ts` (what a press sets up), `src/app/template.tsx` and the `vt-plate` and `page-*` rules at the end of `src/app/globals.css`. See ADR 0014.
 
+### Page header and page section
+
+The top of an index or collection page (Music, Photographs, Notes, Collections, Travels, Life list and their logs): the eyebrow, then the `h1`, then the standfirst in `--ink-2` at most 600px wide, then any links (the logs' "The map, and …" arrow link), 24px (`space-md`) apart, starting `space-header-top` below the nav. One component, `PageHeader`, so every such page matches; a page passes only its words.
+
+The bands under it are `PageSection`s, in the page's columns, each spaced from the band above in one of two rhythms:
+
+- **`2xl` (64px):** parts that read as one run, such as the first band under the header, or the numbers under a map.
+- **`block` (128px):** parts that stand apart, such as a new labelled section of the travels page.
+
+Pages with a designed header of their own do not use it: Home, the Writing index (the masthead), Projects (a centred `feature-display` title), an essay (Essay header), and a single photograph, track or note.
+
 ### Eyebrow
 
 `label` style, `--ink-2`, above every h1 (except the Writing index, whose masthead is the name): section, then an accent-colored `/`, then the sub-category.
@@ -740,6 +751,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 
 ## Open questions
 
+- **Two pages start differently from the page header** (found 2026-10-14). The 404 and error pages (`StatusPage`) use a `label` line in place of the eyebrow, a 700px column and 48px gaps; the Writing index starts `space-2xl` below the nav, not `space-header-top`. Decide whether they are designed that way or should take the page header.
 - **The browser's back and forward buttons do not animate:** React runs no view transition for a pop, so they are an instant cut. Decide whether that is acceptable or worth working around.
 - **Only the Collections spines are origins** (`data-vt-origin`). The tiles on Projects and Photography, and the index rows, still open from the nav plate in the page's color. Decide which of them should become a plate of their own.
 - **The page transition is about 900ms end to end** (the nav's open spring is 600ms, and the drop and the content follow). It is not interruptible mid-flight: a press during it ends it. Decide whether it should be shorter on links a visitor uses a lot (the menu).

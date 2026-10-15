@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { DataTable, type Column, type Species } from "@/components/data-table";
-import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
+import { PageHeader } from "@/components/page-header";
+import { PageSection } from "@/components/page-section";
 import { content } from "@/lib/content";
 import { regionName } from "@/lib/ebird/places";
 
@@ -51,17 +52,16 @@ export default async function LifeListLogPage() {
   return (
     <>
       <main className="pb-(--space-block)">
-        <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
-          <Eyebrow section="Life list" category="Log" />
-          <h1 className="type-h1">Species log</h1>
-          <p className="type-standfirst max-w-150 text-ink-2">
-            Every bird species I have identified, newest first.
-          </p>
+        <PageHeader
+          eyebrow={{ section: "Life list", category: "Log" }}
+          title="Species log"
+          standfirst="Every bird species I have identified, newest first."
+        >
           <ArrowLink href="/collections/life-list">The map, and the list counted</ArrowLink>
-        </header>
-        <div className="page pt-(--space-2xl)">
+        </PageHeader>
+        <PageSection as="div">
           <DataTable caption="Species, newest first" columns={columns} rows={rows} rowId="id" />
-        </div>
+        </PageSection>
       </main>
       <Footer />
     </>

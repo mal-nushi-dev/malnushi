@@ -12,6 +12,7 @@ Components are grouped in sections 01–07. States (hover, focus) are CSS; varia
 - [x] Next Link
 - [x] Footer
 - [x] Status Page (404 and error pages; `src/components/status-page.tsx`)
+- [x] Page Header and Page Section (eyebrow, `h1`, standfirst; the bands below it, `space`: block, 2xl). Not on the preview page: see `/music` or `/collections/travels/log`.
 
 ## 02 Text and media
 

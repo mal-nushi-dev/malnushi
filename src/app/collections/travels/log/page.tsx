@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Eyebrow } from "@/components/eyebrow";
 import { FlightLog, UrlFlightLog, type FlightRow } from "@/components/flight-log";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
+import { PageHeader } from "@/components/page-header";
+import { PageSection } from "@/components/page-section";
 import { content, type Airport } from "@/lib/content";
 import { hoursAndMinutes, miles } from "@/lib/flights/format";
 
@@ -34,19 +35,18 @@ export default async function FlightLogPage() {
   return (
     <>
       <main className="pb-(--space-block)">
-        <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
-          <Eyebrow section="Travels" category="Log" />
-          <h1 className="type-h1">Flight log</h1>
-          <p className="type-standfirst max-w-150 text-ink-2">
-            Every flight I have taken, newest first.
-          </p>
+        <PageHeader
+          eyebrow={{ section: "Travels", category: "Log" }}
+          title="Flight log"
+          standfirst="Every flight I have taken, newest first."
+        >
           <ArrowLink href="/collections/travels">The map, and the flights counted</ArrowLink>
-        </header>
-        <div className="page pt-(--space-2xl)">
+        </PageHeader>
+        <PageSection as="div">
           <Suspense fallback={<FlightLog rows={rows} />}>
             <UrlFlightLog rows={rows} />
           </Suspense>
-        </div>
+        </PageSection>
       </main>
       <Footer />
     </>

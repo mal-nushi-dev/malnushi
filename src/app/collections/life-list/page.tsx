@@ -3,11 +3,12 @@ import Link from "next/link";
 import { BarList } from "@/components/charts/bar-list";
 import { ColumnChart } from "@/components/charts/column-chart";
 import { count } from "@/components/charts/format";
-import { Eyebrow } from "@/components/eyebrow";
 import { Footer } from "@/components/footer";
 import { LifeMap } from "@/components/life-map";
 import { ArrowLink } from "@/components/links";
 import { PhotoImage } from "@/components/entry/photo-figure";
+import { PageHeader } from "@/components/page-header";
+import { PageSection } from "@/components/page-section";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
 import { Tabs } from "@/components/tabs";
@@ -73,11 +74,11 @@ export default async function LifeListPage() {
   return (
     <>
       <main className="pb-(--space-block)">
-        <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
-          <Eyebrow section="Collections" category="Life list" />
-          <h1 className="type-h1">Life list</h1>
-          <p className="type-standfirst max-w-150 text-ink-2">
-            {totals.species === 0 ? (
+        <PageHeader
+          eyebrow={{ section: "Collections", category: "Life list" }}
+          title="Life list"
+          standfirst={
+            totals.species === 0 ? (
               "No birds on the list yet."
             ) : (
               <>
@@ -90,13 +91,13 @@ export default async function LifeListPage() {
                   </>
                 )}
               </>
-            )}
-          </p>
-        </header>
+            )
+          }
+        />
 
         {totals.species > 0 && (
           <>
-            <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
+            <PageSection className="flex flex-col gap-(--space-xl)">
               <SectionLabel>In numbers</SectionLabel>
               <div className="grid grid-cols-2 gap-x-(--col-gap) gap-y-(--space-lg) md:grid-cols-5">
                 <Stat value={count(totals.species)} label={totals.species === 1 ? "Species" : "Species"} />
@@ -111,18 +112,18 @@ export default async function LifeListPage() {
                 />
                 <Stat value={count(totals.years)} label={totals.years === 1 ? "Year" : "Years"} />
               </div>
-            </section>
+            </PageSection>
 
-            <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
+            <PageSection className="flex flex-col gap-(--space-xl)">
               <SectionLabel>Where</SectionLabel>
               <LifeMap
                 countries={stats.map.countries}
                 regions={stats.map.regions}
                 total={totals.species}
               />
-            </section>
+            </PageSection>
 
-            <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
+            <PageSection className="flex flex-col gap-(--space-xl)">
               <SectionLabel>By year</SectionLabel>
               <Tabs
                 label="Count by year"
@@ -157,9 +158,9 @@ export default async function LifeListPage() {
                   },
                 ]}
               />
-            </section>
+            </PageSection>
 
-            <section className="page grid gap-x-(--col-gap) gap-y-(--space-2xl) pt-(--space-2xl) md:grid-cols-2">
+            <PageSection className="grid gap-x-(--col-gap) gap-y-(--space-2xl) md:grid-cols-2">
               <div className="flex flex-col gap-(--space-md)">
                 <SectionLabel as="h2">
                   {`Country, territory or dependency · ${count(stats.byCountry.length)}`}
@@ -197,9 +198,9 @@ export default async function LifeListPage() {
                   </p>
                 )}
               </div>
-            </section>
+            </PageSection>
 
-            <section className="page grid gap-x-(--col-gap) gap-y-(--space-2xl) pt-(--space-2xl) md:grid-cols-2">
+            <PageSection className="grid gap-x-(--col-gap) gap-y-(--space-2xl) md:grid-cols-2">
               <div className="flex flex-col gap-(--space-md)">
                 <SectionLabel as="h2">Latest checklists</SectionLabel>
                 <ul>
@@ -251,13 +252,13 @@ export default async function LifeListPage() {
                   </ul>
                 )}
               </div>
-            </section>
+            </PageSection>
 
-            <div className="page pt-(--space-2xl)">
+            <PageSection as="div">
               <ArrowLink href="/collections/life-list/log">
                 Every species, in the order I first saw it
               </ArrowLink>
-            </div>
+            </PageSection>
           </>
         )}
       </main>

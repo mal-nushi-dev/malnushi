@@ -3,11 +3,12 @@ import { BarList } from "@/components/charts/bar-list";
 import { count } from "@/components/charts/format";
 import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
-import { Eyebrow } from "@/components/eyebrow";
 import { FlightMap } from "@/components/flight-map";
 import { FlightScenes } from "@/components/flight-scenes";
 import { Footer } from "@/components/footer";
 import { ArrowLink } from "@/components/links";
+import { PageHeader } from "@/components/page-header";
+import { PageSection } from "@/components/page-section";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
 import { Tabs } from "@/components/tabs";
@@ -89,17 +90,17 @@ export default async function TravelsPage() {
   return (
     <>
       <main className="pb-(--space-block)">
-        <header className="page flex flex-col gap-(--space-md) pt-(--space-header-top)">
-          <Eyebrow section="Collections" category="Travels" />
-          <h1 className="type-h1">{collection.title}</h1>
-          <p className="type-standfirst max-w-150 text-ink-2">{collection.summary}</p>
-        </header>
+        <PageHeader
+          eyebrow={{ section: "Collections", category: "Travels" }}
+          title={collection.title}
+          standfirst={collection.summary}
+        />
 
-        <div className="page pt-(--space-2xl)">
+        <PageSection as="div">
           <FlightMap airports={stats.map.airports} routes={stats.map.routes} />
-        </div>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
+        <PageSection space="block" className="flex flex-col gap-(--space-xl)">
           <SectionLabel>In numbers</SectionLabel>
           <FlightScenes
             flights={{
@@ -112,9 +113,9 @@ export default async function TravelsPage() {
             earth={{ ratio: stats.aroundEarth, read: times(stats.aroundEarth) }}
             sun={{ ratio: stats.toSun, read: times(stats.toSun) }}
           />
-        </section>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
+        <PageSection className="flex flex-col gap-(--space-xl)">
           <SectionLabel>Time in the air</SectionLabel>
           <div className="grid grid-cols-6 gap-x-(--col-gap)">
             <Stat value={time.years} label={time.years === 1 ? "Year" : "Years"} />
@@ -130,9 +131,9 @@ export default async function TravelsPage() {
               {stats.estimated === 1 ? "is" : "are"} estimated from distance.
             </p>
           )}
-        </section>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-2xl)">
+        <PageSection className="flex flex-col gap-(--space-xl)">
           <SectionLabel>Emissions</SectionLabel>
           <div className="grid grid-cols-4 gap-x-(--col-gap)">
             <Stat value={amount(emissions.co2Tonnes)} label="Tonnes of carbon dioxide" />
@@ -146,9 +147,9 @@ export default async function TravelsPage() {
             {emissions.leftOut > 0 &&
               ` ${plural(emissions.leftOut, "private flight is", "private flights are")} not counted.`}
           </p>
-        </section>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
+        <PageSection space="block" className="flex flex-col gap-(--space-xl)">
           <SectionLabel>How</SectionLabel>
           <div className="grid grid-cols-2 gap-x-(--space-2xl) gap-y-(--space-2xl)">
             <PieChart
@@ -180,9 +181,9 @@ export default async function TravelsPage() {
               note="Where each flight landed."
             />
           </div>
-        </section>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
+        <PageSection space="block" className="flex flex-col gap-(--space-xl)">
           <SectionLabel>Most flown</SectionLabel>
           <div className="grid grid-cols-2 gap-x-(--space-2xl) gap-y-(--space-2xl)">
             <Ranking title="Airports" rows={rankings.airports} />
@@ -194,9 +195,9 @@ export default async function TravelsPage() {
               <BarList label="Countries by flights landed" bars={bars(rankings.countries, "count")} />
             </section>
           </div>
-        </section>
+        </PageSection>
 
-        <section className="page flex flex-col gap-(--space-xl) pt-(--space-block)">
+        <PageSection space="block" className="flex flex-col gap-(--space-xl)">
           <SectionLabel>When</SectionLabel>
           <LineChart
             title="Flights per year"
@@ -209,13 +210,13 @@ export default async function TravelsPage() {
             <LineChart title="Flights per month" unit="flights" points={series.months} />
             <LineChart title="Flights per weekday" unit="flights" points={series.weekdays} />
           </div>
-        </section>
+        </PageSection>
 
-        <div className="page pt-(--space-2xl)">
+        <PageSection as="div">
           <ArrowLink href="/collections/travels/log">
             Every flight, in a table
           </ArrowLink>
-        </div>
+        </PageSection>
       </main>
       <Footer />
     </>
