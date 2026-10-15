@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { BarList } from "@/components/charts/bar-list";
 import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
+import { Ranking, RankingTitle } from "@/components/charts/ranking";
 import { FlightMap } from "@/components/flight-map";
 import { FlightScenes } from "@/components/flight-scenes";
 import { Footer } from "@/components/footer";
@@ -10,7 +10,6 @@ import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
 import { SectionLabel } from "@/components/section-label";
 import { Stat } from "@/components/stat";
-import { Tabs } from "@/components/tabs";
 import { content } from "@/lib/content";
 import { amount, miles, times } from "@/lib/flights/format";
 import {
@@ -46,36 +45,16 @@ function bars(rows: Ranked[], by: "count" | "km") {
   }));
 }
 
-/** A ranking's name, and how many different ones there are: the bars show only the top of it. */
-function RankingTitle({ title, total }: { title: string; total: number }) {
+function FlightRanking({ title, rows }: { title: string; rows: Ranked[] }) {
   return (
-    <h3 className="flex items-baseline justify-between type-label text-ink-2">
-      {title}
-      <span className="tabular-nums text-ink">
-        {count(total)} <span className="sr-only">in all</span>
-      </span>
-    </h3>
-  );
-}
-
-function Ranking({ title, rows }: { title: string; rows: Ranked[] }) {
-  return (
-    <section className="flex flex-col gap-(--space-md)">
-      <RankingTitle title={title} total={rows.length} />
-      <Tabs
-        label={`Rank ${title.toLowerCase()} by`}
-        tabs={[
-          {
-            label: "By flights",
-            panel: <BarList label={`${title} by flights`} bars={bars(rows, "count")} />,
-          },
-          {
-            label: "By distance",
-            panel: <BarList label={`${title} by distance`} bars={bars(rows, "km")} />,
-          },
-        ]}
-      />
-    </section>
+    <Ranking
+      heading={<RankingTitle title={title} total={rows.length} />}
+      subject={title}
+      measures={[
+        { label: "By flights", bars: bars(rows, "count") },
+        { label: "By distance", bars: bars(rows, "km") },
+      ]}
+    />
   );
 }
 
@@ -184,14 +163,15 @@ export default async function TravelsPage() {
         <PageSection space="block" className="flex flex-col gap-(--space-xl)">
           <SectionLabel>Most flown</SectionLabel>
           <div className="grid grid-cols-2 gap-x-(--space-2xl) gap-y-(--space-2xl)">
-            <Ranking title="Airports" rows={rankings.airports} />
-            <Ranking title="Airlines" rows={rankings.airlines} />
-            <Ranking title="Aircraft" rows={rankings.aircraft} />
-            <Ranking title="Routes" rows={rankings.routes} />
-            <section className="flex flex-col gap-(--space-md)">
-              <RankingTitle title="Countries" total={rankings.countries.length} />
-              <BarList label="Countries by flights landed" bars={bars(rankings.countries, "count")} />
-            </section>
+            <FlightRanking title="Airports" rows={rankings.airports} />
+            <FlightRanking title="Airlines" rows={rankings.airlines} />
+            <FlightRanking title="Aircraft" rows={rankings.aircraft} />
+            <FlightRanking title="Routes" rows={rankings.routes} />
+            <Ranking
+              heading={<RankingTitle title="Countries" total={rankings.countries.length} />}
+              subject="Countries"
+              measures={[{ label: "By flights landed", bars: bars(rankings.countries, "count") }]}
+            />
           </div>
         </PageSection>
 

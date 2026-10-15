@@ -761,6 +761,7 @@ Design decisions are tracked in [design-log.md](design-log.md).
 
 ## Open questions
 
+- **Two titles for one ranking** (found 2026-10-14). On Travels a ranking's title is a `label` with its total at the right (`RankingTitle`, under the section's own label). On the life list it is a section label with the total after a middle dot ("Major region · 7"), with the rule under it. Both now come from `Ranking`; decide which title they share.
 - **Two pages start differently from the page header** (found 2026-10-14). The 404 and error pages (`StatusPage`) use a `label` line in place of the eyebrow, a 700px column and 48px gaps; the Writing index starts `space-2xl` below the nav, not `space-header-top`. Decide whether they are designed that way or should take the page header.
 - **The browser's back and forward buttons do not animate:** React runs no view transition for a pop, so they are an instant cut. Decide whether that is acceptable or worth working around.
 - **Only the Collections spines are origins** (`data-vt-origin`). The tiles on Projects and Photography, and the index rows, still open from the nav plate in the page's color. Decide which of them should become a plate of their own.

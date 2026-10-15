@@ -40,6 +40,7 @@ Components are grouped in sections 01–07. States (hover, focus) are CSS; varia
 - [x] Tile and Tile Grid (`size`: square, wide, tall, large; sage plate on hover and focus)
 - [x] Shelf and Spine (the Collections index: spines that open sage; `grouped` sets them by category; `UrlShelf` keeps that in the address)
 - [x] Bar List (a ranking: name, bar, number)
+- [x] Ranking (a bar list under its heading; tabs when it can be ranked more than one way). Not on the preview page: see `/collections/travels`.
 
 ## 05 Editorial content
 

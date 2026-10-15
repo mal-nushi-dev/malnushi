@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BarList } from "@/components/charts/bar-list";
 import { ColumnChart } from "@/components/charts/column-chart";
+import { Ranking } from "@/components/charts/ranking";
 import { Footer } from "@/components/footer";
 import { LifeMap } from "@/components/life-map";
 import { ArrowLink } from "@/components/links";
@@ -159,43 +159,40 @@ export default async function LifeListPage() {
             </PageSection>
 
             <PageSection className="grid gap-x-(--col-gap) gap-y-(--space-2xl) md:grid-cols-2">
-              <div className="flex flex-col gap-(--space-md)">
-                <SectionLabel as="h2">
-                  {`Country, territory or dependency · ${count(stats.byCountry.length)}`}
-                </SectionLabel>
-                <Tabs
-                  label="Rank places by"
-                  tabs={[
-                    {
-                      label: "By species",
-                      panel: <BarList wrap label="Places by species" bars={countryBars(stats.byCountry, "species")} />,
-                    },
-                    {
-                      label: "By checklists",
-                      panel: (
-                        <BarList wrap label="Places by checklists" bars={countryBars(stats.byCountry, "checklists")} />
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-              <div className="flex flex-col gap-(--space-md)">
-                <SectionLabel as="h2">{`Major region · ${count(shownRegions.length)}`}</SectionLabel>
-                <BarList
-                  wrap
-                  label="Major regions by species"
-                  bars={shownRegions.map((r) => ({
-                    label: r.name,
-                    value: r.counts.species,
-                    shown: count(r.counts.species),
-                  }))}
-                />
+              <Ranking
+                heading={
+                  <SectionLabel as="h2">
+                    {`Country, territory or dependency · ${count(stats.byCountry.length)}`}
+                  </SectionLabel>
+                }
+                subject="Places"
+                wrap
+                measures={[
+                  { label: "By species", bars: countryBars(stats.byCountry, "species") },
+                  { label: "By checklists", bars: countryBars(stats.byCountry, "checklists") },
+                ]}
+              />
+              <Ranking
+                heading={<SectionLabel as="h2">{`Major region · ${count(shownRegions.length)}`}</SectionLabel>}
+                subject="Major regions"
+                wrap
+                measures={[
+                  {
+                    label: "By species",
+                    bars: shownRegions.map((r) => ({
+                      label: r.name,
+                      value: r.counts.species,
+                      shown: count(r.counts.species),
+                    })),
+                  },
+                ]}
+              >
                 {hiddenRegions > 0 && (
                   <p className="type-small text-ink-2">
                     {counted(hiddenRegions, "more region", "more regions")}, none seen yet.
                   </p>
                 )}
-              </div>
+              </Ranking>
             </PageSection>
 
             <PageSection className="grid gap-x-(--col-gap) gap-y-(--space-2xl) md:grid-cols-2">
