@@ -1,4 +1,5 @@
-import { count, percent } from "./format";
+import { count } from "@/lib/format";
+import { percent } from "./format";
 
 export type Slice = { label: string; count: number };
 

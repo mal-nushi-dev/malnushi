@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BarList } from "@/components/charts/bar-list";
 import { ColumnChart } from "@/components/charts/column-chart";
-import { count } from "@/components/charts/format";
 import { Footer } from "@/components/footer";
 import { LifeMap } from "@/components/life-map";
 import { ArrowLink } from "@/components/links";
@@ -15,6 +14,7 @@ import { Tabs } from "@/components/tabs";
 import { content } from "@/lib/content";
 import { countryTable, regionName } from "@/lib/ebird/places";
 import { lifeStats, type Ranked } from "@/lib/ebird/stats";
+import { count, counted } from "@/lib/format";
 
 // The life list's own page: the numbers and the map. Its table is one level
 // down, at /collections/life-list/log. See the design log, 2026-10-11.
@@ -22,8 +22,6 @@ export const metadata: Metadata = {
   title: "Life list",
   description: "Every bird species I have identified, counted by where and when.",
 };
-
-const plural = (n: number, one: string, many: string) => `${count(n)} ${n === 1 ? one : many}`;
 
 /** "2026-09-28" as "28 September", read as the day it is, in no time zone. */
 const day = (iso: string) =>
@@ -82,8 +80,8 @@ export default async function LifeListPage() {
               "No birds on the list yet."
             ) : (
               <>
-                I have named <span className="text-ink">{plural(totals.species, "bird", "birds")}</span>,
-                in {plural(totals.countries, "country", "countries")} since {totals.since}.
+                I have named <span className="text-ink">{counted(totals.species, "bird", "birds")}</span>,
+                in {counted(totals.countries, "country", "countries")} since {totals.since}.
                 {totals.lastLifer && (
                   <>
                     {" "}
@@ -194,7 +192,7 @@ export default async function LifeListPage() {
                 />
                 {hiddenRegions > 0 && (
                   <p className="type-small text-ink-2">
-                    {plural(hiddenRegions, "more region", "more regions")}, none seen yet.
+                    {counted(hiddenRegions, "more region", "more regions")}, none seen yet.
                   </p>
                 )}
               </div>

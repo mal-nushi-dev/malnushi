@@ -8,6 +8,7 @@ import { Portrait } from "@/components/portrait";
 import { SectionLabel } from "@/components/section-label";
 import { content, dayOf, type Kind } from "@/lib/content";
 import Link from "next/link";
+import { numbered } from "@/lib/format";
 
 // The features are chosen by hand: the lead, then three more in this order.
 // Their images are placeholders until the pieces have real ones.
@@ -114,7 +115,7 @@ export default async function Home() {
                 section="Photography"
                 category={
                   second.kind === "photo-series" && second.data.number
-                    ? `Series ${String(second.data.number).padStart(2, "0")}`
+                    ? `Series ${numbered(second.data.number, 2)}`
                     : categoryOf(second)
                 }
               />

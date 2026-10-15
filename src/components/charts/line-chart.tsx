@@ -1,4 +1,5 @@
-import { axisTop, count } from "./format";
+import { count } from "@/lib/format";
+import { axisTop } from "./format";
 
 export type Point = { label: string; count: number };
 

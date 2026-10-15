@@ -1,10 +1,3 @@
-const whole = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-
-/** 161324.4 as "161,324". */
-export function count(value: number) {
-  return whole.format(value);
-}
-
 /** A share of a whole as a percentage: "95%", and "<1%" for a sliver. */
 export function percent(part: number, total: number) {
   if (total === 0) return "0%";

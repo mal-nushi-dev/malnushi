@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
 import { content } from "@/lib/content";
 import { regionName } from "@/lib/ebird/places";
+import { numbered } from "@/lib/format";
 
 // The life list's table: one row a species, the first time it was seen. The
 // collection's own page is the map and the numbers; see the design log, 2026-10-11.
@@ -39,7 +40,7 @@ export default async function LifeListLogPage() {
     .map((s, i) => ({
       id: s.id,
       // Numbered from the first species named.
-      no: String(i + 1).padStart(3, "0"),
+      no: numbered(i + 1, 3),
       species: { common: s.data.species, scientific: s.data.scientific },
       date: s.date.slice(0, 10),
       where: s.data.region?.includes("-")

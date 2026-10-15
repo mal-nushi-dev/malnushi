@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SectionLabel } from "./section-label";
+import { numbered } from "@/lib/format";
 
 export type IndexItem = {
   href: string;
@@ -21,7 +22,7 @@ export function IndexRow({ index, item }: { index: number; item: IndexItem }) {
         className="group grid grid-cols-12 items-center gap-x-(--col-gap) py-(--space-row-index)"
       >
         <span className="col-span-1 type-meta text-ink-2">
-          {String(index).padStart(3, "0")}
+          {numbered(index, 3)}
         </span>
         <span className="col-span-7 type-index-title text-ink group-hover:text-link">
           {item.title}

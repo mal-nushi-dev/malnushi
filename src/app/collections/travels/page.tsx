@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { BarList } from "@/components/charts/bar-list";
-import { count } from "@/components/charts/format";
 import { LineChart } from "@/components/charts/line-chart";
 import { PieChart } from "@/components/charts/pie-chart";
 import { FlightMap } from "@/components/flight-map";
@@ -23,6 +22,7 @@ import {
   top,
   type Ranked,
 } from "@/lib/flights/stats";
+import { count, counted } from "@/lib/format";
 
 // The travels collection: a map of every flight, then the flights counted.
 // The first collection whose page is not its table; that is one level down,
@@ -32,11 +32,9 @@ export const metadata: Metadata = {
   description: "Every flight I have taken, drawn on a map and counted.",
 };
 
-const plural = (n: number, one: string, many: string) => `${count(n)} ${n === 1 ? one : many}`;
-
 /** What a pie says about the flights it could not place. */
 const unrecorded = (n: number, what: string) =>
-  n === 0 ? undefined : `${plural(n, "flight has", "flights have")} no ${what} recorded.`;
+  n === 0 ? undefined : `${counted(n, "flight has", "flights have")} no ${what} recorded.`;
 
 /** One ranking as bars, read by flights or by distance. */
 function bars(rows: Ranked[], by: "count" | "km") {
@@ -127,7 +125,7 @@ export default async function TravelsPage() {
           </div>
           {stats.estimated > 0 && (
             <p className="type-small text-ink-2">
-              {plural(stats.estimated, "flight has", "flights have")} no duration recorded, and{" "}
+              {counted(stats.estimated, "flight has", "flights have")} no duration recorded, and{" "}
               {stats.estimated === 1 ? "is" : "are"} estimated from distance.
             </p>
           )}
@@ -145,7 +143,7 @@ export default async function TravelsPage() {
             government&rsquo;s 2026 conversion factors. It leaves out the extra warming of
             emissions at altitude.
             {emissions.leftOut > 0 &&
-              ` ${plural(emissions.leftOut, "private flight is", "private flights are")} not counted.`}
+              ` ${counted(emissions.leftOut, "private flight is", "private flights are")} not counted.`}
           </p>
         </PageSection>
 

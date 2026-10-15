@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
 import { content, type Airport } from "@/lib/content";
 import { hoursAndMinutes, miles } from "@/lib/flights/format";
+import { numbered } from "@/lib/format";
 
 // The travels collection's table: every flight, newest first. The collection's
 // own page is the map; see the design log, 2026-10-07.
@@ -22,7 +23,7 @@ export default async function FlightLogPage() {
   const rows: FlightRow[] = flights.map((flight, at) => ({
     id: flight.id,
     // Numbered from the first flight taken.
-    no: String(flights.length - at).padStart(3, "0"),
+    no: numbered(flights.length - at, 3),
     date: flight.date,
     from: place(flight.data.from),
     to: place(flight.data.to),

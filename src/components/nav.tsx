@@ -4,6 +4,7 @@ import { animate, motionValue } from "motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { numbered } from "@/lib/format";
 import { cx, sectionOf, sections, type Section } from "@/lib/site";
 
 type Mode = "idle" | "search" | "menu";
@@ -366,7 +367,7 @@ export function Nav({ active: override }: { active?: Section }) {
                       className="flex min-h-(--touch-target) items-center border-t border-line py-3 text-ink hover:text-link"
                     >
                       <span className="w-12 type-meta text-ink-2">
-                        {String(i + 1).padStart(3, "0")}
+                        {numbered(i + 1, 3)}
                       </span>
                       <span
                         className={cx(

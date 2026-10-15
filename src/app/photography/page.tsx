@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
 import { content } from "@/lib/content";
+import { numbered } from "@/lib/format";
 
 // The photo archive (/photography): every photograph, newest first, one at
 // a time. The layout is provisional; see the design log, 2026-10-04.
@@ -28,7 +29,7 @@ export default async function PhotographyPage() {
             <li key={photo.id} className={i % 2 === 1 ? "flex justify-end" : "flex"}>
               <PhotoFigure
                 photo={photo}
-                index={String(photos.length - i).padStart(2, "0")}
+                index={numbered(photos.length - i, 2)}
               />
             </li>
           ))}

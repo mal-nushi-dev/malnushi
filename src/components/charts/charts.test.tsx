@@ -2,7 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "@/test/axe";
 import { BarList } from "./bar-list";
-import { axisTop, count, percent } from "./format";
+import { count } from "@/lib/format";
+import { axisTop, percent } from "./format";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
 

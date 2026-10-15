@@ -15,6 +15,7 @@ import {
   type PostEntry,
   type Queries,
 } from "@/lib/content";
+import { counted } from "@/lib/format";
 import { sentenceParts } from "@/lib/shelf";
 import { EntryBody } from "./body";
 
@@ -106,13 +107,11 @@ export function disciplineOf(entry: Entry): string {
   return disciplines[entry.kind] ?? categoryOf(entry);
 }
 
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-
 /** A tile's label: what it is and, for a series or a release, how much is in it. */
 export function tileLabel(entry: Entry, q: Queries): string {
   const held = q.members(entry).length;
   if (entry.kind === "photo-series") return `Photo series · ${held}`;
-  if (entry.kind === "album") return `${categoryOf(entry)} · ${plural(held, "track", "tracks")}`;
+  if (entry.kind === "album") return `${categoryOf(entry)} · ${counted(held, "track", "tracks")}`;
   return categoryOf(entry);
 }
 

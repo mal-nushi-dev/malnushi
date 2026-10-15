@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { numbered } from "@/lib/format";
 import { sentenceText, type SentencePart } from "@/lib/shelf";
 
 /*
@@ -68,7 +69,7 @@ export function Spine({
         <span className="flex w-18 shrink-0 flex-col items-center justify-between py-5 transition-[width] duration-350 ease-spring-close spine-on:w-24 spine-on:duration-600 spine-on:ease-spring-open motion-reduce:transition-none">
           {/* `ink`, not `ink-2`: the provisional dark surface leaves `ink-2`
               under 4.5:1 (see Open questions). */}
-          <span className="type-meta">{String(index).padStart(3, "0")}</span>
+          <span className="type-meta">{numbered(index, 3)}</span>
           <span className="type-index-title whitespace-nowrap [writing-mode:vertical-rl]">
             {title}
           </span>

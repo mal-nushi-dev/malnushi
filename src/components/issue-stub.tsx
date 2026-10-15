@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLink } from "@/components/links";
+import { numbered } from "@/lib/format";
 
 export type Issue = {
   href: string;
@@ -51,7 +52,7 @@ export function EarlierIssues({ issues }: { issues: Issue[] }) {
             className="group flex items-baseline gap-(--space-sm) py-(--space-sm)"
           >
             <span className="type-meta text-ink-2">
-              {String(i.issue).padStart(2, "0")}
+              {numbered(i.issue, 2)}
             </span>
             <span className="type-body text-ink group-hover:text-link">
               {i.title}
