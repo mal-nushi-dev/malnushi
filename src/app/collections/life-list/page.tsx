@@ -4,7 +4,7 @@ import { ColumnChart } from "@/components/charts/column-chart";
 import { Ranking } from "@/components/charts/ranking";
 import { Footer } from "@/components/footer";
 import { LifeMap } from "@/components/life-map";
-import { ArrowLink } from "@/components/links";
+import { ArrowLink, inlineLinkClass } from "@/components/links";
 import { PhotoImage } from "@/components/entry/photo-figure";
 import { PageHeader } from "@/components/page-header";
 import { PageSection } from "@/components/page-section";
@@ -15,6 +15,7 @@ import { content } from "@/lib/content";
 import { countryTable, regionName } from "@/lib/ebird/places";
 import { lifeStats, type Ranked } from "@/lib/ebird/stats";
 import { count, counted } from "@/lib/format";
+import { cx } from "@/lib/site";
 
 // The life list's own page: the numbers and the map. Its table is one level
 // down, at /collections/life-list/log. See the design log, 2026-10-11.
@@ -214,7 +215,7 @@ export default async function LifeListPage() {
                       <a
                         href={`https://ebird.org/checklist/${l.checklist}`}
                         rel="noreferrer"
-                        className="type-meta text-link underline decoration-1 underline-offset-[0.15em] hover:text-ink"
+                        className={cx("type-meta", inlineLinkClass)}
                       >
                         eBird<span aria-hidden> ↗</span>
                         <span className="sr-only"> checklist {l.checklist}</span>

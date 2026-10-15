@@ -369,7 +369,7 @@ A **stat** is a number and what it counts: `stat` in `--ink`, then its `label` i
 
 ### Links
 
-Inline links are `--link` with a 1px underline; on hover the text and underline turn `--ink`. Arrow links ("View source →") have no underline until hover. Keyboard focus shows the 2px `--ink` ring used by the nav, on `:focus-visible` only, so it never appears on mouse hover or click.
+Inline links are `--link` with a 1px underline; on hover the text and underline turn `--ink`. Arrow links ("View source →") have no underline until hover. An action that is not a link ("Try again →" on the error page) is an `ArrowButton`, set exactly as an arrow link. A link off the site that cannot be an `InlineLink` (the eBird checklist links) takes its look from `inlineLinkClass`. Keyboard focus shows the 2px `--ink` ring used by the nav, on `:focus-visible` only, so it never appears on mouse hover or click.
 
 ### Image placeholders
 

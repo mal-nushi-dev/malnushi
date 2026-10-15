@@ -12,6 +12,12 @@ My choice, 2026-10-14, as step 2 of the refactor; to be confirmed by Mal.
 - **What:** `FeatureCard`, in three sizes that keep the type each card already had (see DESIGN.md, Feature card). **The only visible change:** Home's feature titles now take `--link` on hover and focus, as Writing's do. To undo it, drop `group-hover:text-link` from the card.
 - **Also:** Home's own copy of the image placeholder is gone; it uses `ImageSlot`, which drew the same thing.
 
+### Rankings, number formatting and link styles are shared
+Step 2 of the refactor, 2026-10-14. Only the error page's "Try again" looks different, and only on hover.
+- **Ranking:** Travels and the life list built the same thing (bars under a heading, with tabs when there is more than one measure) separately. `Ranking` now builds both, and names the lists and tabs the same way ("Airports by flights", "Rank airports by"). The life list's two rankings are now `section` elements, as Travels' were, instead of `div`s. Each page keeps its own title for now (Open questions).
+- **Numbers:** `count`, `counted` ("19 birds") and `numbered` ("007") live in `src/lib/format.ts`. Four local `plural` helpers and eight hand-padded numbers were folded into them.
+- **Links:** the error page's "Try again" is an `ArrowButton`, set exactly as an arrow link. It used to underline at the browser's default thickness and offset on hover; it now matches the arrow link beside it. The eBird links on the life list take their classes from `inlineLinkClass` instead of a copy.
+
 ### The page header is one component
 My choice, 2026-10-14, as the first step of a refactor; to be confirmed by Mal.
 - **Why:** eight pages wrote the same eyebrow, `h1` and standfirst by hand, with the same class strings, and chose a top spacing for each band below it page by page. A change to the header meant editing every page, and pages copied from each other drifted (see Open questions).

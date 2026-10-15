@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ArrowLink } from "@/components/links";
+import { ArrowButton, ArrowLink } from "@/components/links";
 import { StatusPage } from "@/components/status-page";
 
 export default function Error({
@@ -21,13 +21,7 @@ export default function Error({
       title="Something went wrong."
       actions={
         <>
-          <button
-            type="button"
-            onClick={() => retry()}
-            className="type-ui cursor-pointer text-link hover:text-ink hover:underline"
-          >
-            Try again <span aria-hidden>→</span>
-          </button>
+          <ArrowButton onClick={() => retry()}>Try again</ArrowButton>
           <ArrowLink back href="/">Back to the home page</ArrowLink>
         </>
       }

@@ -28,7 +28,7 @@ Components are grouped in sections 01–07. States (hover, focus) are CSS; varia
 ## 03 Links and controls
 
 - [x] Inline Link
-- [x] Arrow Link
+- [x] Arrow Link (and `ArrowButton`, the same for an action that is not a link)
 - [x] Filter Pill (`active`; `size`: md 44px, sm 32px)
 - [x] Collection Link
 - [x] Tabs (arrow keys move between them; panels are rendered on the server)
