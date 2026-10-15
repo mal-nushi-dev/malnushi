@@ -6,6 +6,12 @@ Format: newest first. Each entry has the decision, the reason, and what would ch
 
 ## 2026-10-14
 
+### Feature cards: one component, and Home's titles answer the pointer
+My choice, 2026-10-14, as step 2 of the refactor; to be confirmed by Mal.
+- **Why:** Home's three features and the Writing lead with its two companions were six hand-built copies of one card. They had drifted: Writing's titles turned `--link` on hover, Home's did nothing, so Home's cards gave no sign they could be pressed.
+- **What:** `FeatureCard`, in three sizes that keep the type each card already had (see DESIGN.md, Feature card). **The only visible change:** Home's feature titles now take `--link` on hover and focus, as Writing's do. To undo it, drop `group-hover:text-link` from the card.
+- **Also:** Home's own copy of the image placeholder is gone; it uses `ImageSlot`, which drew the same thing.
+
 ### The page header is one component
 My choice, 2026-10-14, as the first step of a refactor; to be confirmed by Mal.
 - **Why:** eight pages wrote the same eyebrow, `h1` and standfirst by hand, with the same class strings, and chose a top spacing for each band below it page by page. A change to the header meant editing every page, and pages copied from each other drifted (see Open questions).

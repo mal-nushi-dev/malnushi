@@ -276,6 +276,16 @@ The bands under it are `PageSection`s, in the page's columns, each spaced from t
 
 Pages with a designed header of their own do not use it: Home, the Writing index (the masthead), Projects (a centred `feature-display` title), an essay (Essay header), and a single photograph, track or note.
 
+### Feature card
+
+A featured piece on Home and the Writing index: its image, eyebrow, title and summary, the whole card one link, `space-md` apart. On hover or focus the title takes `--link`. The grid places it; it does not size itself. Three sizes (`FeatureCard`):
+
+- **`lead`:** a `quote` title, its subtitle in `body` at most 600px wide, then the date in `meta`. The Writing lead.
+- **`large`:** a `quote` title and a `small` summary at most 520px wide. Home's larger features.
+- **`small`:** an `index-title` title alone.
+
+The lead feature at the top of Home (the accent rule, `feature-display`, the hero) is not a card: it is that page's own.
+
 ### Eyebrow
 
 `label` style, `--ink-2`, above every h1 (except the Writing index, whose masthead is the name): section, then an accent-colored `/`, then the sub-category.

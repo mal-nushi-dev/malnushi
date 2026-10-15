@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArticleFilter } from "@/components/article-filter";
 import { toIndexItem, toIssue, toNoteItem } from "@/components/entry/mappers";
-import { Eyebrow } from "@/components/eyebrow";
+import { FeatureCard } from "@/components/feature-card";
 import { Footer } from "@/components/footer";
 import { ImageSlot } from "@/components/image-placeholder";
 import { EarlierIssues, IssueStub } from "@/components/issue-stub";
@@ -51,35 +50,35 @@ export default async function WritingPage() {
 
         <div className="page grid grid-cols-12 items-start gap-x-(--col-gap) pt-(--space-xl)">
           <div className="col-span-8 flex flex-col gap-(--space-block)">
-            <Link href={lead.href} className="group flex flex-col gap-(--space-md)">
-              <ImageSlot label="LEAD — 824 × 549" className="aspect-3/2" />
-              <Eyebrow section="Writing" category={lead.category} />
-              <h2 className="type-quote text-ink group-hover:text-link">
-                {lead.title}
-              </h2>
-              <p className="max-w-150 type-body text-ink-2">{lead.subtitle}</p>
-              <span className="type-meta text-ink-2">{lead.date}</span>
-            </Link>
+            <FeatureCard
+              href={lead.href}
+              size="lead"
+              as="h2"
+              image={<ImageSlot label="LEAD — 824 × 549" className="aspect-3/2" />}
+              eyebrow={{ section: "Writing", category: lead.category }}
+              title={lead.title}
+              summary={lead.subtitle}
+              meta={lead.date}
+            />
 
             {/* Two more, deliberately unequal, as on Home's features. */}
             <div className="grid grid-cols-8 items-start gap-x-(--col-gap)">
-              <Link href={second.href} className="group col-span-5 flex flex-col gap-(--space-md)">
-                <ImageSlot label="IMAGE — 506 × 337" className="aspect-3/2" />
-                <Eyebrow section="Writing" category={second.category} />
-                <h3 className="type-index-title text-ink group-hover:text-link">
-                  {second.title}
-                </h3>
-              </Link>
-              <Link
+              <FeatureCard
+                href={second.href}
+                size="small"
+                className="col-span-5"
+                image={<ImageSlot label="IMAGE — 506 × 337" className="aspect-3/2" />}
+                eyebrow={{ section: "Writing", category: second.category }}
+                title={second.title}
+              />
+              <FeatureCard
                 href={third.href}
-                className="group col-span-3 mt-(--space-block) flex flex-col gap-(--space-md)"
-              >
-                <ImageSlot label="IMAGE — 294 × 392" className="aspect-3/4" />
-                <Eyebrow section="Writing" category={third.category} />
-                <h3 className="type-index-title text-ink group-hover:text-link">
-                  {third.title}
-                </h3>
-              </Link>
+                size="small"
+                className="col-span-3 mt-(--space-block)"
+                image={<ImageSlot label="IMAGE — 294 × 392" className="aspect-3/4" />}
+                eyebrow={{ section: "Writing", category: third.category }}
+                title={third.title}
+              />
             </div>
 
             <section className="flex flex-col gap-(--space-lg)">

@@ -1,7 +1,9 @@
 import { ItemSummary } from "@/components/entry/item-summary";
 import { categoryOf, titleOf, toIndexItem } from "@/components/entry/mappers";
 import { Eyebrow } from "@/components/eyebrow";
+import { FeatureCard } from "@/components/feature-card";
 import { Footer } from "@/components/footer";
+import { ImageSlot } from "@/components/image-placeholder";
 import { IndexList } from "@/components/index-list";
 import { ArrowLink } from "@/components/links";
 import { Portrait } from "@/components/portrait";
@@ -20,18 +22,6 @@ const features: { kind: Kind; id: string }[] = [
 ];
 
 const grid = "grid grid-cols-12 gap-x-(--col-gap)";
-
-function FeatureImage({ label, className }: { label: string; className: string }) {
-  return (
-    <div
-      role="img"
-      aria-label={`Image placeholder, ${label}`}
-      className={`flex w-full items-center justify-center rounded-(--radius-img) bg-line ${className}`}
-    >
-      <span className="type-meta text-ink-2">{label}</span>
-    </div>
-  );
-}
 
 export default async function Home() {
   const q = await content();
@@ -103,30 +93,36 @@ export default async function Home() {
         <section className="page pt-(--space-block)">
           <SectionLabel>Features</SectionLabel>
           <div className={`${grid} items-start gap-y-(--space-block) pt-(--space-2xl)`}>
-            <Link href={first.url} className="col-span-7 flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 718 × 479" className="aspect-3/2" />
-              <Eyebrow section="Projects" category={categoryOf(first)} />
-              <h3 className="type-quote">{titleOf(first)}</h3>
-              <p className="type-small max-w-130 text-ink-2">{first.summary}</p>
-            </Link>
-            <Link href={second.url} className="col-span-4 col-start-9 mt-(--space-block) flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 408 × 544" className="aspect-3/4" />
-              <Eyebrow
-                section="Photography"
-                category={
+            <FeatureCard
+              href={first.url}
+              className="col-span-7"
+              image={<ImageSlot label="FEATURE IMAGE — 718 × 479" className="aspect-3/2" />}
+              eyebrow={{ section: "Projects", category: categoryOf(first) }}
+              title={titleOf(first)}
+              summary={first.summary}
+            />
+            <FeatureCard
+              href={second.url}
+              size="small"
+              className="col-span-4 col-start-9 mt-(--space-block)"
+              image={<ImageSlot label="FEATURE IMAGE — 408 × 544" className="aspect-3/4" />}
+              eyebrow={{
+                section: "Photography",
+                category:
                   second.kind === "photo-series" && second.data.number
                     ? `Series ${numbered(second.data.number, 2)}`
-                    : categoryOf(second)
-                }
-              />
-              <h3 className="type-index-title">{titleOf(second)}</h3>
-            </Link>
-            <Link href={third.url} className="col-span-9 col-start-4 flex flex-col gap-(--space-md)">
-              <FeatureImage label="FEATURE IMAGE — 918 × 459" className="aspect-2/1" />
-              <Eyebrow section="Projects" category={categoryOf(third)} />
-              <h3 className="type-quote">{titleOf(third)}</h3>
-              <p className="type-small max-w-130 text-ink-2">{third.summary}</p>
-            </Link>
+                    : categoryOf(second),
+              }}
+              title={titleOf(second)}
+            />
+            <FeatureCard
+              href={third.url}
+              className="col-span-9 col-start-4"
+              image={<ImageSlot label="FEATURE IMAGE — 918 × 459" className="aspect-2/1" />}
+              eyebrow={{ section: "Projects", category: categoryOf(third) }}
+              title={titleOf(third)}
+              summary={third.summary}
+            />
           </div>
         </section>
 

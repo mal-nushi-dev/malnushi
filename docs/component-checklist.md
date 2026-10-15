@@ -56,6 +56,7 @@ Components are grouped in sections 01–07. States (hover, focus) are CSS; varia
 - [x] Toolbar (filter pills and sort label; presentational)
 - [x] Other Collections Row
 - [x] Essay Header
+- [x] Feature Card (`size`: lead, large, small). Not on the preview page: see `/` and `/writing`.
 - [x] Tile Gallery (filter pills over a tile grid; `UrlTileGallery` keeps the selection in the address). Not on the preview page: see `/projects`.
 - [x] Flight Log (year pills over the flight table; `UrlFlightLog` keeps the year in the address). Not on the preview page: see `/collections/travels/log`.
 - [x] Flight Map (deck.gl over MapLibre; flat, tilted). Not on the preview page: see `/collections/travels`.
